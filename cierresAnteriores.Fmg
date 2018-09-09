@@ -1,0 +1,273 @@
+* HMG-IDE Form Designer Generated Code
+* (c) Roberto Lopez - http://sites.google.com/site/hmgweb
+
+DEFINE WINDOW TEMPLATE AT 164 , 501 WIDTH 470 HEIGHT 350 VIRTUAL WIDTH Nil VIRTUAL HEIGHT Nil TITLE "" ICON NIL MODAL CURSOR NIL ON INIT Nil ON RELEASE Nil ON INTERACTIVECLOSE Nil ON MOUSECLICK Nil ON MOUSEDRAG Nil ON MOUSEMOVE Nil ON SIZE Nil ON PAINT Nil BACKCOLOR Nil ON GOTFOCUS Nil ON LOSTFOCUS Nil ON SCROLLUP Nil ON SCROLLDOWN Nil ON SCROLLLEFT Nil ON SCROLLRIGHT Nil ON HSCROLLBOX Nil ON VSCROLLBOX Nil
+
+    DEFINE TEXTBOX Text_1
+        ROW    80
+        COL    20
+        WIDTH  120
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER Nil
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .F.
+        DISABLEDBACKCOLOR Nil
+        DISABLEDFONTCOLOR Nil
+        BACKCOLOR NIL
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        NUMERIC .T. 
+        VALUE 0
+    END TEXTBOX
+
+    DEFINE DATEPICKER DatePicker_1
+        ROW    80
+        COL    170
+        WIDTH  120
+        HEIGHT 24
+        VALUE CTOD(" / / ")
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER Nil
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        SHOWNONE .F.
+        UPDOWN .F.
+        RIGHTALIGN .F.
+    END DATEPICKER
+
+    DEFINE DATEPICKER DatePicker_2
+        ROW    80
+        COL    320
+        WIDTH  120
+        HEIGHT 24
+        VALUE CTOD(" / / ")
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER Nil
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        SHOWNONE .F.
+        UPDOWN .F.
+        RIGHTALIGN .F.
+    END DATEPICKER
+
+    DEFINE BUTTON Button_1
+        ROW    110
+        COL    120
+        WIDTH  195
+        HEIGHT 30
+        ACTION buscoCajasTraspasos()
+        CAPTION "Buscar Cierres"
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        HELPID Nil
+        FLAT .F.
+        TABSTOP .T.
+        VISIBLE .T.
+        TRANSPARENT .F.
+        MULTILINE .F.
+        PICTURE Nil
+        PICTALIGNMENT TOP
+    END BUTTON
+
+    DEFINE LABEL Label_1
+        ROW    60
+        COL    20
+        WIDTH  120
+        HEIGHT 20
+        VALUE "Id. de Caja:"
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID Nil
+        VISIBLE .T.
+        TRANSPARENT .F.
+        ACTION Nil
+        AUTOSIZE .F.
+        BACKCOLOR NIL
+        FONTCOLOR NIL
+    END LABEL
+
+    DEFINE FRAME Frame_1
+        ROW    10
+        COL    10
+        WIDTH  440
+        HEIGHT 130
+        FONTNAME "Arial"
+        FONTSIZE 9
+        FONTBOLD .T.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        CAPTION "Busqueda"
+        BACKCOLOR NIL
+        FONTCOLOR NIL
+        OPAQUE .T.
+    END FRAME
+
+    DEFINE LABEL Label_2
+        ROW    60
+        COL    170
+        WIDTH  120
+        HEIGHT 20
+        VALUE "Desde Fecha:"
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID Nil
+        VISIBLE .T.
+        TRANSPARENT .F.
+        ACTION Nil
+        AUTOSIZE .F.
+        BACKCOLOR NIL
+        FONTCOLOR NIL
+    END LABEL
+
+    DEFINE LABEL Label_3
+        ROW    60
+        COL    320
+        WIDTH  120
+        HEIGHT 20
+        VALUE "Hasta Fecha:"
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID Nil
+        VISIBLE .T.
+        TRANSPARENT .F.
+        ACTION Nil
+        AUTOSIZE .F.
+        BACKCOLOR NIL
+        FONTCOLOR NIL
+    END LABEL
+
+    DEFINE GRID Grid_1
+        ROW    150
+        COL    10
+        WIDTH  440
+        HEIGHT 150
+        ITEMS nil
+        VALUE Nil
+        WIDTHS { 40,180,180,180 }
+        HEADERS {'Id.Caja','Nombre Cajero','Fecha','Fecha'}
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONDBLCLICK listoCajasTraspasos()
+        ONHEADCLICK Nil
+        ONQUERYDATA Nil
+        MULTISELECT .F.
+        ALLOWEDIT .F.
+        VIRTUAL .F.
+        DYNAMICBACKCOLOR Nil
+        DYNAMICFORECOLOR Nil
+        COLUMNWHEN Nil
+        COLUMNVALID Nil
+        COLUMNCONTROLS { {'TEXTBOX','NUMERIC'},{'TEXTBOX','CHARACTER'},{'TEXTBOX','CHARACTER'},{'TEXTBOX','CHARACTER'}}
+        SHOWHEADERS .T.
+        CELLNAVIGATION .F.
+        NOLINES .F.
+        HELPID Nil
+        IMAGE Nil
+        JUSTIFY Nil
+        ITEMCOUNT Nil
+        BACKCOLOR NIL
+        FONTCOLOR NIL
+        HEADERIMAGES Nil
+        ROWSOURCE Nil
+        COLUMNFIELDS Nil
+        ALLOWAPPEND .F.
+        ALLOWDELETE .F.
+        BUFFERED .F.
+        DYNAMICDISPLAY Nil
+        ONSAVE Nil
+        LOCKCOLUMNS 0
+    END GRID
+
+    DEFINE RADIOGROUP RadioGroup_1
+        ROW    30
+        COL    110
+        WIDTH  250
+        HEIGHT 28
+        OPTIONS { 'Cierres','Traspasos'}
+        VALUE 1
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE iif(cierresAnteriores.radioGroup_1.value = 1 , cierresAnteriores.button_1.caption:='Buscar Cierres', cierresAnteriores.button_1.caption:='Buscar Traspasos')
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        TRANSPARENT .F.
+        SPACING 125
+        BACKCOLOR NIL
+        FONTCOLOR NIL
+        READONLY Nil
+        HORIZONTAL .T. 
+    END RADIOGROUP
+
+END WINDOW
+

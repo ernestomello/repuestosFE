@@ -1,0 +1,210 @@
+* HMG-IDE Form Designer Generated Code
+* (c) Roberto Lopez - http://sites.google.com/site/hmgweb
+
+DEFINE WINDOW TEMPLATE AT 132 , 302 WIDTH 637 HEIGHT 535 VIRTUAL WIDTH Nil VIRTUAL HEIGHT Nil TITLE "Imprimir Estados de Cuenta" ICON NIL  CURSOR NIL ON INIT Nil ON RELEASE Nil ON INTERACTIVECLOSE Nil ON MOUSECLICK Nil ON MOUSEDRAG Nil ON MOUSEMOVE Nil ON SIZE Nil ON MAXIMIZE Nil ON MINIMIZE Nil ON PAINT Nil BACKCOLOR Nil NOTIFYICON NIL NOTIFYTOOLTIP NIL ON NOTIFYCLICK Nil ON GOTFOCUS Nil ON LOSTFOCUS Nil ON SCROLLUP Nil ON SCROLLDOWN Nil ON SCROLLLEFT Nil ON SCROLLRIGHT Nil ON HSCROLLBOX Nil ON VSCROLLBOX Nil
+
+    DEFINE FRAME Frame_1
+        ROW    70
+        COL    10
+        WIDTH  610
+        HEIGHT 430
+        FONTNAME "Arial"
+        FONTSIZE 9
+        FONTBOLD .T.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        CAPTION "Clientes:"
+        BACKCOLOR NIL
+        FONTCOLOR NIL
+        OPAQUE .T.
+    END FRAME
+
+    DEFINE GRID Grid_1
+        ROW    90
+        COL    20
+        WIDTH  590
+        HEIGHT 400
+        ITEMS nil
+        VALUE Nil
+        WIDTHS { 80,200,100,50 }
+        HEADERS {'Nro Cliente','Nombre','Saldo','Envía'}
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE marcoEmitido()
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONDBLCLICK Nil
+        ONHEADCLICK Nil
+        ONQUERYDATA Nil
+        MULTISELECT .T.
+        ALLOWEDIT .T.
+        VIRTUAL .F.
+        DYNAMICBACKCOLOR Nil
+        DYNAMICFORECOLOR Nil
+        COLUMNWHEN Nil
+        COLUMNVALID Nil
+        COLUMNCONTROLS {{'TEXTBOX','NUMERIC','99999'},{'TEXTBOX','CHARACTER'},{'TEXTBOX','NUMERIC','999,999,999.99'},{'TEXTBOX','CHARACTER'}}
+        SHOWHEADERS .T.
+        CELLNAVIGATION .F.
+        NOLINES .F.
+        HELPID Nil
+        IMAGE Nil
+        JUSTIFY Nil
+        ITEMCOUNT Nil
+        BACKCOLOR NIL
+        FONTCOLOR NIL
+        HEADERIMAGES Nil
+        ROWSOURCE Nil
+        COLUMNFIELDS Nil
+        ALLOWAPPEND .F.
+        ALLOWDELETE .F.
+        BUFFERED .F.
+        DYNAMICDISPLAY Nil
+        ONSAVE Nil
+        LOCKCOLUMNS 0
+    END GRID
+
+    DEFINE FRAME Frame_2
+        ROW    10
+        COL    10
+        WIDTH  230
+        HEIGHT 60
+        FONTNAME "Arial"
+        FONTSIZE 9
+        FONTBOLD .T.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        CAPTION "Rango de Fechas"
+        BACKCOLOR NIL
+        FONTCOLOR NIL
+        OPAQUE .T.
+    END FRAME
+
+    DEFINE DATEPICKER DatePicker_1
+        ROW    30
+        COL    20
+        WIDTH  100
+        HEIGHT 24
+        VALUE CTOD(" / / ")
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER Nil
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        SHOWNONE .F.
+        UPDOWN .F.
+        RIGHTALIGN .F.
+    END DATEPICKER
+
+    DEFINE DATEPICKER DatePicker_2
+        ROW    30
+        COL    130
+        WIDTH  100
+        HEIGHT 24
+        VALUE CTOD(" / / ")
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER Nil
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        SHOWNONE .F.
+        UPDOWN .F.
+        RIGHTALIGN .F.
+    END DATEPICKER
+
+    DEFINE FRAME Frame_3
+        ROW    10
+        COL    410
+        WIDTH  100
+        HEIGHT 60
+        FONTNAME "Arial"
+        FONTSIZE 9
+        FONTBOLD .T.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        CAPTION "Destino"
+        BACKCOLOR NIL
+        FONTCOLOR NIL
+        OPAQUE .T.
+    END FRAME
+
+    DEFINE RADIOGROUP RadioGroup_1
+        ROW    20
+        COL    420
+        WIDTH  90
+        HEIGHT 50
+        OPTIONS { 'Correo','Pantalla'}
+        VALUE 2
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        TRANSPARENT .F.
+        SPACING 25
+        BACKCOLOR NIL
+        FONTCOLOR NIL
+        READONLY Nil
+        HORIZONTAL .F. 
+    END RADIOGROUP
+
+    DEFINE BUTTON Button_1
+        ROW    20
+        COL    520
+        WIDTH  100
+        HEIGHT 50
+        ACTION emiteListados()
+        CAPTION "Emitir Listados"
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        HELPID Nil
+        FLAT .F.
+        TABSTOP .T.
+        VISIBLE .T.
+        TRANSPARENT .F.
+        MULTILINE .T.
+        PICTURE Nil
+        PICTALIGNMENT TOP
+    END BUTTON
+
+END WINDOW
+

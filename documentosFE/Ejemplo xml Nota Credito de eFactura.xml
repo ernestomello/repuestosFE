@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<nsAdenda:CFE_Adenda xmlns:nsAdenda="http://cfe.dgi.gub.uy">
+  <nsAd:CFE version="1.0" xmlns:nsAd="http://cfe.dgi.gub.uy">
+    <nsAd:eFact>
+      <nsAd:Encabezado>
+        <nsAd:IdDoc>
+          <nsAd:TipoCFE>112</nsAd:TipoCFE>
+          <nsAd:Serie>A</nsAd:Serie>
+          <nsAd:Nro>2728</nsAd:Nro>
+          <nsAd:FchEmis>2018-03-27</nsAd:FchEmis>
+          <nsAd:MntBruto>1</nsAd:MntBruto>
+          <nsAd:FmaPago>1</nsAd:FmaPago>
+        </nsAd:IdDoc>
+        <nsAd:Emisor>
+          <nsAd:RUCEmisor>217042750013</nsAd:RUCEmisor>
+          <nsAd:RznSoc>eBorne S.R.L.</nsAd:RznSoc>
+          <nsAd:NomComercial>eBorne</nsAd:NomComercial>
+          <nsAd:EmiSucursal>Sucursal principal</nsAd:EmiSucursal>
+          <nsAd:CdgDGISucur>2</nsAd:CdgDGISucur>
+          <nsAd:DomFiscal>Washington 663</nsAd:DomFiscal>
+          <nsAd:Ciudad>PAYSANDU</nsAd:Ciudad>
+          <nsAd:Departamento>PAYSANDU</nsAd:Departamento>
+        </nsAd:Emisor>
+        <nsAd:Receptor>
+          <nsAd:TipoDocRecep>2</nsAd:TipoDocRecep>
+          <nsAd:CodPaisRecep>UY</nsAd:CodPaisRecep>
+          <nsAd:DocRecep>210475730011</nsAd:DocRecep>
+          <nsAd:RznSocRecep>Prueba A</nsAd:RznSocRecep>
+          <nsAd:DirRecep>Avenida A 14887</nsAd:DirRecep>
+          <nsAd:CiudadRecep>La paloma</nsAd:CiudadRecep>
+          <nsAd:DeptoRecep>ROCHA</nsAd:DeptoRecep>
+          <nsAd:PaisRecep>Uruguay</nsAd:PaisRecep>
+        </nsAd:Receptor>
+        <nsAd:Totales>
+          <nsAd:TpoMoneda>UYU</nsAd:TpoMoneda>
+          <nsAd:MntNoGrv>45.52</nsAd:MntNoGrv>
+          <nsAd:MntNetoIvaTasaMin>181.82</nsAd:MntNetoIvaTasaMin>
+          <nsAd:MntNetoIVATasaBasica>854.51</nsAd:MntNetoIVATasaBasica>
+          <nsAd:IVATasaMin>10</nsAd:IVATasaMin>
+          <nsAd:IVATasaBasica>22</nsAd:IVATasaBasica>
+          <nsAd:MntIVATasaMin>18.18</nsAd:MntIVATasaMin>
+          <nsAd:MntIVATasaBasica>187.99</nsAd:MntIVATasaBasica>
+          <nsAd:MntTotal>1288.02</nsAd:MntTotal>
+          <nsAd:CantLinDet>6</nsAd:CantLinDet>
+          <nsAd:MontoNF>-0.02</nsAd:MontoNF>
+          <nsAd:MntPagar>1288</nsAd:MntPagar>
+        </nsAd:Totales>
+      </nsAd:Encabezado>
+      <nsAd:Detalle>
+        <nsAd:Item>
+          <nsAd:NroLinDet>1</nsAd:NroLinDet>
+          <nsAd:IndFact>3</nsAd:IndFact>
+          <nsAd:NomItem>Prueba TASA BASICA</nsAd:NomItem>
+          <nsAd:Cantidad>1.000</nsAd:Cantidad>
+          <nsAd:UniMed>N/A</nsAd:UniMed>
+          <nsAd:PrecioUnitario>200</nsAd:PrecioUnitario>
+          <nsAd:MontoItem>200</nsAd:MontoItem>
+        </nsAd:Item>
+        <nsAd:Item>
+          <nsAd:NroLinDet>2</nsAd:NroLinDet>
+          <nsAd:IndFact>2</nsAd:IndFact>
+          <nsAd:NomItem>Prueba TASA MINIMA</nsAd:NomItem>
+          <nsAd:Cantidad>1.000</nsAd:Cantidad>
+          <nsAd:UniMed>N/A</nsAd:UniMed>
+          <nsAd:PrecioUnitario>200</nsAd:PrecioUnitario>
+          <nsAd:MontoItem>200</nsAd:MontoItem>
+        </nsAd:Item>
+        <nsAd:Item>
+          <nsAd:NroLinDet>3</nsAd:NroLinDet>
+          <nsAd:IndFact>1</nsAd:IndFact>
+          <nsAd:NomItem>Prueba EXENTO IVA</nsAd:NomItem>
+          <nsAd:Cantidad>1.000</nsAd:Cantidad>
+          <nsAd:UniMed>N/A</nsAd:UniMed>
+          <nsAd:PrecioUnitario>45.52</nsAd:PrecioUnitario>
+          <nsAd:MontoItem>45.52</nsAd:MontoItem>
+        </nsAd:Item>
+        <nsAd:Item>
+          <nsAd:NroLinDet>4</nsAd:NroLinDet>
+          <nsAd:IndFact>3</nsAd:IndFact>
+          <nsAd:NomItem>Prueba con CANTIDADES</nsAd:NomItem>
+          <nsAd:Cantidad>5.000</nsAd:Cantidad>
+          <nsAd:UniMed>N/A</nsAd:UniMed>
+          <nsAd:PrecioUnitario>166.5</nsAd:PrecioUnitario>
+          <nsAd:MontoItem>832.5</nsAd:MontoItem>
+        </nsAd:Item>
+        <nsAd:Item>
+          <nsAd:NroLinDet>5</nsAd:NroLinDet>
+          <nsAd:IndFact>3</nsAd:IndFact>
+          <nsAd:NomItem>Prueba con Descripción extra</nsAd:NomItem>
+          <nsAd:DscItem>Descripción extra</nsAd:DscItem>
+          <nsAd:Cantidad>1.000</nsAd:Cantidad>
+          <nsAd:UniMed>N/A</nsAd:UniMed>
+          <nsAd:PrecioUnitario>10</nsAd:PrecioUnitario>
+          <nsAd:MontoItem>10</nsAd:MontoItem>
+        </nsAd:Item>
+        <nsAd:Item>
+          <nsAd:NroLinDet>6</nsAd:NroLinDet>
+          <nsAd:IndFact>7</nsAd:IndFact>
+          <nsAd:NomItem>Redondeo</nsAd:NomItem>
+          <nsAd:Cantidad>1</nsAd:Cantidad>
+          <nsAd:UniMed>N/A</nsAd:UniMed>
+          <nsAd:PrecioUnitario>0.02</nsAd:PrecioUnitario>
+          <nsAd:MontoItem>0.02</nsAd:MontoItem>
+        </nsAd:Item>
+      </nsAd:Detalle>
+      <nsAd:DscRcgGlobal>
+      </nsAd:DscRcgGlobal>
+      <nsAd:Referencia>
+        <nsAd:Referencia>
+          <nsAd:NroLinRef>1</nsAd:NroLinRef>
+          <nsAd:TpoDocRef>111</nsAd:TpoDocRef>
+          <nsAd:Serie>A</nsAd:Serie>
+          <nsAd:NroCFERef>228</nsAd:NroCFERef>
+          <nsAd:FechaCFEref>2018-03-27</nsAd:FechaCFEref>
+        </nsAd:Referencia>
+      </nsAd:Referencia>
+      <nsAd:CAEData>
+        <nsAd:CAE_ID>1</nsAd:CAE_ID>
+        <nsAd:DNro>1</nsAd:DNro>
+        <nsAd:HNro>1</nsAd:HNro>
+        <nsAd:FecVenc></nsAd:FecVenc>
+      </nsAd:CAEData>
+    </nsAd:eFact>
+  </nsAd:CFE>
+  <nsAdenda:Adenda>&lt;br&gt;&lt;br&gt;Adenda prueba&lt;br&gt;con un enter&lt;/h5&gt;</nsAdenda:Adenda>
+</nsAdenda:CFE_Adenda>
