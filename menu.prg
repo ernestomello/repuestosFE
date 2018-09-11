@@ -17,7 +17,8 @@ Function main()
 	Public cArticuloGlobal := ""
 	
 	SeteoAmbiente() 
-      
+      hola
+	  
     	DEFINE WINDOW Principal ;
     		AT 15,15 ;
     		WIDTH 680 ;
