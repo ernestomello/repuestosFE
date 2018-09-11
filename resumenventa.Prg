@@ -31,11 +31,16 @@ local factura := 0
 local recibo := 0 
 local notacredito := 0
 local devolucion := 0
+local pCredito := 0
+local pContado := 0
 local totalListadoFactura :=0
 local totalListadoRecibo :=0
 local totalListadoNotasCredito :=0
 local totalListadoContado :=0
 local totalListadoDevolucion := 0
+local totalListadoPCredito := 0
+local totalListadoPContado := 0
+
 local oVentas := ventasDesdeHasta(resumenventa.datePicker_1.value,resumenventa.datePicker_2.value )
 local dfechaAnt := oVentas:getRow(1):fieldget(1)
 
@@ -64,15 +69,25 @@ for i= 1 to oVentas:lastRec()
 			case oVentas:getRow(i):fieldget(2) = 'D'
 			  devolucion :=oVentas:getRow(i):fieldget(3)
 				totalListadoDevolucion += oVentas:getRow(i):fieldget(3)
+				
+			case oVentas:getRow(i):fieldget(2) = 'P'
+				pCredito:=oVentas:getRow(i):fieldget(3)
+				totalListadoPCredito += oVentas:getRow(i):fieldget(3)
+			
+			case oVentas:getRow(i):fieldget(2) = 'Q'
+				pContado:=oVentas:getRow(i):fieldget(3)
+				totalListadoPContado += oVentas:getRow(i):fieldget(3)
 
 		end case
 	else
-		resumenventa.grid_1.addItem({dtoc(dfechaAnt),factura,recibo,notacredito,devolucion,contado})
+		resumenventa.grid_1.addItem({dtoc(dfechaAnt),factura,recibo,notacredito,devolucion,contado,pCredito,pContado})
 		contado := 0
 		factura := 0
 		recibo := 0
 		notacredito := 0
 		devolucion := 0
+		pCredito := 0
+		pContado := 0
 		do case 
 			case oVentas:getRow(i):fieldget(2) = 'C' 
 				contado :=oVentas:getRow(i):fieldget(3)
@@ -93,14 +108,22 @@ for i= 1 to oVentas:lastRec()
 			case oVentas:getRow(i):fieldget(2) = 'D'
 			  devolucion :=oVentas:getRow(i):fieldget(3)
 				totalListadoDevolucion += oVentas:getRow(i):fieldget(3)
+				
+			case oVentas:getRow(i):fieldget(2) = 'P'
+				pCredito:=oVentas:getRow(i):fieldget(3)
+				totalListadoPCredito += oVentas:getRow(i):fieldget(3)
+			
+			case oVentas:getRow(i):fieldget(2) = 'Q'
+				pContado:=oVentas:getRow(i):fieldget(3)
+				totalListadoPContado += oVentas:getRow(i):fieldget(3)
 
 		end case
 	endif
 	dFechaAnt :=  oVentas:getRow(i):fieldget(1)
 next 
-resumenventa.grid_1.addItem({dtoc(dfechaAnt),factura,recibo,notacredito,devolucion,contado})
+resumenventa.grid_1.addItem({dtoc(dfechaAnt),factura,recibo,notacredito,devolucion,contado,pCredito,pContado})
 
-resumenventa.grid_1.addItem({'Totales',totalListadoFactura,totalListadoRecibo,totalListadoNotasCredito, totalListadoDevolucion,totalListadoContado})
+resumenventa.grid_1.addItem({'Totales',totalListadoFactura,totalListadoRecibo,totalListadoNotasCredito, totalListadoDevolucion,totalListadoContado,totalListadoPCredito,totalListadoPContado })
 Close Database
 
 

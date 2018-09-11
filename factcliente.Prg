@@ -13,7 +13,7 @@ if !IsWindowActive(factCliente)
 	factCliente.text_14.value := cTipoDocumento
 	factCliente.label_14.value := descripcionDocumento(cTipoDocumento)
 	factCliente.text_15.value := cajaId()
-	factCliente.text_11.value := iif(alltrim(factCliente.text_14.value) == 'C', 50, 0)
+	factCliente.text_11.value := iif(alltrim(factCliente.text_14.value) == 'C' .or. alltrim(factCliente.text_14.value) == 'Q' , 50, 0)
 	iif(alltrim(factCliente.text_14.value) != 'F',factCliente.text_17.visible := .f.,)
 	iif(alltrim(factCliente.text_14.value) != 'F',factCliente.frame_2.visible := .f.,)
 	factCliente.Center
@@ -55,7 +55,7 @@ local nPrecioSinDescuento := 0
     factCliente.text_9.fontcolor := {0,0,0}
     factCliente.text_10.value:= ctod("  /  /    ")
     factCliente.text_16.value := 0
-    factCliente.text_11.value := iif(alltrim(factCliente.text_14.value) == 'C', 50, 0)
+    factCliente.text_11.value := iif(alltrim(factCliente.text_14.value) == 'C' .or. alltrim(factCliente.text_14.value) == 'Q', 50, 0)
     factCliente.text_12.value := 0
     factCliente.text_20.value := ""
     sumoLineas()

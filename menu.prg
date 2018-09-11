@@ -44,7 +44,7 @@ Function main()
 
               SEPARATOR
 
-              ITEM 'Anulaci¢n Movimientos'    ACTION anuloMovimientos()
+              ITEM 'Anulación Movimientos'    ACTION anuloMovimientos()
               
               SEPARATOR
               
@@ -54,7 +54,7 @@ Function main()
       
       			POPUP 'Proveedores' 
                 
-               ITEM 'Compras Cr‚dito'  ACTION factProveedor()
+               ITEM 'Compras Crédito'  ACTION factProveedor()
                ITEM 'Recibos '         ACTION reciboProveedor('R')
                ITEM 'Bonificaciones '  ACTION reciboProveedor('N')
                ITEM 'Devoluciones '    ACTION reciboProveedor('D')
@@ -66,10 +66,10 @@ Function main()
       			END POPUP
       			
       			POPUP 'Presupuestos'
-      				ITEM 'Registro' 			ACTION factCliente('P',0)
-      				
+      				ITEM 'Registro Contado'	ACTION factCliente('Q',0)
+      				ITEM 'Búsqueda Contados' ACTION busquedaGeneral("pc","","Presupuestos Contado",1)  
       				SEPARATOR
-      				
+      				ITEM 'Registro Crédito' ACTION factCliente('P',0)
       				ITEM 'Estado de Cuenta' ACTION presupuestos()
       				
       			END POPUP

@@ -219,8 +219,10 @@ endIf
 function imprimoMovimiento(nFactura,copia,cRut,cNombre,cDireccion)
 local cTipoDocumento := tipoDocumento(nFactura)
 
-if cTipoDocumento = 'P'
-	imprimoEnLaser(nFactura,copia,cRut,cNombre,cDireccion)
+if cTipoDocumento == 'P' .or. cTipoDocumento == 'Q'
+	if msgYesNo("Imprime el documento?",,.t.)
+		imprimoEnLaser(nFactura,copia,cRut,cNombre,cDireccion)
+	endif
 else
 	imprimoEnMatriz(nFactura,copia,cRut,cNombre,cDireccion)
 endif
@@ -412,14 +414,15 @@ else
 endif
 puerto := alltrim(puertoDocumento(oCabezal:GetRow(1):fieldGet(4)))
 
-SELECT PRINTER  'Informes' 
+SELECT PRINTER  'Informes'  PAPERSIZE PRINTER_PAPER_A4 ORIENTATION PRINTER_ORIENT_PORTRAIT 
 start printdoc
 START PRINTPAGE
 fila := PARAMETROini("Rxpos","N")
-col := PARAMETROini("Rypos","N")
+// col := PARAMETROini("Rypos","N")
+col := 20
 
 
-For n=1 to nCantidaCopias
+// For n=1 to nCantidaCopias
 nTotalFactura := 0
 nIva := 0.00
 nTotalSIva := 0
@@ -427,32 +430,61 @@ nTotalSIva := 0
 //if n != 1
 //setprc(0,0) 
 //endif
+	@ 10,16 print DATA "MORALES REPUESTOS"
+	@ 10,84 print rectangle to 21,144 PENWIDTH 0.1
+	@ 24,71 print rectangle to 28,157 PENWIDTH 0.1
+	@ 28,71 print rectangle to 42,157 PENWIDTH 0.1	
+	@ 24,114 print data "Nombre / Direcicion" CENTER//consumo final
 	
-	@ fila+06,col+080 print data cNombreImpreso//nombreCliente
-	@ fila+06,col+140 print data oCabezal:GetRow(1):fieldGet(1) //pict '99999999' //NRODOC->NRODOC 
-	@ fila+11,col+080 print data cDireccionImpresa  //direccion
-	@ fila+11,col+140 print data alltrim(descripcionDocumento(oCabezal:GetRow(1):fieldGet(4)))
-	@ fila+16,col+001 print data cRutImpreso //pict '999999999999' //rut
+	@ 29,72 print data cNombreImpreso//nombreCliente
+	@ 34,72 print data cDireccionImpresa  //direccion
+	@ 24,160 print data "Tipo: "+alltrim(descripcionDocumento(oCabezal:GetRow(1):fieldGet(4)))
+	@ 28,160 print data "Nro: "+str(oCabezal:GetRow(1):fieldGet(1)) //pict '99999999' //NRODOC->NRODOC 
+	@ 32,160 print data "Fecha: "+ dtoc(oCabezal:GetRow(1):fieldGet(2)) //fecha
+	@ 36,160 print data "Cliente: "+ str(oCabezal:GetRow(1):fieldGet(3)) //pict '99999999' //codigocliente
 	if len(alltrim(cRutImpreso)) = 0
-	  @ fila+17,col+037 print data 'X' //consumo final
+	  @ 12,114 print data 'CONSUMO' CENTER//consumo final
+	  @ 16,114 print data 'FINAL' CENTER//consumo final
+	  
+	else
+		@ 12,114 print data 'RUT' CENTER//consumo final
+		@ 16,114 print data cRutImpreso //pict '999999999999' //rut
 	endif
-	@ fila+17,col+140 print data oCabezal:GetRow(1):fieldGet(2) //fecha
+	@ 44,15 print rectangle to 49,197 PENWIDTH 0.1
+	@ 44,20 print data "COD" BOLD
+	@ 44,42 print data "DESCRIPCION" BOLD
+	@ 44,126 print data "CANT"BOLD
+	@ 44,142 print data "P.UNIT" BOLD
+	@ 44,167 print data "DTO" BOLD
+	@ 44,178 print data "SUBTOTAL" BOLD
 	
-	@ fila+22,col+080 print data cDescripcion //nota
-	@ fila+22,col+140 print data oCabezal:GetRow(1):fieldGet(3) //pict '99999999' //codigocliente
+	@ 49,15 print rectangle to 220,197 PENWIDTH 0.1
+	@ 210,15 print rectangle to 220,197 PENWIDTH 0.1
+	@ 210,15 print rectangle to 220,140 PENWIDTH 0.1
+	@ 215,110 print data "IVA T.Bas"
+	@ 215,70 print data "Impo T Bas"
+	@ 210,140 print rectangle to 220,197 PENWIDTH 0.1
+	@ 220,15 print rectangle to 230,140 PENWIDTH 0.5
+	@ 220,140 print rectangle to 230,197 PENWIDTH 0.5
+	@ 235,100 print rectangle to 255,197 PENWIDTH 0.1	
+	@ 238,130 print data "NOTAS"
+	@ 241,130 print data cDescripcion to 255,195//nota
 	
-	lin := 32
+	
+	
+	
+	lin := 35
 	for i= 1 to oDetalle:lastRec()
 	  
-	  @ fila+lin,col+001 print data alltrim(oDetalle:GetRow(i):fieldGet(3)) //CODREPF
+	  @ fila+lin,col+000 print data alltrim(oDetalle:GetRow(i):fieldGet(3)) //CODREPF
 	  @ fila+lin,col+022 print data alltrim(oDetalle:GetRow(i):fieldGet(4))+"-"+locacionArticulo(oDetalle:GetRow(i):fieldGet(3)) //NOMREPF
-	  @ fila+lin,col+075 print data oDetalle:GetRow(i):fieldGet(5)  right//pict '999999.99' //CANTF
-	  @ fila+lin,col+098 print data oDetalle:GetRow(i):fieldGet(6)  right//pict '99999.99' //PRVENTAF
-	  @ fila+lin,col+114 print data oDetalle:GetRow(i):fieldGet(9)  right//pict '99.9' //PCTDESCF
+	  @ fila+lin,col+115 print data oDetalle:GetRow(i):fieldGet(5)  right//pict '999999.99' //CANTF
+	  @ fila+lin,col+140 print data oDetalle:GetRow(i):fieldGet(6)  right//pict '99999.99' //PRVENTAF
+	  @ fila+lin,col+152 print data oDetalle:GetRow(i):fieldGet(9)  right//pict '99.9' //PCTDESCF
 	  if cTipoDocumento = "N"
-	  	@ fila+lin,col+140 print data round(oDetalle:GetRow(i):fieldGet(10),2)/(1 + nIvaBasico/100) right//pict '99999999999.99' //IMPORTEF
+	  	@ fila+lin,col+75 print data round(oDetalle:GetRow(i):fieldGet(10),2)/(1 + nIvaBasico/100) right//pict '99999999999.99' //IMPORTEF
 	  else
-	  @ fila+lin,col+140 print data round(oDetalle:GetRow(i):fieldGet(10),2) right//pict '99999999999.99' //IMPORTEF
+	  @ fila+lin,col+175 print data round(oDetalle:GetRow(i):fieldGet(10),2) right//pict '99999999999.99' //IMPORTEF
 	  endif
 	  if cTipoDocumento = "N"
 	  	nLineaSinIva :=  round(oDetalle:GetRow(i):fieldGet(10),2) /(1 + nIvaBasico/100)
@@ -462,43 +494,43 @@ nTotalSIva := 0
 		  nTotalSIva := nTotalSIva + round(oDetalle:GetRow(i):fieldGet(10),2) 
 			nIva := nIva +  round(oDetalle:GetRow(i):fieldGet(10) * (oDetalle:GetRow(i):fieldGet(8)/100),0)
 	 	endif
-	 	lin += 5
+	 	lin += 6
 	next
 	
 	nTotalFactura := nTotalSIva + nIva
 	
 	
-	@ fila+95,col+140 print data nTotalSIva 		right//pict '99999999999.99'
-	@ fila+100,col+140 print data nIva  				right	//pict '99999999999.99'
-	@ fila+105,col+034 print data alltrim(mensaje1Documento(oCabezal:GetRow(1):fieldGet(4)))
-	@ fila+110,col+034 print data alltrim(mensaje2Documento(oCabezal:GetRow(1):fieldGet(4)))
-	@ fila+110,col+140 print data nTotalFactura right	//pict '99999999999.99'
-	@ fila+115,col+034 print data alltrim(mensaje3Documento(oCabezal:GetRow(1):fieldGet(4)))
-	if n=1
-	  @ fila+120,col+120 print data '* ORIGINAL CLIENTE *'
-	endif
-	if n=2 .and. nCantidaCopias == 2
-		@ fila+120,col+120 print data '* ARCHIVO *'
-	else
-	  @ fila+120,col+120 print data '* COPIA *'
-	endif
-	if n=3 .and. nCantidaCopias == 3
-	  @ fila+120,col+120 print data '* ARCHIVO *'
-	endif
-fila := 160
+	@ 223,100 print data nTotalSIva 		right//pict '99999999999.99'
+	@ 223,138 print data nIva  				right	//pict '99999999999.99'
+	// @ 223,col+034 print data alltrim(mensaje1Documento(oCabezal:GetRow(1):fieldGet(4)))
+	// @ 223,col+034 print data alltrim(mensaje2Documento(oCabezal:GetRow(1):fieldGet(4)))
+	@ 223,142 print data "TOTAL" BOLD//pict '99999999999.99'
+	@ 223,195 print data "$  "+STR(nTotalFactura) right	BOLD//pict '99999999999.99'
+	//@ fila+115,col+034 print data alltrim(mensaje3Documento(oCabezal:GetRow(1):fieldGet(4)))
+	// if n=1
+	  // @ fila+120,col+120 print data '* ORIGINAL CLIENTE *'
+	// endif
+	// if n=2 .and. nCantidaCopias == 2
+		// @ fila+120,col+120 print data '* ARCHIVO *'
+	// else
+	  // @ fila+120,col+120 print data '* COPIA *'
+	// endif
+	// if n=3 .and. nCantidaCopias == 3
+	  // @ fila+120,col+120 print data '* ARCHIVO *'
+	// endif
+// fila := 160
 //	@ fila+63,col+000 print data ' '
 //	@ fila+,col+000 print data ' '
 //	@ fila+34,col+000 print data ' '
 //	@ fila+35,col+000 print data ' '
 //	@ fila+36,col+000 print data ' '
 
-next
+// next
 
 END PRINTPAGE
 END PRINTDOC
 
 return .t.
-
 
 *************************************************
 *************************************************

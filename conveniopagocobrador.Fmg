@@ -1,4 +1,4 @@
-* HMG-IDE Form Designer Generated Code
+* HMG-IDE ANSI Form Designer Generated Code
 * (c) Roberto Lopez - http://sites.google.com/site/hmgweb
 
 DEFINE WINDOW TEMPLATE AT 146 , 363 WIDTH 531 HEIGHT 453 VIRTUAL WIDTH Nil VIRTUAL HEIGHT Nil TITLE "" ICON NIL MODAL NOSIZE CURSOR NIL ON INIT Nil ON RELEASE Nil ON INTERACTIVECLOSE Nil ON MOUSECLICK Nil ON MOUSEDRAG Nil ON MOUSEMOVE Nil ON SIZE Nil ON PAINT Nil BACKCOLOR Nil ON GOTFOCUS Nil ON LOSTFOCUS Nil ON SCROLLUP Nil ON SCROLLDOWN Nil ON SCROLLLEFT Nil ON SCROLLRIGHT Nil ON HSCROLLBOX Nil ON VSCROLLBOX Nil
@@ -54,7 +54,7 @@ DEFINE WINDOW TEMPLATE AT 146 , 363 WIDTH 531 HEIGHT 453 VIRTUAL WIDTH Nil VIRTU
         FONTUNDERLINE .F.
         FONTSTRIKEOUT .F.
         ONDBLCLICK devconpagcob()
-        ONHEADCLICK Nil
+        ONHEADCLICK { {||busConFiltro(convenioPagoCobrador.text_2.value,,1)},{||busConFiltro(convenioPagoCobrador.text_2.value,,2)},{||busConFiltro(convenioPagoCobrador.text_2.value,,3)}}
         ONQUERYDATA Nil
         MULTISELECT .F.
         ALLOWEDIT .F.
@@ -156,10 +156,10 @@ DEFINE WINDOW TEMPLATE AT 146 , 363 WIDTH 531 HEIGHT 453 VIRTUAL WIDTH Nil VIRTU
 
     DEFINE RADIOGROUP RadioGroup_1
         ROW    70
-        COL    130
-        WIDTH  250
+        COL    80
+        WIDTH  375
         HEIGHT 28
-        OPTIONS { 'Columna 1','Columna 2'}
+        OPTIONS { 'Columna 1','Columna 2', 'Columna 3'}
         VALUE 1
         FONTNAME "Arial"
         FONTSIZE 9
