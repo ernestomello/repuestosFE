@@ -1,6 +1,7 @@
 #include "minigui.ch"
 #include <hmg.ch>
         
+		
 Function main() 
 	Public	cNroVersionAplicacion	:=	"2." + __DATE__ +"."+SUBST(__TIME__,1,2)+SUBST(__TIME__,4,2)
 	Public	cNombreTerminal		:=	GetEnv( "COMPUTERNAME" ) 

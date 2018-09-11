@@ -1,5 +1,5 @@
 #include <hmg.ch>
-procedure ajustoSaldo()
+ procedure ajustoSaldo()
 
 
 load window ajustoSaldo
