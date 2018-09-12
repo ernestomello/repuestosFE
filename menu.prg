@@ -15,9 +15,11 @@ Function main()
 	Public  cSucursal 		:= 	PARAMETROini("Sucursal","C")
 	Public nSocioGlobal := 0
 	Public cArticuloGlobal := ""
+	//para FE
+	 Public cDirFE		:=	PARAMETROini("DIR_FE","C")
+	 
 	
 	SeteoAmbiente() 
-      hola
 	  
     	DEFINE WINDOW Principal ;
     		AT 15,15 ;

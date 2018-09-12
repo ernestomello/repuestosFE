@@ -20,6 +20,7 @@ estadocuentaproveedor.prg
 factcliente.prg
 factproveedor.prg
 factura.prg
+facturacion_electronica.Prg
 funciones_generales.prg
 funciones_mysql.prg
 impresionestado.prg
