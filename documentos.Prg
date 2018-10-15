@@ -219,7 +219,7 @@ endIf
 function imprimoMovimiento(nFactura,copia,cRut,cNombre,cDireccion)
 local cTipoDocumento := tipoDocumento(nFactura)
 
-if cTipoDocumento == 'P' .or. cTipoDocumento == 'Q'
+if cTipoDocumento = 81 .or. cTipoDocumento = 91
 	if msgYesNo("Imprime el documento?",,.t.)
 		imprimoEnLaser(nFactura,copia,cRut,cNombre,cDireccion)
 	endif
@@ -540,12 +540,13 @@ return .t.
 function tipoDocumento(nDocumento)
 local cQuery, oQuery
 
-cQuery := " select tipo_documento "
-cQuery += " from factura_cliente_cab "
-cQuery += " where numero_factura = "+str(nDocumento)+""
-cQuery += " union all "
-cQuery += " select tipo_documento from recibo_cliente_cab "
-cQuery += " where id_recibo = "+str(nDocumento)+""
+cQuery := " select tipoCFE "
+// cQuery += " from factura_cliente_cab "
+cQuery += " from cfe_comprobante_cab "
+cQuery += " where id_factura = "+str(nDocumento)+""
+// cQuery += " union all "
+// cQuery += " select tipo_documento from recibo_cliente_cab "
+// cQuery += " where id_recibo = "+str(nDocumento)+""
 
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
@@ -571,11 +572,11 @@ else
   return oQuery:GetRow(1):fieldGet(1)
 endIf
 
-function descripcionDocumento(cTipoDocumento)
+function descripcionDocumento(nTipoDocumento)
 local cQuery
 local oQuery
 
-cQuery := "select descripcion from documento where  id_documento = '"+cTipoDocumento+"' "
+cQuery := "select descripcion from cfe_tipos where  id_cfe = "+str(nTipoDocumento)+" "
 
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
@@ -653,14 +654,19 @@ endIf
 function documentosCliente(nCliente,dFechaDesde,dFechaHasta)
 local cQuery, oQuery
 
-cQuery := " select c.numero_factura, c.fecha,d.descripcion,c.importe, 0, c.saldo "
-cQuery += " from factura_cliente_cab c, documento d "
+cQuery := " select c.id_factura, c.fecha,d.descripcion,c.importe, 0, c.saldo "
+// cQuery += " from factura_cliente_cab c, documento d "
+cQuery += " from cfe_comprobante_cab c, cfe_tipos d "
 cQuery += " where id_cliente = "+str(nCliente)+" "
-cQuery += " and d.id_documento = c.tipo_documento"
+// cQuery += " and d.id_documento = c.tipo_documento"
+cQuery += " and d.id_cfe = c.tipoCFE"
 cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
-cQuery += " and tipo_documento = 'F' "
-cQuery += " and anulado = 'N'  "
-cQuery += " union all "
+cQuery += " and c.forma_pago = 2"
+cQuery += " and c.id_factura not in (select id_factura_ref from cfe_referencias_det) "
+
+// cQuery += " and anulado = 'N'  "
+/*cQuery += " union all "
+// cQuery += " select id_recibo, fecha,d.descripcion,0,importe, 0 "
 cQuery += " select id_recibo, fecha,d.descripcion,0,importe, 0 "
 cQuery += " from recibo_cliente_cab c, documento d"
 
@@ -684,7 +690,7 @@ cQuery += " where id_cliente = "+str(nCliente)+" "
 cQuery += " and d.id_documento = c.tipo_documento"
 cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
 cQuery += " and tipo_documento = 'D' "
-cQuery += " and anulado = 'N'  "
+cQuery += " and anulado = 'N'  "*/
 cQuery += " order by 2,1  "
 
 oQuery:= oServer:Query(cQuery)
@@ -699,11 +705,13 @@ return oQuery
 function fechaUltimoMovimientoCliente(nCliente)
 local cQuery, oQuery
 
-cQuery := " select fecha from factura_cliente_cab "
-cQuery += " where id_cliente = "+str(nCliente)+" "
-cQuery += " union all "
-cQuery += " select fecha from recibo_cliente_cab "
-cQuery += " where id_cliente = "+str(nCliente)+" "
+// cQuery := " select fecha from factura_cliente_cab "
+cQuery := " select c.fecha from cfe_comprobante_cab c "
+cQuery += " where c.id_cliente = "+str(nCliente)+" "
+// cQuery += " union all "
+// cQuery += " select fecha from recibo_cliente_cab "
+// cQuery += " where id_cliente = "+str(nCliente)+" "
+cQuery += " and c.id_factura not in (select id_factura_ref from cfe_referencias_det) "
 cQuery += " order by 1 desc "
 
 oQuery:= oServer:Query(cQuery)
@@ -744,31 +752,33 @@ function documentosPorArticulo(cArticulo,dFechaDesde,dFechaHasta)
 local cQuery, oQuery
 
 cQuery := " select c.fecha,c.numero_factura,d.descripcion, c.id_cliente, c.id_usuario,c.importe "
-cQuery += " from factura_cliente_cab c, documento d, factura_cliente_det e "
-cQuery += " where d.id_documento = c.tipo_documento"
-cQuery += " and e.numero_factura = c.numero_factura"
-//cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
-cQuery += " and tipo_documento = 'F' "
+// cQuery += " from factura_cliente_cab c, documento d, factura_cliente_det e "
+cQuery += " from cfe_comprobante_cab c, cfe_tipos d, cfe_comprobante_det e "
+cQuery += " where d.id_cfe = c.tipoCFE "
+cQuery += " and e.id_factura = c.id_factura"
+// cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
+cQuery += " and c.tipoCFE not in (81,82,91,92,98,99) "
 cQuery += " and e.codigo_barra = '"+cArticulo+"'"
-cQuery += " and anulado = 'N'  "
-cQuery += " union all "
-cQuery += " select c.fecha,c.numero_factura,d.descripcion, c.id_cliente, c.id_usuario,c.importe "
-cQuery += " from factura_cliente_cab c, documento d, factura_cliente_det e "
-cQuery += " where d.id_documento = c.tipo_documento"
-cQuery += " and e.numero_factura = c.numero_factura"
-//cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
-cQuery += " and tipo_documento = 'D' "
-cQuery += " and e.codigo_barra = '"+cArticulo+"'"
-cQuery += " and anulado = 'N'  "
-cQuery += " union all "
-cQuery += " select c.fecha,c.numero_factura,d.descripcion, c.id_cliente, c.id_usuario,c.importe "
-cQuery += " from factura_cliente_cab c, documento d, factura_cliente_det e "
-cQuery += " where d.id_documento = c.tipo_documento"
-cQuery += " and e.numero_factura = c.numero_factura"
-//cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
-cQuery += " and tipo_documento = 'C' "
-cQuery += " and e.codigo_barra = '"+cArticulo+"'"
-cQuery += " and anulado = 'N'  "
+cQuery += " and c.id_factura not in (select id_factura_ref from cfe_referencias_det) "
+// cQuery += " and anulado = 'N'  "
+// cQuery += " union all "
+// cQuery += " select c.fecha,c.numero_factura,d.descripcion, c.id_cliente, c.id_usuario,c.importe "
+// cQuery += " from factura_cliente_cab c, documento d, factura_cliente_det e "
+// cQuery += " where d.id_documento = c.tipo_documento"
+// cQuery += " and e.numero_factura = c.numero_factura"
+// cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
+// cQuery += " and tipo_documento = 'D' "
+// cQuery += " and e.codigo_barra = '"+cArticulo+"'"
+// cQuery += " and anulado = 'N'  "
+// cQuery += " union all "
+// cQuery += " select c.fecha,c.numero_factura,d.descripcion, c.id_cliente, c.id_usuario,c.importe "
+// cQuery += " from factura_cliente_cab c, documento d, factura_cliente_det e "
+// cQuery += " where d.id_documento = c.tipo_documento"
+// cQuery += " and e.numero_factura = c.numero_factura"
+// cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
+// cQuery += " and tipo_documento = 'C' "
+// cQuery += " and e.codigo_barra = '"+cArticulo+"'"
+// cQuery += " and anulado = 'N'  "
 cQuery += " order by 1 desc   "
 
 

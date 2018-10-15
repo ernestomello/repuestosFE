@@ -4,7 +4,7 @@
 
 function facturaElectronica(nIdMov,bImprime,esCorreccion)
 local oIdMov := oDocumentoCFE(nIdMov)
-local aSocio := iif(len(alltrim(oIdMov:getRow(1):fieldget(11)))=0, datoSocio(oIdMov:getRow(1):fieldGet(7)),oIdMov:getRow(1):fieldget(11))
+//local aSocio := iif(len(alltrim(oIdMov:getRow(1):fieldget(11)))=0, datoSocio(oIdMov:getRow(1):fieldGet(7)),oIdMov:getRow(1):fieldget(11))
 local cDirMov := substr(dtos(oIdMov:getRow(1):fieldGet(6)),1,4)+"\"+substr(dtos(oIdMov:getRow(1):fieldGet(6)),5,2)+"\"
 local cArchivo := cDirFE+cDirMov+str(nIdMov)
 local pArchivo 
@@ -199,7 +199,7 @@ cLinea += "<nsAd:TipoCFE>"+str(cTipoCFE)+"</nsAd:TipoCFE>"+chr(13)
 cLinea += "<nsAd:Serie>"+cSerie+"</nsAd:Serie>"+chr(13)
 cLinea += "<nsAd:Nro>"+str(cNumero)+"</nsAd:Nro>"+chr(13)
 cLinea += "<nsAd:FchEmis>"+substr(cFechaEmision,1,4)+"-"+substr(cFechaEmision,5,2)+"-"+substr(cFechaEmision,7,2)+"</nsAd:FchEmis>"+chr(13)
-cLinea += "<nsAd:MntBruto>"1"</nsAd:MntBruto>"+chr(13)
+cLinea += "<nsAd:MntBruto>1</nsAd:MntBruto>"+chr(13)
 cLinea += "<nsAd:FmaPago>"+str(cFormaPago)+"</nsAd:FmaPago>"+chr(13)
 cLinea += "</nsAd:IdDoc>"+chr(13)
 // if cTipoCFE != 182+chr(13)
@@ -250,11 +250,11 @@ local cPaisR := "URUGUAY"//oIdMov:getRow(1):fieldGet(1)
 local cLinea :=""
 
 if alltrim(cTipoDocR) == '3'
-	if formatoCedula(hb_atokens(aSocio,"|")[2])
-		cDocR := hb_atokens(aSocio,"|")[2]
-	else
-		cDocR := '0'
-	endif
+	// if formatoCedula(hb_atokens(aSocio,"|")[2])
+		// cDocR := hb_atokens(aSocio,"|")[2]
+	// else
+		// cDocR := '0'
+	// endif
 endif
 cLinea +="<nsAd:Receptor>"+chr(13)
 cLinea +="<nsAd:TipoDocRecep>"+cTipoDocR+"</nsAd:TipoDocRecep>"+chr(13)
@@ -514,7 +514,7 @@ for i:= 1 to len(alineas)
 
   nCuota := alineas[i,4]
   fechaPago := date()
-  anioMes := anioMes(nCuota)
+ // anioMes := anioMes(nCuota)
   nIndFact := iif(alineas[i,5] = 0, 5, alineas[i,6])
   nTotLineas += alineas[i,5]
   cQuery := " insert into cfe_comprobante_"+cDobleDet+" values( " 
@@ -530,24 +530,24 @@ for i:= 1 to len(alineas)
   
   
   if nCuota != 0
-	  if !pagoCuota(nCuota,aCabezal[1,1],aCabezal[1,7])
-	    oQuery:=oServer:Query('ROLLBACK') //si no puedo dejar como paga la cuota anulo todo
-	    return 0
-	  endif 
-	  nSocioL := socioCuota(nCuota)
-	  cambioEstado(nSocioL)
+	  // if !pagoCuota(nCuota,aCabezal[1,1],aCabezal[1,7])
+	    // oQuery:=oServer:Query('ROLLBACK') //si no puedo dejar como paga la cuota anulo todo
+	    // return 0
+	  // endif 
+	  // nSocioL := socioCuota(nCuota)
+	  // cambioEstado(nSocioL)
 	  if nSocioL < 10000
 	  	base := 0
 	  else
 	  	base := 1
 	  endif   
-		modificaSocioArea(nSocioL,base,anioMes,fechaPago)
+		// modificaSocioArea(nSocioL,base,anioMes,fechaPago)
 	endif 
 next
 
 if fDoble //cuando no se registran las líneas y se pone una genérica
 	
-	cDetalleGenerico := nombreCobradorConvenio(aCabezal[1,4])
+	// cDetalleGenerico := nombreCobradorConvenio(aCabezal[1,4])
 	nIndFact := iif(nTotLineas = 0, 5, cfeIndFacturacion(0))
  	cQuery := " insert into cfe_comprobante_det values( " 
   cQuery += " "+str(idMov)+",1,'0',1,"+str(nTotLineas)+",0, "
@@ -629,7 +629,7 @@ for i:= 1 to len(alineas)
 
   nCuota := alineas[i,4]
   fechaPago := date()
-  anioMes := anioMes(nCuota)
+  //anioMes := anioMes(nCuota)
   nIndFact := iif(alineas[i,5] = 0, 5, alineas[i,6])
   nTotLineas += alineas[i,5]
   cQuery := " insert into cfe_comprobante_det values( " 
@@ -645,18 +645,18 @@ for i:= 1 to len(alineas)
   
   
   if nCuota != 0
-	  if !pagoCuota(nCuota,aCabezal[1,1],aCabezal[1,7])
-	    oQuery:=oServer:Query('ROLLBACK') //si no puedo dejar como paga la cuota anulo todo
-	    return 0
-	  endif 
-	  nSocioL := socioCuota(nCuota)
-	  cambioEstado(nSocioL)
+	  // if !pagoCuota(nCuota,aCabezal[1,1],aCabezal[1,7])
+	    // oQuery:=oServer:Query('ROLLBACK') //si no puedo dejar como paga la cuota anulo todo
+	    // return 0
+	  // endif 
+	  // nSocioL := socioCuota(nCuota)
+	  // cambioEstado(nSocioL)
 	  if nSocioL < 10000
 	  	base := 0
 	  else
 	  	base := 1
 	  endif   
-		modificaSocioArea(nSocioL,base,anioMes,fechaPago)
+		// modificaSocioArea(nSocioL,base,anioMes,fechaPago)
 	endif 
 next
 

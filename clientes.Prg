@@ -131,6 +131,11 @@ if clientes.radioGroup_1.value = 2
 	If len(clientes.text_9.value) = 0
   	msgInfo('Falta ingresar RUT')
   	return .f.
+	else
+		if !formatoRut(clientes.text_9.value)
+			msgInfo("Número RUT Incorrecto!!!")
+			return .f.
+		endif		
 	endIf
 endIf
 
@@ -169,6 +174,52 @@ else
 	return .t.
 endIf
 
+function formatoRut(nRut)
+local cControl := '43298765432'
+local cRut := alltrim(nRut)
+local nCuenta := 0
+local nModulo, cCompara
+local dosPrim := val(substr(cRut,1,2))
+local terOctava := val(substr(cRut,3,6))
+local nueveDiez := val(substr(cRut,9,2))
+//msgInfo(cRut)
+//msgInfo (str(dosPrim)+"-"+str(terOctava)+"-"+str(nueveDiez))
+// if cRut == "0"
+	// return .t.
+// endif
+
+if dosPrim < 1 .and. dosPrim > 21
+	return .f.
+endif
+
+if terOctava = 0
+	return .f.
+endif
+
+if nueveDiez != 0
+	return .f.
+endif
+
+for i= 1 to len(cRut)-1
+	nCuenta += val(substr(cRut,i,1))* val(substr(cControl,i,1))
+next
+nModulo :=(nCuenta % 11)
+//msgInfo(str(10 - (nCuenta%10),1,0)+'--'+substr(cCedula,len(cCedula),1))
+//msgInfo( str(nModulo))
+do case
+	case  nModulo > 1
+		cCompara := str(11 - nModulo,1,0)
+	case nModulo = 0
+		cCompara := str(0,1,0)	
+	case nModulo = 1
+		return .f.
+endcase
+
+if  cCompara== substr(cRut,len(cRut),1)
+	return .t.
+else
+	return .f.
+endIf
 *************************************************
 *************************************************
 ******Implementaciones del modelo ***************

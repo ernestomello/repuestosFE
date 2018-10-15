@@ -8,11 +8,12 @@ local cTipoDoc := tipoDocumento(nDocumento)
 //
 do case
 
-	case cTipoDoc == 'F' .or. cTipoDoc == 'D' .or. cTipoDoc == 'C' .or. cTipoDoc == 'P' .or. cTipoDoc == 'Q'
+	// case cTipoDoc == 'F' .or. cTipoDoc == 'D' .or. cTipoDoc == 'C' .or. cTipoDoc == 'P' .or. cTipoDoc == 'Q'
+	case cTipoDoc == 101 .or. cTipoDoc == 111 .or. cTipoDoc == 91 .or. cTipoDoc == 81
 		aLargos := {120,200,45,80,30,40,80 }
 		aTitulos := {'Codigo','Articulo','Cant.','Precio Unit.','Iva','Dto.','PrecioFinal'}
 		aControls := {{'TEXTBOX','CHARACTER'},{'TEXTBOX','CHARACTER'},{'TEXTBOX','NUMERIC','999.99'},{'TEXTBOX','NUMERIC','999,999.99'},{'TEXTBOX','NUMERIC','99'},{'TEXTBOX','NUMERIC','999'},{'TEXTBOX','NUMERIC','999,999,999.99'}}
-	case cTipoDoc == 'R' .or. cTipoDoc == 'N' 
+	case cTipoDoc == 98 .or. cTipoDoc == 102 .or. cTipoDoc == 112 
 		aLargos := {120,120,120,120,120 }
 		aTitulos := {'Nro Factura','Imp.Factura','Fecha','Imp.Aplicado','Saldo Factura'}
 	 	aControls :={{'TEXTBOX','NUMERIC','99999999'},{'TEXTBOX','NUMERIC','999,999.99'},{'TEXTBOX','CHARACTER'},{'TEXTBOX','NUMERIC','999,999.99'},{'TEXTBOX','NUMERIC','999,999.99'}}
@@ -35,25 +36,25 @@ endcase
 
 do case
 
-	case cTipoDoc == 'F' 
+	case cTipoDoc == 111 
 		cargarFacturaCreditoCliente(nDocumento)
 		documentogen.title := "Factura de Crédito"
-	case cTipoDoc == 'R'
+	case cTipoDoc == 98
 		documentogen.title := "Recibo"
 		cargarReciboCliente(nDocumento)
-	case cTipoDoc == 'N' 
+	case cTipoDoc == 102 
 		documentogen.title := "Nota de Crédito"
 		cargarReciboCliente(nDocumento)
-	case cTipoDoc == 'D'
+	case cTipoDoc == 112
 		documentogen.title := "Nota de Devolución"
 		cargarFacturaCreditoCliente(nDocumento)
-	case cTipoDoc == 'C'
+	case cTipoDoc == 101
 		documentogen.title := "Contado"
 		cargarFacturaCreditoCliente(nDocumento)
-	case cTipoDoc == 'P'
+	case cTipoDoc == 81
 		documentogen.title := "Presupuesto Crédito"
 		cargarFacturaCreditoCliente(nDocumento)
-	case cTipoDoc == 'Q'
+	case cTipoDoc == 91
 		documentogen.title := "Presupuesto Contado"
 		cargarFacturaCreditoCliente(nDocumento)
 
