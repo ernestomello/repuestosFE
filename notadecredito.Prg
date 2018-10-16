@@ -3,7 +3,7 @@
 procedure notaCreditoCliente(nFactura)
 if cajaAbierta()
 if !IsWindowActive(notaCredito)
-	if tipoDocumento(nFactura) == 'F'
+	if (tipoDocumento(nFactura) = 101 .or. tipoDocumento(nFactura) = 111) 
 		if !facturaSinDevolucion(nFactura)
 			msginfo("Factura con Devolucion")
 			return
@@ -56,8 +56,9 @@ procedure guardarDevolucion()
 local nCliente, cTipoDocumento,dFechaFactura,nTotalFactura,cDescripcion
 local nCantidad := len(notaCredito.grid_1.value)
 
+nformaPago := formaPago(notaCredito.text_6.value)
 nCliente:= notaCredito.text_1.value  
-cTipoDocumento := 'D'
+cTipoDocumento := iif( tipoDocumento(notaCredito.text_6.value) = 101 , 102 , iif( tipoDocumento(notaCredito.text_6.value) = 111 , 112 , 0 ))
 dFechaFactura := notaCredito.datePicker_1.value
 nTotalFactura:= notaCredito.text_3.value
 cDescripcion :=notaCredito.text_4.value
@@ -88,20 +89,16 @@ if !comienzoTransaccion()
 	return .f.
 endIf
 
-if !graboFactClienteCabezal(nNumero,nCaja,nCliente, cTipoDocumento,nTotalFactura,dFechaFactura,cDescripcion,nVendedor)
+if !graboFactClienteCabezal(nNumero,nCaja,nCliente, cTipoDocumento,nTotalFactura,dFechaFactura,cDescripcion,nVendedor,nformaPago)
   msgInfo('No se pudieron grabar los datos, REINTENTE!!!')
 	return .f.
 endIf
-if !guardoRelacion(notaCredito.text_6.value,nNumero)
+if !guardoRelacion(notaCredito.text_6.value,nNumero,notaCredito.text_5.value)
 	return .f.
 endIf
 
-//nFactura := ultimoId()
-//if nFactura = 0
-//	msgInfo("No se pudo Guardar el id. Reintente!!!")
-//	return .f.
-//endIf
-if facturaClienteConDetalle()
+
+//if facturaClienteConDetalle()
 	for i=1 to notaCredito.grid_1.itemCount
 			cCodigo := notaCredito.grid_1.cell(i,1)
 			nCantidad := notaCredito.grid_1.cell(i,3)
@@ -114,20 +111,8 @@ if facturaClienteConDetalle()
 				return .f.
 			endIf
 	next
-//	for i=1 to notaCredito.grid_1.itemCount
-//			cCodigo := notaCredito.grid_1.cell(notaCredito.grid_1.value[i],1)
-//			nCantidad := notaCredito.grid_1.cell(notaCredito.grid_1.value[i],3)
-//			nPrecioUnitario := notaCredito.grid_1.cell(notaCredito.grid_1.value[i],4)
-//			nIva := notaCredito.grid_1.cell(notaCredito.grid_1.value[i],5)
-//			nDto := notaCredito.grid_1.cell(notaCredito.grid_1.value[i],6)
-//			nImporte := notaCredito.grid_1.cell(notaCredito.grid_1.value[i],7)
-//			if !graboFactClienteDetalle(nNumero,i,cCodigo,nCantidad,nPrecioUnitario,nIva,nDto,nImporte)
-//				msgInfo("No se pudieron Guardar el detalle de la NOta de Crédito. Reintente!!!")
-//				return .f.
-//			endIf
-//	next
 
-endIf
+// endIf
 if !modificoSaldoFacturaCliente(notaCredito.text_6.value,nTotalFactura)
 	msgInfo("No se pudo Modificar la Factura. Reintente!!!")
 	return .f.
@@ -193,13 +178,12 @@ endif
 function notasCreditoFacturaCliente(nFactura)
 local cQuery, oQuery
 
-cQuery := "select c.id_recibo, c.fecha,d.descripcion,r.importe "
-cQuery += " from recibo_cliente_cab c, documento d, recibo_cliente_det r"
-cQuery += " where c.id_recibo = r.id_recibo "
-cQuery += " and d.id_documento = c.tipo_documento "
-cQuery += " and r.numero_factura = "+str(nFactura)+" "
-cQuery += " and c.tipo_documento = 'N' "
-cQuery += " and c.anulado = 'N' "
+cQuery := "select c.id_factura, c.fecha,d.descripcion,c.importe,c.tipoCFE "
+cQuery += " from cfe_comprobante_cab c, cfe_tipos d, cfe_referencias_det r"
+cQuery += " where r.id_factura = c.id_factura "
+cQuery += " and d.id_cfe = c.tipoCFE "
+cQuery += " and r.id_factura_ref = "+str(nFactura)+" "
+cQuery += " and c.tipoCFE in (102,112) "
 
 oQuery:= oServer:Query(cQuery)
 If oQuery:NetErr() 
@@ -210,13 +194,13 @@ return oQuery
 function notasDevolucionFacturaCliente(nFactura)
 local cQuery, oQuery
 
-cQuery := "select c.numero_factura, c.fecha,d.descripcion,c.importe "
-cQuery += " from factura_cliente_cab c, documento d, factura_notacredito r"
-cQuery += " where r.numero_notacredito = c.numero_factura "
-cQuery += " and d.id_documento = c.tipo_documento "
-cQuery += " and r.numero_factura = "+str(nFactura)+" "
-cQuery += " and c.tipo_documento = 'D' "
-cQuery += " and c.anulado = 'N' "
+cQuery := "select c.id_factura, c.fecha,d.descripcion,c.importe,c.tipoCFE "
+cQuery += " from cfe_comprobante_cab c, cfe_tipos d, cfe_referencias_det r"
+cQuery += " where r.id_factura = c.id_factura "
+cQuery += " and d.id_cfe = c.tipoCFE "
+cQuery += " and r.id_factura_ref = "+str(nFactura)+" "
+cQuery += " and c.tipoCFE in (102,112) "
+// cQuery += " and c.anulado = 'N' "
 
 oQuery:= oServer:Query(cQuery)
 If oQuery:NetErr() 
@@ -227,11 +211,15 @@ return oQuery
 
 
 
-function guardoRelacion(nFactura, nNumero)
-local cQuery, oQuery
+function guardoRelacion(nFactura, nNumero,nImporteAplica)
+local cQuery, oQuery,oFactura:= facturaClienteCabezal(nFactura)
 
-cQuery := " insert into factura_notacredito values( "
-cQuery += " "+str(nFactura)+", "+str(nNumero)+" ) "
+
+cQuery := " insert into cfe_referencias_det values( "
+cQuery += " "+str(nNumero)+",1,1,"+str(oFactura:getRow(1):fieldGet(4))+", "
+cQuery += " '"+oFactura:getRow(1):fieldGet(6)+"',"+str(oFactura:getRow(1):fieldGet(7))+", "
+cQuery += " '"+dtos(oFactura:getRow(1):fieldGet(2))+"', "
+cQuery += " '',"+str(nFactura)+", "+str(nImporteAplica)+" ) " 
 
 oQuery:= oServer:Query(cQuery)
 If oQuery:NetErr() 

@@ -1,4 +1,7 @@
 #include <hmg.ch>
+#include "hbcurl.ch"
+#include "common.ch"
+#include "fileio.ch"
 
 
 
@@ -795,3 +798,80 @@ if oQuery:LastRec() > 0
   return .t.
 endIf  
 return .f.
+
+
+
+*************************************************************
+* Ejemplo:
+*
+* _url        := 'http://?url_del_ws/' && (endpoint)
+* _ws         := '?nbre_ws'
+* _url+=_ws
+* _soapAction := 'SOAPAction: "http://?proveedor_efactura.com.uy/EFactura/?nbre_ws"'
+*
+*********************                                   && EJECUTA EL WS
+FUNCTION fHttpExecute(_url,_soapaction,cxml,_ssl)
+LOCAL _hcurl, curlErr
+LOCAL aHeader, _cc:=""
+
+// DEFAULT _ssl to .F.
+
+aHeader := {}
+
+AADD(aHeader,'Accept-Encoding: gzip,deflate')
+AADD(aHeader,'Content-Type: text/xml;charset="UTF-8"')
+AADD(aHeader,_soapaction)
+AADD(aHeader,"Connection: Keep-Alive")
+AADD(aHeader,"User-Agent: ERP")
+AADD(aHeader,'Content-length: '+alltrim(str(len(cxml))))
+AADD(aHeader,"Cache-Control: no-cache")
+AADD(aHeader,"Pragma: no-cache")
+
+_hcurl := curl_easy_init()
+
+IF LOWER(RIGHT(_url,5)) == "https"
+   _ssl = .T.
+ENDIF
+
+IF !EMPTY(_hcurl)
+
+   curl_easy_setopt(_hcurl, HB_CURLOPT_HTTPHEADER,aHeader)
+   curl_easy_setopt(_hcurl, HB_CURLOPT_URL, _url)
+   curl_easy_setopt(_hcurl, HB_CURLOPT_DOWNLOAD )
+   curl_easy_setopt(_hcurl, HB_CURLOPT_DL_BUFF_SETUP )
+   curl_easy_setopt(_hcurl, HB_CURLOPT_POST, 1)
+   curl_easy_setopt(_hcurl, HB_CURLOPT_POSTFIELDS, cxml)
+   curl_easy_setopt(_hcurl, HB_CURLOPT_CONNECTTIMEOUT, 8)
+   curl_easy_setopt(_hcurl, HB_CURLOPT_TIMEOUT,       60)
+   curl_easy_setopt(_hcurl, HB_CURLOPT_SSL_VERIFYPEER, IIF(_ssl,1,0))
+   curl_easy_setopt(_hcurl, HB_CURLOPT_SSL_VERIFYHOST, IIF(_ssl,1,0))
+
+
+// VER PROGRESO PARA DEBUG
+/*   CLS
+   ?
+   curl_easy_setopt(_hcurl, HB_CURLOPT_VERBOSE, .t. )
+*/
+
+	WHILE .T.
+		curlErr := curl_easy_perform(_hcurl)
+		IF curlErr=0
+			_cc := curl_easy_dl_buff_get( _hcurl )
+			EXIT
+		ELSE
+			IF ALERT("ERROR WS:; ;"+_url+"; ;"+curl_easy_strerror(curlErr)+"; ;No hay conexion...",{"Reintentar","Salir"},"R/W*+")#1
+				EXIT
+			ENDIF
+		ENDIF
+	ENDDO
+ELSE
+   ALERT("ERROR WS:; ;NO HAY handle")
+ENDIF
+
+curl_easy_cleanup(_hcurl)
+IF !EMPTY(_hcurl)
+   curl_global_cleanup( _hcurl )
+ENDIF
+
+?hb_gcAll()
+RETURN _cc

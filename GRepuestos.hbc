@@ -1,6 +1,9 @@
 incpaths=
 libpaths=
-libs=
 gt=
 mt=
 instpaths=
+libs=hbcurls
+libs=hbcurl
+libs=libcurl
+

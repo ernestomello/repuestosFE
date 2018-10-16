@@ -58,6 +58,7 @@ Agregar un saldo en cada línea y el saldo de la Factura.
 procedure rellenoGridCliente()
 local oDocumentos, nSaldoAnterior, nSaldoActual
 local dFechaHasta := estadoCuenta.datePicker_1.value - 1
+local nHaber:= 0,nDebe := 0
 //local cOpcion := estadoCuenta.text_5.value
 local aGrid:= {}
 estadoCuenta.text_5.value := 0
@@ -74,18 +75,23 @@ estadoCuenta.text_3.value := "Saldo al "+dtoc(estadoCuenta.datePicker_2.value)+"
 
 
 for i = 1 to oDocumentos:lastrec()
-	nSaldoAnterior := nSaldoAnterior + oDocumentos:getrow(i):fieldget(4) -oDocumentos:getrow(i):fieldget(5)
+	nDebe :=  iif(oDocumentos:getrow(i):fieldget(5) = 101 .or. oDocumentos:getrow(i):fieldget(5) = 111 ,oDocumentos:getrow(i):fieldget(4),0 )
+	nHaber := iif(oDocumentos:getrow(i):fieldget(5) = 102 .or. oDocumentos:getrow(i):fieldget(5) = 112 .or. oDocumentos:getrow(i):fieldget(5) = 98,oDocumentos:getrow(i):fieldget(4),0 )
+	nSaldoAnterior := nSaldoAnterior + nDebe - nHaber
 	if oDocumentos:getrow(i):fieldget(6) != 0
-		cDescripcion := oDocumentos:getrow(i):fieldget(3)+" - $ " + str(oDocumentos:getrow(i):fieldget(6))
+		cDescripcion := alltrim(oDocumentos:getrow(i):fieldget(3))+" - $ " + str(oDocumentos:getrow(i):fieldget(6))
 	else
-		cDescripcion := oDocumentos:getrow(i):fieldget(3)
+		cDescripcion := alltrim(oDocumentos:getrow(i):fieldget(3))
 	endIf
+	
 	estadoCuenta.text_5.value := estadoCuenta.text_5.value + oDocumentos:getrow(i):fieldget(6)
+	
+	
 	aadd(aGrid,{	oDocumentos:getrow(i):fieldget(1), ;
 								dtoc(oDocumentos:getrow(i):fieldget(2)), ; 
 								cDescripcion, ;
-								oDocumentos:getrow(i):fieldget(4), ;
-								oDocumentos:getrow(i):fieldget(5), ;
+								nDebe, ;
+								nHaber, ;
 								nSaldoAnterior })
 next
 

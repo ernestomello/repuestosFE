@@ -505,7 +505,7 @@ endIf
 function facturaClienteCabezal(nFactura)
 local cQuery, oQuery
 
-cQuery := " select id_factura,fecha,id_cliente,tipoCFE,descripcion " 
+cQuery := " select id_factura,fecha,id_cliente,tipoCFE,descripcion,serieCFE,numeroCFE " 
 cQuery += " from cfe_comprobante_cab "
 cQuery += " where id_factura = "+str(nFactura)+" "
 
@@ -595,9 +595,10 @@ function detalleFacturaCliente(nFactura)
 local cQuery
 local oQuery
 
-cQuery := "select  a.descripcion,d.cantidad,d.precio_unitario,d.iva,d.descuento,d.importe,d.codigo_barra "
-cQuery += " from cfe_comprobante_cab c, cfe_comprobante_det d, articulo a "
+cQuery := "select  a.descripcion,d.cantidad,d.precio_unitario,f.valor,cast(d.descripcion as unsigned),d.importe,d.codigo_barra "
+cQuery += " from cfe_comprobante_cab c, cfe_comprobante_det d, articulo a , cfe_ind_facturacion f"
 cQuery += " where c.id_factura = d.id_factura"
+cQuery += " and f.id_indicador = d.cfe_ind_fact "
 cQuery += " and a.codigo_barra = d.codigo_barra "
 cQuery += " and c.id_factura = "+str(nFactura)+" "
 
