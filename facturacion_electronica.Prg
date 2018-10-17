@@ -7,9 +7,9 @@
 
 function facturaElectronica(nIdMov,bImprime,esCorreccion)
 local oIdMov := oDocumentoCFE(nIdMov)
-//local aSocio := iif(len(alltrim(oIdMov:getRow(1):fieldget(11)))=0, datoSocio(oIdMov:getRow(1):fieldGet(7)),oIdMov:getRow(1):fieldget(11))
+local aCliente := iif(len(alltrim(oIdMov:getRow(1):fieldget(11)))=0, datoCliente(oIdMov:getRow(1):fieldGet(7)),oIdMov:getRow(1):fieldget(11))
 local cDirMov := substr(dtos(oIdMov:getRow(1):fieldGet(6)),1,4)+"\"+substr(dtos(oIdMov:getRow(1):fieldGet(6)),5,2)+"\"
-local cArchivo := cDirFE+cDirMov+str(nIdMov)
+local cArchivo := str(nIdMov)
 local pArchivo 
 local cArchivoRespuesta := cArchivo+".txt"
 local  cExeFile := "C:\Archivos de programa\SumatraPDF\SumatraPDF.exe"
@@ -20,7 +20,7 @@ if !creaDirectorio(cDirFE,cDirMov)
 //	msginfo(str(makedir(cDirFE+cDirMov)))
 endif
 
-pArchivo := fcreate(cArchivo+"ida.txt",0)
+pArchivo := fcreate(cArchivo+".xml",0)
 
 if !linea1(pArchivo,oIdMov)
 	return .f.
@@ -34,7 +34,7 @@ if !linea3(pArchivo,oIdMov)
 	return .f.
 endif
 
-if !linea4(pArchivo,aSocio)
+if !linea4(pArchivo,aCliente)
 	return .f.
 endif
 if !linea5(pArchivo,oIdMov)
@@ -56,6 +56,9 @@ if !linea8(pArchivo,nIdMov)
 	return .f.
 endif
 endif
+
+fwrite(parchivo,"</nsAd:eFact>"+chr(13))
+fwrite(parchivo,"</nsAd:CFE>"+chr(13))
 if !linea10(pArchivo,oIdMov)
 	return .f.
 endif
@@ -69,8 +72,9 @@ if !linea12(pArchivo)
 	return .f.
 endif
 */
-
+fwrite(parchivo,"</nsAdenda:CFE_Adenda>"+chr(13))
 fclose(parchivo)
+/*
 cArchivoEnv := strtran(cArchivo," ","~")
 //llamo a efacturacion con el archivo como parámetro
 //msgInfo(cArchivo+".txt - "+cArchivoEnv+".txt")
@@ -86,10 +90,10 @@ do while  WaitPeriod()
 	endif
 	//tiempo de espera para volver a chequear que llegó el archivo
 enddo
+*/
+if file(cArchivo+".xml")
 
-if file(cArchivo+".txt")
-
-	cContenido := memotran(hb_memoRead(cArchivo+".txt"))
+/*	cContenido := memotran(hb_memoRead(cArchivo+".xml"))
 	//msginfo(cContenido)
 	aLineasL := hb_atokens(cContenido,";")
 	
@@ -98,7 +102,7 @@ if file(cArchivo+".txt")
 	else
 		msgInfo(" Devolucion de Errores"+chr(13)+hb_atokens(aLineasL[2],"|")[4])
 		return .f.
-	endif
+	endif*/
 else
 	return .f.
 //run(cExeFile+" -print-to-default -exit-on-print "+cArchivo+".pdf")
@@ -183,7 +187,10 @@ local cIdMov := str(oIdMov:getRow(1):fieldGet(1))
 local cfecha := dtos(date())
 cfecha := substr(cfecha,1,4)+"-"+substr(cfecha,5,2)+"-"+substr(cfecha,7,2)
 
-cLinea :="1|"+cRut+"|"+cIdMov+"|"+cfecha+chr(13)+chr(10)
+cLinea :="<?xml version="+"1.0"+" encoding="+"UTF-8"+" ?>"+chr(13)+chr(10)
+cLinea +="<nsAdenda:CFE_Adenda xmlns:nsAdenda="+"http://cfe.dgi.gub.uy"+">"+chr(13)+chr(10)
+cLinea +="<nsAd:CFE version="+"1.0"+" xmlns:nsAd="+"http://cfe.dgi.gub.uy"+">"+chr(13)+chr(10)
+cLinea +="<nsAd:eFact>"+chr(13)+chr(10)
 //msginfo(cLinea)
 fwrite(parchivo,clinea)
 return .t.
@@ -241,7 +248,7 @@ fwrite(parchivo,clinea)
 return .t.
 
 function linea4(pArchivo,aSocio)
-local cTipoDocR := iif(alltrim(hb_atokens(aSocio,"|")[2]) == '0','3',alltrim(hb_atokens(aSocio,"|")[1]))
+local cTipoDocR := hb_atokens(aSocio,"|")[1]
 local cCodPaisR := "UY" //modificar la base de Empresa o Persona
 local cDocR :=  hb_atokens(aSocio,"|")[2]
 local cRazonR := hb_atokens(aSocio,"|")[3]
@@ -308,19 +315,16 @@ local cLinea := "",cCuota := "", cCant := "", cUnidad := "", cPrecUnit := ""
 local cIndica := "", cDescPor :="",cDescMon := "",cRecPor := "", cRecMon := ""
 local cMontoItem := "0",cDescExt := "",cDescArt:= ""
 
+	// " select d.item,d.codigo_barra, d.cantidad,d.precio_unitario,d.cfe_ind_fact,d.descripcion,ca.tipoCFE "
 
 for i = 1 to oDetalle:lastRec()
-	if oDetalle:getRow(i):fieldGet(10) != 182
-		if alltrim(oDetalle:getRow(i):fieldGet(2)) = "1"
-			cDescArt := alltrim(oDetalle:getRow(i):fieldGet(8))+" No.Socio "+str(oDetalle:getRow(i):fieldGet(6))+;
-								"-Cuota "+alltrim(oDetalle:getRow(i):fieldGet(7))
-		else
-			if alltrim(oDetalle:getRow(i):fieldGet(9))== alltrim(oDetalle:getRow(i):fieldGet(8))
-				cDescArt :=alltrim(oDetalle:getRow(i):fieldGet(8))
-			else
-				cDescArt :=alltrim(oDetalle:getRow(i):fieldGet(8))+ alltrim(oDetalle:getRow(i):fieldGet(9))
-			endif
-		endif
+	if oDetalle:getRow(i):fieldGet(7) != 182
+		
+			// if alltrim(oDetalle:getRow(i):fieldGet(9))== alltrim(oDetalle:getRow(i):fieldGet(8))
+				cDescArt :=alltrim(oDetalle:getRow(i):fieldGet(6))
+			// else
+				// cDescArt :=alltrim(oDetalle:getRow(i):fieldGet(8))+ alltrim(oDetalle:getRow(i):fieldGet(9))
+			// endif
 		
 								
 		cCant := oDetalle:getRow(i):fieldGet(3)
@@ -339,7 +343,7 @@ for i = 1 to oDetalle:lastRec()
 		
 		// cLinea := "6|"+alltrim(str(i))+"|"+str(cIndica)+"|"+cDescArt+"|"+str(cCant)+"|"+cUnidad+"|"+str(cPrecUnit)+"|"+;
 							// cDescPor+"|"+cDescMon+"|"+cRecPor+"|"+cRecMon+"|"+cMontoItem+"|"+cDescExt+chr(13)+chr(10)
-		fwrite(parchivo,clinea)
+		fwrite(parchivo,cLinea)
 	else
 		cCodRet := oDetalle:getRow(i):fieldGet(2)
 		cTasa := round(oDetalle:getRow(i):fieldGet(3),0)
@@ -384,7 +388,7 @@ local cAdenda := strtran(oIdMov:getRow(1):fieldGet(15),chr(13)," ")
 local cLinea := "<nsAdenda:Adenda>"+cAdenda+"</nsAdenda:Adenda>"+chr(13)
 // "10|"+cAdenda//+chr(13)+chr(10)
 
-fwrite(parchivo,clinea)
+fwrite(parchivo,cLinea)
 return .t.
 
 function linea11(pArchivo)
@@ -401,13 +405,13 @@ function oDetalleFactura(nIdMov)
 local oQuery
 local cQuery
 
-cQuery := " select d.item,d.codigo_barra, d.cantidad,d.precio_unitario,d.cfe_ind_fact,c.id_socio,c.anio_mes, s.descripcion,d.descripcion,ca.tipoCFE "
-cQuery += " from servicio s , cfe_comprobante_cab ca ,"
-cQuery += " cfe_comprobante_det d left join cuota_cab c on d.id_cuota = c.id_cuota "
-cQuery += " where d.codigo_barra= s.id_servicio and d.id_factura = "+str(nIdMov)+" and d.id_factura = ca.id_factura "
+cQuery := " select d.item,d.codigo_barra, d.cantidad,d.precio_unitario,d.cfe_ind_fact,d.descripcion,ca.tipoCFE "
+cQuery += " from  cfe_comprobante_cab ca ,"
+cQuery += " cfe_comprobante_det d  "
+cQuery += " where  ca.id_factura = "+str(nIdMov)+" and d.id_factura = ca.id_factura "
 oQuery := oServer:Query(cQuery )
     If oQuery:NetErr()												
-      MsgInfo("SQL SELECT error: " + oQuery:Error())
+      MsgInfo("SQL SELECT error: "+cQuery+"=" + oQuery:Error())
     Endif
 return oQuery
 

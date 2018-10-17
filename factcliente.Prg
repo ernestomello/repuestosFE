@@ -226,6 +226,11 @@ endIf
 
 
 finTransaccion()
+
+if ! facturaElectronica(nNumero,.f.,.f.)
+	msgInfo("no se pudo guardar el documento en DGI")
+endif
+/*
 if factCliente.text_14.value = 101
 	if factCliente.text_1.value = 0
 		imprimoMovimiento(nNumero,0,factCliente.text_2.value,factCliente.text_3.value,factCliente.text_4.value)
@@ -236,7 +241,7 @@ if factCliente.text_14.value = 101
 else
 	imprimoMovimiento(nNumero,0,'','','')
 endif
-
+*/
 //factCliente.grid_1.deleteAllItems
 cereoFormulario()
 //vacioDatosSociofactCliente()
