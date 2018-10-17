@@ -3,7 +3,5 @@ libpaths=
 gt=
 mt=
 instpaths=
-libs=hbcurls
-libs=hbcurl
-libs=libcurl
+
 

@@ -1,7 +1,7 @@
 #include <hmg.ch>
-#include "hbcurl.ch"
-#include "common.ch"
-#include "fileio.ch"
+// #include "hbcurl.ch"
+// #include "common.ch"
+// #include "fileio.ch"
 
 
 
