@@ -1,7 +1,7 @@
-* HMG-IDE Form Designer Generated Code
+* HMG-IDE ANSI Form Designer Generated Code
 * (c) Roberto Lopez - http://sites.google.com/site/hmgweb
 
-DEFINE WINDOW TEMPLATE AT 11 , 238 WIDTH 918 HEIGHT 557 VIRTUAL WIDTH Nil VIRTUAL HEIGHT Nil TITLE "Ventas a Clientes" ICON NIL  NOSIZE CURSOR NIL ON INIT Nil ON RELEASE nil ON INTERACTIVECLOSE Nil ON MOUSECLICK Nil ON MOUSEDRAG Nil ON MOUSEMOVE Nil ON SIZE Nil ON MAXIMIZE Nil ON MINIMIZE Nil ON PAINT Nil BACKCOLOR Nil NOTIFYICON NIL NOTIFYTOOLTIP NIL ON NOTIFYCLICK Nil ON GOTFOCUS Nil ON LOSTFOCUS Nil ON SCROLLUP Nil ON SCROLLDOWN Nil ON SCROLLLEFT Nil ON SCROLLRIGHT Nil ON HSCROLLBOX Nil ON VSCROLLBOX Nil
+DEFINE WINDOW TEMPLATE AT 213 , 325 WIDTH 918 HEIGHT 557 VIRTUAL WIDTH Nil VIRTUAL HEIGHT Nil TITLE "Ventas a Clientes" ICON NIL  NOSIZE CURSOR NIL ON INIT Nil ON RELEASE nil ON INTERACTIVECLOSE Nil ON MOUSECLICK Nil ON MOUSEDRAG Nil ON MOUSEMOVE Nil ON SIZE Nil ON MAXIMIZE Nil ON MINIMIZE Nil ON PAINT Nil BACKCOLOR Nil NOTIFYICON NIL NOTIFYTOOLTIP NIL ON NOTIFYCLICK Nil ON GOTFOCUS Nil ON LOSTFOCUS Nil ON SCROLLUP Nil ON SCROLLDOWN Nil ON SCROLLLEFT Nil ON SCROLLRIGHT Nil ON HSCROLLBOX Nil ON VSCROLLBOX Nil
 
     DEFINE TEXTBOX Text_1
         ROW    40
@@ -19,6 +19,38 @@ DEFINE WINDOW TEMPLATE AT 11 , 238 WIDTH 918 HEIGHT 557 VIRTUAL WIDTH Nil VIRTUA
         FONTUNDERLINE .F.
         FONTSTRIKEOUT .F.
         ONENTER buscoClientes(factcliente.text_1.value)
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .T.
+        DISABLEDBACKCOLOR Nil
+        DISABLEDFONTCOLOR Nil
+        CASECONVERT NONE
+        BACKCOLOR NIL
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        NUMERIC .T. 
+        VALUE Nil
+    END TEXTBOX
+
+    DEFINE TEXTBOX Text_18
+        ROW    145
+        COL    20
+        WIDTH  60
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER buscarVendedor()
         HELPID Nil
         TABSTOP .T.
         VISIBLE .T.
@@ -100,9 +132,9 @@ DEFINE WINDOW TEMPLATE AT 11 , 238 WIDTH 918 HEIGHT 557 VIRTUAL WIDTH Nil VIRTUA
         FONTNAME "Arial"
         FONTSIZE 9
         TOOLTIP ""
-        ONCHANGE Nil
+        ONCHANGE nil
         ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
+        ONLOSTFOCUS cambiaTipoCFE()
         FONTBOLD .F.
         FONTITALIC .F.
         FONTUNDERLINE .F.
@@ -293,38 +325,6 @@ DEFINE WINDOW TEMPLATE AT 11 , 238 WIDTH 918 HEIGHT 557 VIRTUAL WIDTH Nil VIRTUA
         FONTCOLOR NIL
         OPAQUE .T.
     END FRAME
-
-    DEFINE TEXTBOX Text_18
-        ROW    145
-        COL    20
-        WIDTH  60
-        HEIGHT 24
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        ONCHANGE Nil
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        ONENTER buscarVendedor()
-        HELPID Nil
-        TABSTOP .T.
-        VISIBLE .T.
-        READONLY .F.
-        RIGHTALIGN .T.
-        DISABLEDBACKCOLOR Nil
-        DISABLEDFONTCOLOR Nil
-        CASECONVERT NONE
-        BACKCOLOR NIL
-        FONTCOLOR NIL
-        INPUTMASK Nil
-        FORMAT Nil
-        NUMERIC .T. 
-        VALUE Nil
-    END TEXTBOX
 
     DEFINE TEXTBOX Text_19
         ROW    145
@@ -817,7 +817,8 @@ DEFINE WINDOW TEMPLATE AT 11 , 238 WIDTH 918 HEIGHT 557 VIRTUAL WIDTH Nil VIRTUA
         FONTCOLOR NIL
         INPUTMASK Nil
         FORMAT Nil
-        VALUE ""
+        NUMERIC .T. 
+        VALUE Nil
     END TEXTBOX
 
     DEFINE TEXTBOX Text_15
@@ -914,48 +915,6 @@ DEFINE WINDOW TEMPLATE AT 11 , 238 WIDTH 918 HEIGHT 557 VIRTUAL WIDTH Nil VIRTUA
         FORMAT Nil
         VALUE ""
     END TEXTBOX
-
-    DEFINE CHECKBOX Check_1
-        ROW    40
-        COL    450
-        WIDTH  35
-        HEIGHT 20
-        CAPTION ""
-        VALUE .F.
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        ONCHANGE iif(factcliente.check_1.value = .t.,factcliente.text_2.enabled := .f.,factcliente.text_2.enabled := .t.)
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        BACKCOLOR NIL
-        FONTCOLOR NIL
-        HELPID Nil
-        TABSTOP .T.
-        VISIBLE .T.
-        TRANSPARENT .F.
-    END CHECKBOX
-
-    DEFINE FRAME Frame_5
-        ROW    20
-        COL    430
-        WIDTH  50
-        HEIGHT 50
-        FONTNAME "Arial"
-        FONTSIZE 9
-        FONTBOLD .T.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        CAPTION "C.F."
-        BACKCOLOR NIL
-        FONTCOLOR NIL
-        OPAQUE .T.
-    END FRAME
 
     DEFINE LABEL Label_14
         ROW    30
@@ -1192,6 +1151,70 @@ DEFINE WINDOW TEMPLATE AT 11 , 238 WIDTH 918 HEIGHT 557 VIRTUAL WIDTH Nil VIRTUA
         INPUTMASK Nil
         FORMAT Nil
         VALUE ""
+    END TEXTBOX
+
+    DEFINE TEXTBOX Text_21
+        ROW    390
+        COL    870
+        WIDTH  30
+        HEIGHT 20
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER Nil
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .F.
+        READONLY .F.
+        RIGHTALIGN .F.
+        DISABLEDBACKCOLOR Nil
+        DISABLEDFONTCOLOR Nil
+        CASECONVERT NONE
+        BACKCOLOR NIL
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        NUMERIC .T. 
+        VALUE Nil
+    END TEXTBOX
+
+    DEFINE TEXTBOX Text_22
+        ROW    420
+        COL    870
+        WIDTH  30
+        HEIGHT 20
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER Nil
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .F.
+        DISABLEDBACKCOLOR Nil
+        DISABLEDFONTCOLOR Nil
+        CASECONVERT NONE
+        BACKCOLOR NIL
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        NUMERIC .T. 
+        VALUE Nil
     END TEXTBOX
 
 END WINDOW

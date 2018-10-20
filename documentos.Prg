@@ -5,7 +5,7 @@ local cTipoDoc := tipoDocumento(nDocumento)
 
 
 do case
-	case cTipoDoc == 'F'
+	case cTipoDoc = 101 .or. cTipoDoc = 111
 		if !IsWindowActive(documento)
 			load window documento
 			cargoFacturaCreditoCliente(nDocumento)
@@ -14,25 +14,25 @@ do case
 		else
 			msgInfo("La ventana ya está en uso")
 		endif
-	case cTipoDoc == 'R'
+	case cTipoDoc = 98 
 		if !IsWindowActive(recibo)
 				cargoDocumentoGen(nDocumento, "MOSTRAR")
 		else
 			msgInfo("La ventana ya está en uso")
 		endif
-	case cTipoDoc == 'N'
+	case cTipoDoc = 102
 		if !IsWindowActive(recibo)
 			cargoDocumentoGen(nDocumento, "MOSTRAR")
 		else
 			msgInfo("La ventana ya está en uso")
 		endif
-			case cTipoDoc == 'D'
+			case cTipoDoc = 112
 		if !IsWindowActive(recibo)
 				cargoDocumentoGen(nDocumento, "MOSTRAR")
 		else
 			msgInfo("La ventana ya está en uso")
 		endif
-		case cTipoDoc == 'P'
+		case cTipoDoc == 91
 		if !IsWindowActive(recibo)
 				cargoDocumentoGen(nDocumento, "MOSTRAR")
 		else
@@ -76,19 +76,19 @@ end case
 
 
 
-procedure cargoDatosDocumentoCliente(cTipoDoc,nDocumento)
+// procedure cargoDatosDocumentoCliente(cTipoDoc,nDocumento)
 
 
-do case
+// do case
 
-	case cTipoDoc == 'F'
-		cargoFacturaCreditoCliente(nDocumento)
-	case cTipoDoc == 'R'
-		cargoReciboCliente(nDocumento)
-	case cTipoDoc == 'N'
-		cargoNotaCreditoCliente(nDocumento)
+	// case cTipoDoc == 'F'
+		// cargoFacturaCreditoCliente(nDocumento)
+	// case cTipoDoc == 'R'
+		// cargoReciboCliente(nDocumento)
+	// case cTipoDoc == 'N'
+		// cargoNotaCreditoCliente(nDocumento)
 
-end case 
+// end case 
 
 procedure cargoFacturaCreditoCliente(nDocumento)
 local oDetalleFactura := detalleFacturaCliente(nDocumento)
@@ -217,16 +217,54 @@ endIf
 * si es copia o no(1 o 0)
 * ***********************************************
 function imprimoMovimiento(nFactura,copia,cRut,cNombre,cDireccion)
-local cTipoDocumento := tipoDocumento(nFactura)
+local nTipoDocumento := tipoDocumento(nFactura)
 
-if cTipoDocumento == 'P' .or. cTipoDocumento == 'Q'
+if nTipoDocumento = 81 .or. nTipoDocumento = 91
 	if msgYesNo("Imprime el documento?",,.t.)
 		imprimoEnLaser(nFactura,copia,cRut,cNombre,cDireccion)
 	endif
 else
-	imprimoEnMatriz(nFactura,copia,cRut,cNombre,cDireccion)
+	imprimoPDF(nFactura)
+	//imprimoEnMatriz(nFactura,copia,cRut,cNombre,cDireccion)
 endif
 
+function imprimoPDF(nFactura)
+oCabezal :=facturaClienteCabezal(nFactura)
+
+xml:='<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/" xmlns:sic="http://schemas.datacontract.org/2004/07/SICFEContract">'
+xml+="   <soapenv:Header/>"
+xml+="   <soapenv:Body>"
+xml+="      <tem:ObtenerPDF>"
+xml+="         <tem:nomusuario>erp2</tem:nomusuario>"
+xml+="         <tem:clave>erp2</tem:clave>"
+xml+="         <tem:p_idCFE>"
+xml+="            <sic:Numero>"+str(oCabezal:getRow(1):fieldGet(7))+"</sic:Numero>"
+xml+="            <sic:Serie>"+oCabezal:getRow(1):fieldGet(6)+"</sic:Serie>"
+xml+="            <sic:Tipo>"+str(oCabezal:getRow(1):fieldGet(4))+"</sic:Tipo>"
+xml+="            <sic:observado>0</sic:observado>"
+xml+="            <sic:rucemisor>120132110017</sic:rucemisor>"
+xml+="         </tem:p_idCFE>"
+xml+="         <tem:p_tenant>morale</tem:p_tenant>"
+xml+="         <tem:template>Uso General</tem:template>"
+xml+="      </tem:ObtenerPDF>"
+xml+="   </soapenv:Body>"
+xml+="</soapenv:Envelope>"
+hb_memowrit("vapdf.xml",xml)
+cRespuesta := fHttpExecute("http://sicfedesa.eborne.com.uy/TEST/Services/Sicfe.svc",'SOAPAction:"http://tempuri.org/ISICFEEmisor/ObtenerPDF"',xml,.f.)
+hb_memowrit("soapanswerpdf.xml",cRespuesta)
+hb_MEMOWRIT("factura.pdf",hb_base64decode(cValTag(cRespuesta,"a:Buffer")))
+	
+
+	if val(cValTag(cRespuesta,"a:Codigo")) = 0
+		
+		EXECUTE FILE '"' + exePdf + '"' PARAMETERS  '' + "factura.pdf"
+		
+	else
+		msgInfo(" Devolucion de Errores"+chr(13)+cValTag(cRespuesta,"a:Descripcion"))
+		return .f.
+	endif
+
+return .t.
 
 function imprimoEnMatriz(nFactura,copia,cRut,cNombre,cDireccion)
 local fila, col, lin,l,n
@@ -235,11 +273,11 @@ local oCabezal,oDetalle
 local cNombreImpreso, cRutImpreso,cDescripcion
 local nLineaComienzoDetalle := PARAMETROini("LineaInicioDetalle","N")
 local nIvaBasico := PARAMETROini("IVA","N")
-local cTipoDocumento :=tipoDocumento(nFactura)
-local nCantidaCopias := cantidadCopias(cTipoDocumento)
+local nTipoDocumento :=tipoDocumento(nFactura)
+local nCantidaCopias := cantidadCopias(nTipoDocumento)
 local nVendedor := vendedorFacturaCliente(nFactura)
 
-if cTipoDocumento == 'R' .or. cTipoDocumento== 'N'
+if nTipoDocumento == 'R' .or. nTipoDocumento== 'N'
 	oCabezal :=reciboClienteCabezal(nFactura)
 	oDetalle :=reciboClienteDetalle(nFactura)
 
@@ -266,7 +304,7 @@ else
 	cDireccionImpresa := dirParticularCliente(oCabezal:GetRow(1):fieldGet(3))
 endif
 
-if cTipoDocumento = "D"
+if nTipoDocumento = 102 .or. nTipoDocumento = 112
 	cDescripcion := "Afecta Factura Nro. "+alltrim(oCabezal:GetRow(1):fieldGet(5))
 else
 	cDescripcion := alltrim(oCabezal:GetRow(1):fieldGet(5))
@@ -310,7 +348,7 @@ endif
 	for i= 1 to oDetalle:lastRec()
 	  
 	  @ fila+lin,col+001 say alltrim(oDetalle:GetRow(i):fieldGet(3)) //CODREPF
-	  if cTipoDocumento = "N" .or. cTipoDocumento = "R"
+	  if nTipoDocumento = 102 .or. nTipoDocumento = 112
 	  	@ fila+lin,col+022 say "Afecta Fac. Nro: "+ str(oDetalle:GetRow(i):fieldGet(4))+"-"+dtoc(fechaFacturaCliente(oDetalle:GetRow(i):fieldGet(4))) //NOMREPF
 	  else
 	  	@ fila+lin,col+022 say alltrim(oDetalle:GetRow(i):fieldGet(4))+"-"+locacionArticulo(oDetalle:GetRow(i):fieldGet(3)) //NOMREPF
@@ -318,12 +356,12 @@ endif
 	  @ fila+lin,col+075 say oDetalle:GetRow(i):fieldGet(5)  pict '999999.99' //CANTF
 	  @ fila+lin,col+098 say oDetalle:GetRow(i):fieldGet(6)  pict '99999.99' //PRVENTAF
 	  @ fila+lin,col+114 say oDetalle:GetRow(i):fieldGet(9)  pict '99.9' //PCTDESCF
-	  if cTipoDocumento = "N"
+	  if nTipoDocumento = 102 .or. nTipoDocumento = 112
 	  	@ fila+lin,col+119 say round(oDetalle:GetRow(i):fieldGet(10),2)/(1 + nIvaBasico/100) pict '99999999999.99' //IMPORTEF
 	  else
 	  @ fila+lin,col+119 say round(oDetalle:GetRow(i):fieldGet(10),2) pict '99999999999.99' //IMPORTEF
 	  endif
-	  if cTipoDocumento = "N"
+	  if nTipoDocumento = 102 .or. nTipoDocumento = 112
 	  	nLineaSinIva :=  round(oDetalle:GetRow(i):fieldGet(10),2) /(1 + nIvaBasico/100)
 	  	nTotalSIva := nTotalSIva + nLineaSinIva
 			nIva := nIva +  round(nLineaSinIva * nIvaBasico/100,2)
@@ -377,10 +415,10 @@ local oCabezal,oDetalle
 local cNombreImpreso, cRutImpreso,cDescripcion
 local nLineaComienzoDetalle := PARAMETROini("LineaInicioDetalle","N")
 local nIvaBasico := PARAMETROini("IVA","N")
-local cTipoDocumento :=tipoDocumento(nFactura)
-local nCantidaCopias := cantidadCopias(cTipoDocumento)
+local nTipoDocumento :=tipoDocumento(nFactura)
+local nCantidaCopias := cantidadCopias(nTipoDocumento)
 
-if cTipoDocumento == 'R' .or. cTipoDocumento== 'N'
+if nTipoDocumento == 'R' .or. nTipoDocumento== 'N'
 	oCabezal :=reciboClienteCabezal(nFactura)
 	oDetalle :=reciboClienteDetalle(nFactura)
 
@@ -407,7 +445,7 @@ else
 	cDireccionImpresa := dirParticularCliente(oCabezal:GetRow(1):fieldGet(3))
 endif
 
-if cTipoDocumento = "D"
+if nTipoDocumento = 102 .or. nTipoDocumento = 112
 	cDescripcion := "Afecta Factura Nro. "+alltrim(oCabezal:GetRow(1):fieldGet(5))
 else
 	cDescripcion := alltrim(oCabezal:GetRow(1):fieldGet(5))
@@ -418,18 +456,14 @@ SELECT PRINTER  'Informes'  PAPERSIZE PRINTER_PAPER_A4 ORIENTATION PRINTER_ORIEN
 start printdoc
 START PRINTPAGE
 fila := PARAMETROini("Rxpos","N")
-// col := PARAMETROini("Rypos","N")
 col := 20
 
 
-// For n=1 to nCantidaCopias
 nTotalFactura := 0
 nIva := 0.00
 nTotalSIva := 0
 
-//if n != 1
-//setprc(0,0) 
-//endif
+
 	@ 10,16 print DATA "MORALES REPUESTOS"
 	@ 10,84 print rectangle to 21,144 PENWIDTH 0.1
 	@ 24,71 print rectangle to 28,157 PENWIDTH 0.1
@@ -481,12 +515,12 @@ nTotalSIva := 0
 	  @ fila+lin,col+115 print data oDetalle:GetRow(i):fieldGet(5)  right//pict '999999.99' //CANTF
 	  @ fila+lin,col+140 print data oDetalle:GetRow(i):fieldGet(6)  right//pict '99999.99' //PRVENTAF
 	  @ fila+lin,col+152 print data oDetalle:GetRow(i):fieldGet(9)  right//pict '99.9' //PCTDESCF
-	  if cTipoDocumento = "N"
+	  if nTipoDocumento = 102 .or. nTipoDocumento = 112
 	  	@ fila+lin,col+75 print data round(oDetalle:GetRow(i):fieldGet(10),2)/(1 + nIvaBasico/100) right//pict '99999999999.99' //IMPORTEF
 	  else
 	  @ fila+lin,col+175 print data round(oDetalle:GetRow(i):fieldGet(10),2) right//pict '99999999999.99' //IMPORTEF
 	  endif
-	  if cTipoDocumento = "N"
+	  if nTipoDocumento = 102 .or. nTipoDocumento = 112
 	  	nLineaSinIva :=  round(oDetalle:GetRow(i):fieldGet(10),2) /(1 + nIvaBasico/100)
 	  	nTotalSIva := nTotalSIva + nLineaSinIva
 			nIva := nIva +  round(nLineaSinIva * nIvaBasico/100,2)
@@ -502,30 +536,9 @@ nTotalSIva := 0
 	
 	@ 223,100 print data nTotalSIva 		right//pict '99999999999.99'
 	@ 223,138 print data nIva  				right	//pict '99999999999.99'
-	// @ 223,col+034 print data alltrim(mensaje1Documento(oCabezal:GetRow(1):fieldGet(4)))
-	// @ 223,col+034 print data alltrim(mensaje2Documento(oCabezal:GetRow(1):fieldGet(4)))
 	@ 223,142 print data "TOTAL" BOLD//pict '99999999999.99'
 	@ 223,195 print data "$  "+STR(nTotalFactura) right	BOLD//pict '99999999999.99'
-	//@ fila+115,col+034 print data alltrim(mensaje3Documento(oCabezal:GetRow(1):fieldGet(4)))
-	// if n=1
-	  // @ fila+120,col+120 print data '* ORIGINAL CLIENTE *'
-	// endif
-	// if n=2 .and. nCantidaCopias == 2
-		// @ fila+120,col+120 print data '* ARCHIVO *'
-	// else
-	  // @ fila+120,col+120 print data '* COPIA *'
-	// endif
-	// if n=3 .and. nCantidaCopias == 3
-	  // @ fila+120,col+120 print data '* ARCHIVO *'
-	// endif
-// fila := 160
-//	@ fila+63,col+000 print data ' '
-//	@ fila+,col+000 print data ' '
-//	@ fila+34,col+000 print data ' '
-//	@ fila+35,col+000 print data ' '
-//	@ fila+36,col+000 print data ' '
-
-// next
+	
 
 END PRINTPAGE
 END PRINTDOC
@@ -540,12 +553,13 @@ return .t.
 function tipoDocumento(nDocumento)
 local cQuery, oQuery
 
-cQuery := " select tipo_documento "
-cQuery += " from factura_cliente_cab "
-cQuery += " where numero_factura = "+str(nDocumento)+""
-cQuery += " union all "
-cQuery += " select tipo_documento from recibo_cliente_cab "
-cQuery += " where id_recibo = "+str(nDocumento)+""
+cQuery := " select tipoCFE "
+// cQuery += " from factura_cliente_cab "
+cQuery += " from cfe_comprobante_cab "
+cQuery += " where id_factura = "+str(nDocumento)+""
+// cQuery += " union all "
+// cQuery += " select tipo_documento from recibo_cliente_cab "
+// cQuery += " where id_recibo = "+str(nDocumento)+""
 
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
@@ -553,6 +567,21 @@ If oQuery:NetErr()
 else
   return oQuery:GetRow(1):fieldGet(1)
 endIf
+
+function formaPago(nDocumento)
+local cQuery, oQuery
+
+cQuery := " select forma_pago  "
+cQuery += " from cfe_comprobante_cab "
+cQuery += " where id_factura = "+str(nDocumento)+""
+
+oQuery := oServer:Query(cQuery)
+If oQuery:NetErr()												
+  MsgInfo("SQL SELECT error: " + oQuery:Error())
+else
+  return oQuery:GetRow(1):fieldGet(1)
+endIf
+
 
 function tipoDocumentoProveedor(nDocumento)
 local cQuery, oQuery
@@ -571,11 +600,11 @@ else
   return oQuery:GetRow(1):fieldGet(1)
 endIf
 
-function descripcionDocumento(cTipoDocumento)
+function descripcionDocumento(nTipoDocumento)
 local cQuery
 local oQuery
 
-cQuery := "select descripcion from documento where  id_documento = '"+cTipoDocumento+"' "
+cQuery := "select descripcion from cfe_tipos where  id_cfe = "+str(nTipoDocumento)+" "
 
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
@@ -585,11 +614,11 @@ else
 endIf
 
 
-function puertoDocumento(cTipoDocumento)
+function puertoDocumento(nTipoDocumento)
 local cQuery
 local oQuery
 
-cQuery := "select puerto_impresion from documento where  id_documento = '"+cTipoDocumento+"' "
+cQuery := "select puerto_impresion from cfe_tipos where  id_cfe = "+str(nTipoDocumento)+" "
 
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
@@ -598,11 +627,11 @@ else
   return oQuery:GetRow(1):fieldGet(1)
 endIf
 
-function cantidadCopias(cTipoDocumento)
+function cantidadCopias(nTipoDocumento)
 local cQuery
 local oQuery
 
-cQuery := "select cantidad_copias from documento where  id_documento = '"+cTipoDocumento+"' "
+cQuery := "select cantidad_copias from cfe_tipos where  id_cfe = "+str(nTipoDocumento)+" "
 
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
@@ -611,11 +640,11 @@ else
   return oQuery:GetRow(1):fieldGet(1)
 endIf
 
-function mensaje1Documento(cTipoDocumento)
+function mensaje1Documento(nTipoDocumento)
 local cQuery
 local oQuery
 
-cQuery := "select mensaje1 from documento where  id_documento = '"+cTipoDocumento+"' "
+cQuery := "select mensaje1 from cfe_tipos where  id_cfe = "+str(nTipoDocumento)+" "
 
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
@@ -624,11 +653,11 @@ else
   return oQuery:GetRow(1):fieldGet(1)
 endIf
 
-function mensaje2Documento(cTipoDocumento)
+function mensaje2Documento(nTipoDocumento)
 local cQuery
 local oQuery
 
-cQuery := "select mensaje2 from documento where  id_documento = '"+cTipoDocumento+"' "
+cQuery := "select mensaje2 from cfe_tipos where  id_cfe = "+str(nTipoDocumento)+" "
 
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
@@ -637,11 +666,11 @@ else
   return oQuery:GetRow(1):fieldGet(1)
 endIf
 
-function mensaje3Documento(cTipoDocumento)
+function mensaje3Documento(nTipoDocumento)
 local cQuery
 local oQuery
 
-cQuery := "select mensaje3 from documento where  id_documento = '"+cTipoDocumento+"' "
+cQuery := "select mensaje3 from cfe_tipos where  id_cfe = "+str(nTipoDocumento)+" "
 
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
@@ -653,14 +682,26 @@ endIf
 function documentosCliente(nCliente,dFechaDesde,dFechaHasta)
 local cQuery, oQuery
 
-cQuery := " select c.numero_factura, c.fecha,d.descripcion,c.importe, 0, c.saldo "
-cQuery += " from factura_cliente_cab c, documento d "
+cQuery := " select c.id_factura, c.fecha,d.descripcion,c.importe, c.tipoCFE, c.saldo "
+cQuery += " from cfe_comprobante_cab c, cfe_tipos d "
 cQuery += " where id_cliente = "+str(nCliente)+" "
-cQuery += " and d.id_documento = c.tipo_documento"
+cQuery += " and d.id_cfe = c.tipoCFE"
 cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
-cQuery += " and tipo_documento = 'F' "
-cQuery += " and anulado = 'N'  "
+cQuery += " and c.forma_pago = 2"
+//cQuery += " and c.id_factura not in (select id_factura_ref from cfe_referencias_det) "
+
 cQuery += " union all "
+cQuery += " select c.id_factura, c.fecha,d.descripcion,c.importe, c.tipoCFE, c.saldo "
+cQuery += " from cfe_comprobante_cab c, cfe_tipos d "
+cQuery += " where id_cliente = "+str(nCliente)+" "
+cQuery += " and c.tipoCFE = 98 "
+cQuery += " and d.id_cfe = c.tipoCFE"
+cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
+cQuery += " and c.forma_pago = 1"
+cQuery += " and c.id_factura not in (select id_factura_ref from cfe_referencias_det) "
+
+
+/* cQuery += " select id_recibo, fecha,d.descripcion,0,importe, 0 "
 cQuery += " select id_recibo, fecha,d.descripcion,0,importe, 0 "
 cQuery += " from recibo_cliente_cab c, documento d"
 
@@ -684,7 +725,7 @@ cQuery += " where id_cliente = "+str(nCliente)+" "
 cQuery += " and d.id_documento = c.tipo_documento"
 cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
 cQuery += " and tipo_documento = 'D' "
-cQuery += " and anulado = 'N'  "
+cQuery += " and anulado = 'N'  "*/
 cQuery += " order by 2,1  "
 
 oQuery:= oServer:Query(cQuery)
@@ -699,11 +740,13 @@ return oQuery
 function fechaUltimoMovimientoCliente(nCliente)
 local cQuery, oQuery
 
-cQuery := " select fecha from factura_cliente_cab "
-cQuery += " where id_cliente = "+str(nCliente)+" "
-cQuery += " union all "
-cQuery += " select fecha from recibo_cliente_cab "
-cQuery += " where id_cliente = "+str(nCliente)+" "
+// cQuery := " select fecha from factura_cliente_cab "
+cQuery := " select c.fecha from cfe_comprobante_cab c "
+cQuery += " where c.id_cliente = "+str(nCliente)+" "
+// cQuery += " union all "
+// cQuery += " select fecha from recibo_cliente_cab "
+// cQuery += " where id_cliente = "+str(nCliente)+" "
+cQuery += " and c.id_factura not in (select id_factura_ref from cfe_referencias_det) "
 cQuery += " order by 1 desc "
 
 oQuery:= oServer:Query(cQuery)
@@ -744,31 +787,33 @@ function documentosPorArticulo(cArticulo,dFechaDesde,dFechaHasta)
 local cQuery, oQuery
 
 cQuery := " select c.fecha,c.numero_factura,d.descripcion, c.id_cliente, c.id_usuario,c.importe "
-cQuery += " from factura_cliente_cab c, documento d, factura_cliente_det e "
-cQuery += " where d.id_documento = c.tipo_documento"
-cQuery += " and e.numero_factura = c.numero_factura"
-//cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
-cQuery += " and tipo_documento = 'F' "
+// cQuery += " from factura_cliente_cab c, documento d, factura_cliente_det e "
+cQuery += " from cfe_comprobante_cab c, cfe_tipos d, cfe_comprobante_det e "
+cQuery += " where d.id_cfe = c.tipoCFE "
+cQuery += " and e.id_factura = c.id_factura"
+// cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
+cQuery += " and c.tipoCFE not in (81,82,91,92,98,99) "
 cQuery += " and e.codigo_barra = '"+cArticulo+"'"
-cQuery += " and anulado = 'N'  "
-cQuery += " union all "
-cQuery += " select c.fecha,c.numero_factura,d.descripcion, c.id_cliente, c.id_usuario,c.importe "
-cQuery += " from factura_cliente_cab c, documento d, factura_cliente_det e "
-cQuery += " where d.id_documento = c.tipo_documento"
-cQuery += " and e.numero_factura = c.numero_factura"
-//cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
-cQuery += " and tipo_documento = 'D' "
-cQuery += " and e.codigo_barra = '"+cArticulo+"'"
-cQuery += " and anulado = 'N'  "
-cQuery += " union all "
-cQuery += " select c.fecha,c.numero_factura,d.descripcion, c.id_cliente, c.id_usuario,c.importe "
-cQuery += " from factura_cliente_cab c, documento d, factura_cliente_det e "
-cQuery += " where d.id_documento = c.tipo_documento"
-cQuery += " and e.numero_factura = c.numero_factura"
-//cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
-cQuery += " and tipo_documento = 'C' "
-cQuery += " and e.codigo_barra = '"+cArticulo+"'"
-cQuery += " and anulado = 'N'  "
+cQuery += " and c.id_factura not in (select id_factura_ref from cfe_referencias_det) "
+// cQuery += " and anulado = 'N'  "
+// cQuery += " union all "
+// cQuery += " select c.fecha,c.numero_factura,d.descripcion, c.id_cliente, c.id_usuario,c.importe "
+// cQuery += " from factura_cliente_cab c, documento d, factura_cliente_det e "
+// cQuery += " where d.id_documento = c.tipo_documento"
+// cQuery += " and e.numero_factura = c.numero_factura"
+// cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
+// cQuery += " and tipo_documento = 'D' "
+// cQuery += " and e.codigo_barra = '"+cArticulo+"'"
+// cQuery += " and anulado = 'N'  "
+// cQuery += " union all "
+// cQuery += " select c.fecha,c.numero_factura,d.descripcion, c.id_cliente, c.id_usuario,c.importe "
+// cQuery += " from factura_cliente_cab c, documento d, factura_cliente_det e "
+// cQuery += " where d.id_documento = c.tipo_documento"
+// cQuery += " and e.numero_factura = c.numero_factura"
+// cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
+// cQuery += " and tipo_documento = 'C' "
+// cQuery += " and e.codigo_barra = '"+cArticulo+"'"
+// cQuery += " and anulado = 'N'  "
 cQuery += " order by 1 desc   "
 
 

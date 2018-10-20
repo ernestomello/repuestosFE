@@ -131,6 +131,11 @@ if clientes.radioGroup_1.value = 2
 	If len(clientes.text_9.value) = 0
   	msgInfo('Falta ingresar RUT')
   	return .f.
+	else
+		if !formatoRut(clientes.text_9.value)
+			msgInfo("Número RUT Incorrecto!!!")
+			return .f.
+		endif		
 	endIf
 endIf
 
@@ -169,6 +174,52 @@ else
 	return .t.
 endIf
 
+function formatoRut(nRut)
+local cControl := '43298765432'
+local cRut := alltrim(nRut)
+local nCuenta := 0
+local nModulo, cCompara
+local dosPrim := val(substr(cRut,1,2))
+local terOctava := val(substr(cRut,3,6))
+local nueveDiez := val(substr(cRut,9,2))
+//msgInfo(cRut)
+//msgInfo (str(dosPrim)+"-"+str(terOctava)+"-"+str(nueveDiez))
+// if cRut == "0"
+	// return .t.
+// endif
+
+if dosPrim < 1 .and. dosPrim > 21
+	return .f.
+endif
+
+if terOctava = 0
+	return .f.
+endif
+
+if nueveDiez != 0
+	return .f.
+endif
+
+for i= 1 to len(cRut)-1
+	nCuenta += val(substr(cRut,i,1))* val(substr(cControl,i,1))
+next
+nModulo :=(nCuenta % 11)
+//msgInfo(str(10 - (nCuenta%10),1,0)+'--'+substr(cCedula,len(cCedula),1))
+//msgInfo( str(nModulo))
+do case
+	case  nModulo > 1
+		cCompara := str(11 - nModulo,1,0)
+	case nModulo = 0
+		cCompara := str(0,1,0)	
+	case nModulo = 1
+		return .f.
+endcase
+
+if  cCompara== substr(cRut,len(cRut),1)
+	return .t.
+else
+	return .f.
+endIf
 *************************************************
 *************************************************
 ******Implementaciones del modelo ***************
@@ -449,3 +500,22 @@ If oQuery:NetErr()
 else
   return oQuery
 endIf
+
+function datoCliente(nIdCliente)
+local cQuery
+local oQuery
+
+
+cQuery := " select concat(if(c.consumo_final = 0,2,3),'|',c.rut,'|',c.razon_social,'|',c.direccion_particular,'|','PAYSANDU') "
+cQuery += " from cliente c  "
+cQuery += " where c.id_cliente = "+str(nIdCliente)+" "
+
+oQuery := oServer:Query(cQuery)
+if oQuery:NetErr()												
+  MsgInfo("Error executing Query "+cQuery+": "+ oQuery:Error())
+endif
+if oQuery:lastRec() > 0
+	return oQuery:GetRow(1):fieldget(1)
+else
+	return "3||||"
+endif

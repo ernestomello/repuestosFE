@@ -11,6 +11,7 @@ Function main()
 	Public 	oServer			:= 	Nil 
 	Public	cServidorSQL_nombre	:=	PARAMETROini("MYSQL_Servidor","C")
 	Public	cServidorSQL_usuario	:=lower(GetEnv( "USERNAME" ))
+	public exePDF := PARAMETROini("EXEPDF","C")
 	Public	cServidorSQL_Estado	:=	'S/D'
 	Public  cSucursal 		:= 	PARAMETROini("Sucursal","C")
 	Public nSocioGlobal := 0
@@ -35,7 +36,7 @@ Function main()
     		ON RELEASE MySQL_Disconnect()
     		DEFINE MAIN MENU 
     				POPUP 'Contado'
-    					ITEM 'Ventas Contado'  	ACTION factCliente('C',0)
+    					ITEM 'Ventas Contado'  	ACTION factCliente(101,0,1)
     					
     					SEPARATOR
     					
@@ -70,10 +71,10 @@ Function main()
       			END POPUP
       			
       			POPUP 'Presupuestos'
-      				ITEM 'Registro Contado'	ACTION factCliente('Q',0)
+      				ITEM 'Registro Contado'	ACTION factCliente(91,0,1)
       				ITEM 'Búsqueda Contados' ACTION busquedaGeneral("pc","","Presupuestos Contado",1)  
       				SEPARATOR
-      				ITEM 'Registro Crédito' ACTION factCliente('P',0)
+      				ITEM 'Registro Crédito' ACTION factCliente(81,0,1)
       				ITEM 'Estado de Cuenta' ACTION presupuestos()
       				
       			END POPUP
@@ -116,7 +117,7 @@ Function main()
 //      				ITEM 'Migrar Presupuestos' ACTION  migraPresupuesto()
 					POPUP 'Cta. Cte' 
                 
-               	ITEM 'Ventas Credito'  	ACTION factCliente('F',0)
+               	ITEM 'Ventas Credito'  	ACTION factCliente(101,0,2)
 
                 SEPARATOR
                 
@@ -280,8 +281,14 @@ Procedure MySQL_Connect()
 	Else
 
 		cServidorSQL_Estado	:=	'<Conectado>'
-		oServer:SelectDB( cBase )
-		
+		if msgYesNO("Usa la base de FE")
+			oServer:SelectDB( "comercio_fe" )
+		else	
+			oServer:SelectDB( cBase )
+		endif
+		If oServer:NetErr()	
+			MsgStop("No se pudo conectar con Servidor:"+chr(13)+cServidor+chr(13)+oServer:Error())
+		endif
 	EndIf
 
 Return

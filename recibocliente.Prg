@@ -175,7 +175,10 @@ endIf
 			msginfo("No se pudo actualizar el Número del Recibo")
 			return .f.
 		endIf
-		if !guardoCabezalreciboCliente(nNumeroR,cajaId(),reciboCliente.text_1.value,reciboCliente.datePicker_1.value,reciboCliente.text_6.value)
+		// if !guardoCabezalreciboCliente(nNumeroR,cajaId(),reciboCliente.text_1.value,98,reciboCliente.text_6.value,reciboCliente.datePicker_1.value,"",0,1)
+		if !graboFactClienteCabezal(nNumeroR,cajaId(),reciboCliente.text_1.value,98,reciboCliente.text_6.value,reciboCliente.datePicker_1.value,"",0,1)
+			//graboFactClienteCabezal(nNumero,nCaja,nCliente, nTipoDocumento,nImporte,dFechaFactura,cDescripcion,nVendedor,nFormaPago)
+
 			msgInfo("No se pudo Guardar el Recibo. Reintente!!!")
 			return .f.
 		endIf	
@@ -187,7 +190,9 @@ endIf
 		//guarda los detalles del recibo, controlando que la línea sea != 0
 		for i = 1 to reciboCliente.grid_1.itemcount
 			if reciboCliente.grid_1.cell(i,8) = 'SI' .and. reciboCliente.grid_1.cell(i,5)!= 0
-				if !guardoDetallereciboCliente(nNumeroR, reciboCliente.grid_1.cell(i,1),reciboCliente.grid_1.cell(i,5))
+				// if !guardoDetallereciboCliente(nNumeroR, reciboCliente.grid_1.cell(i,1),reciboCliente.grid_1.cell(i,5))
+				if !guardoRelacion( reciboCliente.grid_1.cell(i,1),nNumeroR,reciboCliente.grid_1.cell(i,5))
+					// guardoRelacion(nFactura, nNumero)
 					msgInfo("No se pudieron Guardar el detalle del Recibo. Reintente!!!")
 					return .f.
 				endIf					
@@ -206,7 +211,8 @@ endIf
 			msginfo("No se pudo actualizar el Número de la Nota de Crédito")
 			return .f.
 		endIf
-		if !guardoCabezalNotaCredito(nNumeroN, cajaId(),reciboCliente.text_1.value,'N',reciboCliente.datePicker_1.value,reciboCliente.text_5.value)
+		if !graboFactClienteCabezal(nNumeroN,cajaId(),reciboCliente.text_1.value,112,reciboCliente.text_5.value,reciboCliente.datePicker_1.value,"",0,2)
+		// if !guardoCabezalNotaCredito(nNumeroN, cajaId(),reciboCliente.text_1.value,'N',reciboCliente.datePicker_1.value,reciboCliente.text_5.value)
 			msgInfo("No se pudo Guardar la Nota de Crédito. Reintente!!!")
 			return .f.
 		endIf	
@@ -218,7 +224,8 @@ endIf
 		//guarda los detalles de la Nota de Crédito, controlando que la línea sea != 0
 		for i = 1 to reciboCliente.grid_1.itemcount
 			if reciboCliente.grid_1.cell(i,8) = 'SI' .and. reciboCliente.grid_1.cell(i,6)!= 0
-				if !guardoDetalleNotaCredito(nNumeroN,reciboCliente.grid_1.cell(i,1),reciboCliente.grid_1.cell(i,6))
+				// if !guardoDetalleNotaCredito(nNumeroN,reciboCliente.grid_1.cell(i,1),reciboCliente.grid_1.cell(i,6))
+				if !guardoRelacion( reciboCliente.grid_1.cell(i,1),nNumeroN,reciboCliente.grid_1.cell(i,6))	
 					msgInfo("No se pudo Guardar el detalle de NC. Reintente!!!")
 					return .f.
 				endIf					
@@ -330,13 +337,13 @@ endif
 function recibosFacturaCliente(nFactura)
 local cQuery, oQuery
 
-cQuery := "select c.id_recibo, c.fecha,d.descripcion,r.importe "
-cQuery += " from recibo_cliente_cab c, documento d, recibo_cliente_det r"
-cQuery += " where c.id_recibo = r.id_recibo "
-cQuery += " and d.id_documento = c.tipo_documento "
-cQuery += " and r.numero_factura = "+str(nFactura)+" "
-cQuery += " and c.tipo_documento = 'R' "
-cQuery += " and c.anulado = 'N' "
+cQuery := "select c.id_factura, c.fecha,d.descripcion,r.importe_aplicado "
+cQuery += " from cfe_comprobante_cab c, cfe_tipos d, cfe_referencias_det r"
+cQuery += " where c.id_factura = r.id_factura "
+cQuery += " and d.id_cfe = c.tipoCFE "
+cQuery += " and r.id_factura_ref = "+str(nFactura)+" "
+cQuery += " and c.tipoCFE = 98 "
+// cQuery += " and c.anulado = 'N' "
 
 
 oQuery:= oServer:Query(cQuery)
