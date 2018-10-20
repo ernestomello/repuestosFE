@@ -1,7 +1,10 @@
 #include <hmg.ch>
-// #include "hbcurl.ch"
-// #include "common.ch"
-// #include "fileio.ch"
+#include "hbcurl.ch"
+#include "common.ch"
+#include "fileio.ch"
+#include "hbmxml.ch"
+#include "simpleio.ch"
+
 
 
 
@@ -37,11 +40,13 @@ endif
 if !linea4(pArchivo,aCliente)
 	return .f.
 endif
-if !linea5(pArchivo,oIdMov)
+
+if !linea5(pArchivo,nIdMov)
 	return .f.
 endif
 fwrite(parchivo," </nsAd:Encabezado>"+chr(13))
 fwrite(parchivo,"<nsAd:Detalle>"+chr(13))
+
 if !linea6(pArchivo,nIdMov)
 	return .f.
 endif
@@ -56,6 +61,14 @@ if !linea8(pArchivo,nIdMov)
 	return .f.
 endif
 endif
+fwrite(parchivo,"<nsAd:DscRcgGlobal>"+chr(13))
+fwrite(parchivo,"</nsAd:DscRcgGlobal>"+chr(13))
+fwrite(parchivo,"<nsAd:CAEData>"+chr(13))
+fwrite(parchivo,"<nsAd:CAE_ID>1</nsAd:CAE_ID>"+chr(13))
+fwrite(parchivo,"<nsAd:DNro>1</nsAd:DNro>"+chr(13))
+fwrite(parchivo,"<nsAd:HNro>1</nsAd:HNro>"+chr(13))
+fwrite(parchivo,"<nsAd:FecVenc></nsAd:FecVenc>"+chr(13))
+fwrite(parchivo,"</nsAd:CAEData>"+chr(13))
 
 fwrite(parchivo,"</nsAd:eFact>"+chr(13))
 fwrite(parchivo,"</nsAd:CFE>"+chr(13))
@@ -92,17 +105,59 @@ do while  WaitPeriod()
 enddo
 */
 if file(cArchivo+".xml")
+xArchivo := hb_memoRead(cArchivo+".xml")
 
-/*	cContenido := memotran(hb_memoRead(cArchivo+".xml"))
+cxml :='<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:cxml="http://tempuri.org/">'+chr(13)+chr(10)
+cxml +="<soapenv:Header/>"+chr(13)+chr(10)
+cxml +="<soapenv:Body>"+chr(13)+chr(10)
+cxml +="<cxml:EnvioCFE>"+chr(13)+chr(10)
+cxml +="<cxml:nomusuario>erp2</cxml:nomusuario>"+chr(13)+chr(10)
+cxml +="<cxml:clave>erp2</cxml:clave>"+chr(13)+chr(10)
+cxml +="<cxml:tenant>morale</cxml:tenant>"+chr(13)+chr(10)
+cxml +="<cxml:cliente></cxml:cliente>"+chr(13)+chr(10)
+cxml +="<cxml:cfexml><![CDATA["+xArchivo+"]]></cxml:cfexml>"+chr(13)+chr(10)
+cxml +="<cxml:referenciaERP>"+cArchivo+"</cxml:referenciaERP>"+chr(13)+chr(10)
+//cxml +="<cxml:referenciaERP2></cxml:referenciaERP2>"+chr(13)+chr(10)
+cxml +="<cxml:devolverQR>0</cxml:devolverQR>"+chr(13)+chr(10)
+cxml +="<cxml:sizeQR>10</cxml:sizeQR>"+chr(13)+chr(10)
+cxml +="<cxml:impprime>0</cxml:impprime>"+chr(13)+chr(10)
+cxml +="<cxml:template>Uso General</cxml:template>"+chr(13)+chr(10)
+cxml +="<cxml:devolverXML>0</cxml:devolverXML>"+chr(13)+chr(10)
+// cxml +="<cxml:erpPideValicacion>valor2</cxml:erpPideValicacion>"+chr(13)+chr(10)
+cxml +="<cxml:version>1.34.7</cxml:version>"+chr(13)+chr(10)
+cxml +="</cxml:EnvioCFE>"+chr(13)+chr(10)
+cxml +="</soapenv:Body>"+chr(13)+chr(10)
+cxml +="</soapenv:Envelope>"+chr(13)+chr(10)
+hb_memowrit("aalgo.txt",cxml)
+ cRespuesta := fHttpExecute("http://sicfedesa.eborne.com.uy/TEST/Services/Sicfe.svc",'SOAPAction:"http://tempuri.org/ISICFEEmisor/EnvioCFE"',cxml,.f.)
+
+ msgInfo (cValTag(cRespuesta,"a:Codigo"))
+ hb_memowrit("soapanswer.xml",cRespuesta)
+// mxmlSaveFile( hTree, cFileName, @whitespace_cb() )
+// xArchivo := space(1500)
+ // mxmlSaveFile( cRespuesta, "out.xml", @whitespace_cb())
+// nArchivo  := mxmlSaveString( cRespuesta,@xArchivo, MXML_NO_CALLBACK )
+// IF ( nNum := mxmlSaveString( hTree, @cStr, @whitespace_cb() ) ) > 0
+      // OutStd( cStr + hb_eol() )
+   // ENDIF
+  msgInfo(cRespuesta)
+ // msgInfo(xArchivo)
+ 
+ /*	cContenido := memotran(hb_memoRead(cArchivo+".xml"))
 	//msginfo(cContenido)
 	aLineasL := hb_atokens(cContenido,";")
+	*/
 	
-	if hb_atokens(aLineasL[1],"|")[2] == "AE"
-		actualizaFE(nIdMov, aLineasL[2])
+	aLineasL:= cValTag(cRespuesta,"a:Descripcion")+"|"+cValTag(cRespuesta,"a:Serie")+"|"+cValTag(cRespuesta,"a:Numero")+"|"+cValTag(cRespuesta,"a:Hash")
+	
+	if val(cValTag(cRespuesta,"a:Codigo")) = 0
+		
+		actualizaFE(nIdMov, aLineasL)
+		
 	else
-		msgInfo(" Devolucion de Errores"+chr(13)+hb_atokens(aLineasL[2],"|")[4])
+		msgInfo(" Devolucion de Errores"+chr(13)+hb_atokens(aLineasL,"|")[1])
 		return .f.
-	endif*/
+	endif
 else
 	return .f.
 //run(cExeFile+" -print-to-default -exit-on-print "+cArchivo+".pdf")
@@ -110,6 +165,14 @@ else
 endif
 
 return .t.
+
+function cValTag(cXml,cTag)
+local cValue:=''
+
+posicion:= hb_ati(cTag,cxml)+ len(cTag+">")
+posicionF:= hb_ati("</"+cTag,cxml)
+cValue:= substr(cxml,posicion,posicionF-posicion)
+return cValue
 
 function actualizaFE(nIdMov, clinea2)
 local oQuery, cQuery
@@ -187,9 +250,9 @@ local cIdMov := str(oIdMov:getRow(1):fieldGet(1))
 local cfecha := dtos(date())
 cfecha := substr(cfecha,1,4)+"-"+substr(cfecha,5,2)+"-"+substr(cfecha,7,2)
 
-cLinea :="<?xml version="+"1.0"+" encoding="+"UTF-8"+" ?>"+chr(13)+chr(10)
-cLinea +="<nsAdenda:CFE_Adenda xmlns:nsAdenda="+"http://cfe.dgi.gub.uy"+">"+chr(13)+chr(10)
-cLinea +="<nsAd:CFE version="+"1.0"+" xmlns:nsAd="+"http://cfe.dgi.gub.uy"+">"+chr(13)+chr(10)
+cLinea :='<?xml version="1.0" encoding="UTF-8" ?>'+chr(13)+chr(10)
+cLinea +='<nsAdenda:CFE_Adenda xmlns:nsAdenda="http://cfe.dgi.gub.uy">'+chr(13)+chr(10)
+cLinea +='<nsAd:CFE version="1.0" xmlns:nsAd="http://cfe.dgi.gub.uy">'+chr(13)+chr(10)
 cLinea +="<nsAd:eFact>"+chr(13)+chr(10)
 //msginfo(cLinea)
 fwrite(parchivo,clinea)
@@ -206,8 +269,9 @@ local cNumero :=  oIdMov:getRow(1):fieldGet(3)
 //set( _SET_DATEFORMAT, "yyyy-mm-dd" ) 
 local cLinea := "<nsAd:IdDoc>"+chr(13)
 cLinea += "<nsAd:TipoCFE>"+str(cTipoCFE)+"</nsAd:TipoCFE>"+chr(13)
-cLinea += "<nsAd:Serie>"+cSerie+"</nsAd:Serie>"+chr(13)
-cLinea += "<nsAd:Nro>"+str(cNumero)+"</nsAd:Nro>"+chr(13)
+// cLinea += "<nsAd:TipoCFE>111</nsAd:TipoCFE>"+chr(13)
+cLinea += "<nsAd:Serie></nsAd:Serie>"+chr(13)
+cLinea += "<nsAd:Nro></nsAd:Nro>"+chr(13)
 cLinea += "<nsAd:FchEmis>"+substr(cFechaEmision,1,4)+"-"+substr(cFechaEmision,5,2)+"-"+substr(cFechaEmision,7,2)+"</nsAd:FchEmis>"+chr(13)
 cLinea += "<nsAd:MntBruto>1</nsAd:MntBruto>"+chr(13)
 cLinea += "<nsAd:FmaPago>"+str(cFormaPago)+"</nsAd:FmaPago>"+chr(13)
@@ -253,12 +317,12 @@ local cCodPaisR := "UY" //modificar la base de Empresa o Persona
 local cDocR :=  hb_atokens(aSocio,"|")[2]
 local cRazonR := hb_atokens(aSocio,"|")[3]
 local cDirR := alltrim(hb_atokens(aSocio,"|")[4])
-local cCiuR := hb_atokens(aSocio,"|")[5]//"PAYSANDU"//oIdMov:getRow(1):fieldGet(1)
+local cCiuR := alltrim(hb_atokens(aSocio,"|")[5])//"PAYSANDU"//oIdMov:getRow(1):fieldGet(1)
 local cDepR := "PAYSANDU"//oIdMov:getRow(1):fieldGet(1)
 local cCompraId := ""//oIdMov:getRow(1):fieldGet(1)
 local cPaisR := "URUGUAY"//oIdMov:getRow(1):fieldGet(1)
 local cLinea :=""
-
+// msgInfo(aSocio)
 if alltrim(cTipoDocR) == '3'
 	// if formatoCedula(hb_atokens(aSocio,"|")[2])
 		// cDocR := hb_atokens(aSocio,"|")[2]
@@ -268,8 +332,10 @@ if alltrim(cTipoDocR) == '3'
 endif
 cLinea +="<nsAd:Receptor>"+chr(13)
 cLinea +="<nsAd:TipoDocRecep>"+cTipoDocR+"</nsAd:TipoDocRecep>"+chr(13)
+// cLinea +="<nsAd:TipoDocRecep>2</nsAd:TipoDocRecep>"+chr(13)
 cLinea +="<nsAd:CodPaisRecep>"+cCodPaisR+"</nsAd:CodPaisRecep>"+chr(13)
 cLinea +="<nsAd:DocRecep>"+cDocR+"</nsAd:DocRecep>"+chr(13)
+// cLinea +="<nsAd:DocRecep>120130820017</nsAd:DocRecep>"+chr(13)
 cLinea +="<nsAd:RznSocRecep>"+cRazonR+"</nsAd:RznSocRecep>"+chr(13)
 cLinea +="<nsAd:DirRecep>"+cDirR+"</nsAd:DirRecep>"+chr(13)
 cLinea +="<nsAd:CiudadRecep>"+cCiuR+"</nsAd:CiudadRecep>"+chr(13)
@@ -283,23 +349,49 @@ cLinea +="</nsAd:Receptor>"+chr(13)
 fwrite(parchivo,clinea)
 return .t.
 
-function linea5(pArchivo,oIdMov)
+function linea5(pArchivo,nIdMov,nTotalLineas)
+Local oDetalle := oDetalleFactura(nIdMov)//los detalles de cada factura Electronica**CAmbiar por otro que traiga los totales por tipo ind de facturacion
 local cMoneda := "UYU"//(oIdMov:getRow(1):fieldGet(1)
 local cIvaBas :=alltrim(PARAMETROini("FEIVABASE","C"))
 local cIvaMin := alltrim(PARAMETROini("FEIVAMIN","C"))
 local cLinea := "<nsAd:Totales>"+chr(13)
+local nMntNoGrv:=0.00
+local nMntIvaBasico:=0.00
+local nMntIvaMinimo:=0.00
+local nIvaBasico:=0.00
+local nIvaMinimo:=0.00
+local nMntTotal:= 0.00
+local nLineas := oDetalle:lastRec()
+
+for i = 1 to oDetalle:lastRec()
+	do case
+		case oDetalle:getRow(i):fieldGet(5) = 0
+			nMntNoGrv +=oDetalle:getRow(i):fieldGet(4) 
+			nMntTotal += oDetalle:getRow(i):fieldGet(4) 
+		case oDetalle:getRow(i):fieldGet(5) = 10
+			nMntIvaMinimo += oDetalle:getRow(i):fieldGet(4)
+			nIvaMinimo += round(oDetalle:getRow(i):fieldGet(4) * (oDetalle:getRow(i):fieldGet(5) / 100),2)
+			nMntTotal += round(oDetalle:getRow(i):fieldGet(4) * (1+(oDetalle:getRow(i):fieldGet(5) / 100)),0)
+		case oDetalle:getRow(i):fieldGet(5) = 22
+			nMntIvaBasico += oDetalle:getRow(i):fieldGet(4)
+			nIvaBasico += round( oDetalle:getRow(i):fieldGet(4)* (oDetalle:getRow(i):fieldGet(5) / 100),2)
+			nMntTotal += round(oDetalle:getRow(i):fieldGet(4) * (1+(oDetalle:getRow(i):fieldGet(5) / 100)),0)
+	endcase
+	
+next
+
 cLinea +="<nsAd:TpoMoneda>UYU</nsAd:TpoMoneda>"+chr(13)
-cLinea +="<nsAd:MntNoGrv></nsAd:MntNoGrv>"+chr(13)
-cLinea +="<nsAd:MntNetoIvaTasaMin></nsAd:MntNetoIvaTasaMin>"+chr(13)
-cLinea +="<nsAd:MntNetoIVATasaBasica></nsAd:MntNetoIVATasaBasica>"+chr(13)
+cLinea +="<nsAd:MntNoGrv>"+alltrim(str(nMntNoGrv))+"</nsAd:MntNoGrv>"+chr(13)
+cLinea +="<nsAd:MntNetoIvaTasaMin>"+alltrim(str(nMntIvaMinimo))+"</nsAd:MntNetoIvaTasaMin>"+chr(13)
+cLinea +="<nsAd:MntNetoIVATasaBasica>"+alltrim(str(nMntIvaBasico))+"</nsAd:MntNetoIVATasaBasica>"+chr(13)
 cLinea +="<nsAd:IVATasaMin>"+cIvaMin+"</nsAd:IVATasaMin>"+chr(13)
 cLinea +="<nsAd:IVATasaBasica>"+cIvaBas+"</nsAd:IVATasaBasica>"+chr(13)
-cLinea +="<nsAd:MntIVATasaMin></nsAd:MntIVATasaMin>"+chr(13)
-cLinea +="<nsAd:MntIVATasaBasica></nsAd:MntIVATasaBasica>"+chr(13)
-cLinea +="<nsAd:MntTotal></nsAd:MntTotal>"+chr(13)
-cLinea +="<nsAd:CantLinDet></nsAd:CantLinDet>"+chr(13)
-cLinea +="<nsAd:MontoNF></nsAd:MontoNF>"+chr(13)
-cLinea +="<nsAd:MntPagar></nsAd:MntPagar>"+chr(13)
+cLinea +="<nsAd:MntIVATasaMin>"+alltrim(str(nIvaMinimo))+"</nsAd:MntIVATasaMin>"+chr(13)
+cLinea +="<nsAd:MntIVATasaBasica>"+alltrim(str(nIvaBasico))+"</nsAd:MntIVATasaBasica>"+chr(13)
+cLinea +="<nsAd:MntTotal>"+alltrim(str(nMntTotal))+"</nsAd:MntTotal>"+chr(13)
+cLinea +="<nsAd:CantLinDet>"+alltrim(str(nLineas))+"</nsAd:CantLinDet>"+chr(13)
+cLinea +="<nsAd:MontoNF>0.0</nsAd:MontoNF>"+chr(13)
+cLinea +="<nsAd:MntPagar>"+alltrim(str(nMntTotal))+"</nsAd:MntPagar>"+chr(13)
 cLinea +="</nsAd:Totales>"+chr(13)
 
 
@@ -311,9 +403,10 @@ return .t.
 
 function linea6(pArchivo,nIdMov)
 Local oDetalle := oDetalleFactura(nIdMov)//los detalles de cada factura Electronica
-local cLinea := "",cCuota := "", cCant := "", cUnidad := "", cPrecUnit := ""
+local cLinea := "",cCuota := "", cCant := "", cUnidad := "", cPrecUnit := 0.00
 local cIndica := "", cDescPor :="",cDescMon := "",cRecPor := "", cRecMon := ""
 local cMontoItem := "0",cDescExt := "",cDescArt:= ""
+local nTotalLineas := 0
 
 	// " select d.item,d.codigo_barra, d.cantidad,d.precio_unitario,d.cfe_ind_fact,d.descripcion,ca.tipoCFE "
 
@@ -329,16 +422,16 @@ for i = 1 to oDetalle:lastRec()
 								
 		cCant := oDetalle:getRow(i):fieldGet(3)
 		cUnidad := "UN"
-		cPrecUnit := oDetalle:getRow(i):fieldGet(4)
-		cIndica := oDetalle:getRow(i):fieldGet(5)
+		cPrecUnit :=  round(oDetalle:getRow(i):fieldGet(4) * (1+(oDetalle:getRow(i):fieldGet(5) / 100)),0)
+		cIndica := cfeIndFacturacion(oDetalle:getRow(i):fieldGet(5))
 		cLinea += "<nsAd:Item>"+chr(13)
         cLinea += "<nsAd:NroLinDet>"+alltrim(str(i))+"</nsAd:NroLinDet>"+chr(13)
         cLinea += "<nsAd:IndFact>"+str(cIndica)+"</nsAd:IndFact>"+chr(13)
         cLinea += "<nsAd:NomItem>"+cDescArt+"</nsAd:NomItem>"+chr(13)
         cLinea += "<nsAd:Cantidad>"+str(cCant)+"</nsAd:Cantidad>"+chr(13)
         cLinea += "<nsAd:UniMed>"+cUnidad+"</nsAd:UniMed>"+chr(13)
-        cLinea += "<nsAd:PrecioUnitario>"+str(cPrecUnit)+"</nsAd:PrecioUnitario>"+chr(13)
-        cLinea += "<nsAd:MontoItem>"+cMontoItem+"</nsAd:MontoItem>"+chr(13)
+        cLinea += "<nsAd:PrecioUnitario>"+alltrim(str(cPrecUnit))+"</nsAd:PrecioUnitario>"+chr(13)
+        cLinea += "<nsAd:MontoItem>"+alltrim(str(cPrecUnit))+"</nsAd:MontoItem>"+chr(13)
         cLinea += "</nsAd:Item>"+chr(13)
 		
 		// cLinea := "6|"+alltrim(str(i))+"|"+str(cIndica)+"|"+cDescArt+"|"+str(cCant)+"|"+cUnidad+"|"+str(cPrecUnit)+"|"+;
@@ -385,7 +478,8 @@ return .t.
 
 function linea10(pArchivo,oIdMov)
 local cAdenda := strtran(oIdMov:getRow(1):fieldGet(15),chr(13)," ")
-local cLinea := "<nsAdenda:Adenda>"+cAdenda+"</nsAdenda:Adenda>"+chr(13)
+// local cLinea := "<nsAdenda:Adenda>"+cAdenda+"</nsAdenda:Adenda>"+chr(13)
+local cLinea := "<nsAdenda:Adenda>  </nsAdenda:Adenda>"+chr(13)
 // "10|"+cAdenda//+chr(13)+chr(10)
 
 fwrite(parchivo,cLinea)
@@ -699,7 +793,7 @@ function cfeIndFacturacion(nidIndice)
 local oQuery
 local cQuery
 
-cQuery := "select cfe_ind_fact  from servicio where id_servicio = "+str(nidIndice)+"  "
+cQuery := "select id_indicador  from cfe_ind_facturacion where valor= "+str(nidIndice)+"  "
 oQuery := oServer:Query(cQuery)
  If oQuery:NetErr() 
     MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
@@ -816,13 +910,13 @@ return .f.
 *********************                                   && EJECUTA EL WS
 FUNCTION fHttpExecute(_url,_soapaction,cxml,_ssl)
 LOCAL _hcurl, curlErr
-LOCAL aHeader, _cc:=""
+LOCAL aHeader, cc1:=""
 
 // DEFAULT _ssl to .F.
 
 aHeader := {}
 
-AADD(aHeader,'Accept-Encoding: gzip,deflate')
+//AADD(aHeader,'Accept-Encoding: gzip,deflate')
 AADD(aHeader,'Content-Type: text/xml;charset="UTF-8"')
 AADD(aHeader,_soapaction)
 AADD(aHeader,"Connection: Keep-Alive")
@@ -851,31 +945,32 @@ IF !EMPTY(_hcurl)
    curl_easy_setopt(_hcurl, HB_CURLOPT_SSL_VERIFYHOST, IIF(_ssl,1,0))
 
 
-// VER PROGRESO PARA DEBUG
-/*   CLS
-   ?
-   curl_easy_setopt(_hcurl, HB_CURLOPT_VERBOSE, .t. )
-*/
+curlErr := curl_easy_perform(_hcurl)
+	if empty(curlErr)
+	/* store response in variable */
+		cc1 := curl_easy_dl_buff_get( _hcurl )
+	else
+		msgInfo( curl_easy_strerror(curlErr))
+	endif
 
-	WHILE .T.
-		curlErr := curl_easy_perform(_hcurl)
-		IF curlErr=0
-			_cc := curl_easy_dl_buff_get( _hcurl )
-			EXIT
-		ELSE
-			IF ALERT("ERROR WS:; ;"+_url+"; ;"+curl_easy_strerror(curlErr)+"; ;No hay conexion...",{"Reintentar","Salir"},"R/W*+")#1
-				EXIT
-			ENDIF
-		ENDIF
-	ENDDO
-ELSE
-   ALERT("ERROR WS:; ;NO HAY handle")
-ENDIF
+else
+
+msgInfo( "No handle")
+
+endif
 
 curl_easy_cleanup(_hcurl)
-IF !EMPTY(_hcurl)
-   curl_global_cleanup( _hcurl )
-ENDIF
 
-?hb_gcAll()
-RETURN _cc
+if !empty(_hcurl)
+	/* Clean-up libcurl */
+	curl_global_cleanup( _hcurl )
+else
+	msgInfo("Error vacio")
+endif
+// msginfo(str(len(cc1)))
+if empty(cc1)
+	msgInfo("Error no devolvio nada")
+endif
+
+return cc1
+	

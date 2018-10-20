@@ -40,17 +40,10 @@ local cFechaAnular:= 	PARAMETROini("FECHANULAR","C")
   
         case vpc == 'l'
           conveniopagocobrador.frame_1.caption := 'Facturas'
-          cQuery := " select f.numero_factura,d.descripcion,date_format(f.fecha,'%d/%m/%Y') "
-          cQuery += " from factura_cliente_cab f,documento d"
-          cQuery += " where d.id_documento = f.tipo_documento "
-          cQuery += " and f.anulado = 'N' "
-          cQuery += " and date(f.fecha) = "+cFechaAnular+" "
-          cQuery += " union all " 
-          cQuery += " select r.id_recibo, d.descripcion, date_format(r.fecha,'%d/%m/%Y') "
-          cQuery += " from recibo_cliente_cab r, documento d "
-          cQuery += " where d.id_documento = r.tipo_documento "
-          cQuery += " and r.anulado ='N' "
-          cQuery += " and date(r.fecha) = "+cFechaAnular+" "
+          cQuery := " select f.id_factura,d.descripcion,date_format(f.fecha,'%d/%m/%Y') "
+          cQuery += " from cfe_comprobante_cab f,cfe_tipos d"
+          cQuery += " where f.tipoCFE = d.id_cfe "         
+          cQuery += " and date(f.fecha) = "+cFechaAnular+" "        
           cQuery += " order by 3 desc ,1 desc  "
         case vpc == 'n'
           conveniopagocobrador.frame_1.caption := 'Documentos Por Número'

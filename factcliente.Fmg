@@ -35,6 +35,38 @@ DEFINE WINDOW TEMPLATE AT 213 , 325 WIDTH 918 HEIGHT 557 VIRTUAL WIDTH Nil VIRTU
         VALUE Nil
     END TEXTBOX
 
+    DEFINE TEXTBOX Text_18
+        ROW    145
+        COL    20
+        WIDTH  60
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER buscarVendedor()
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .T.
+        DISABLEDBACKCOLOR Nil
+        DISABLEDFONTCOLOR Nil
+        CASECONVERT NONE
+        BACKCOLOR NIL
+        FONTCOLOR NIL
+        INPUTMASK Nil
+        FORMAT Nil
+        NUMERIC .T. 
+        VALUE Nil
+    END TEXTBOX
+
     DEFINE TEXTBOX Text_6
         ROW    200
         COL    10
@@ -293,38 +325,6 @@ DEFINE WINDOW TEMPLATE AT 213 , 325 WIDTH 918 HEIGHT 557 VIRTUAL WIDTH Nil VIRTU
         FONTCOLOR NIL
         OPAQUE .T.
     END FRAME
-
-    DEFINE TEXTBOX Text_18
-        ROW    145
-        COL    20
-        WIDTH  60
-        HEIGHT 24
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        ONCHANGE Nil
-        ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        ONENTER buscarVendedor()
-        HELPID Nil
-        TABSTOP .T.
-        VISIBLE .T.
-        READONLY .F.
-        RIGHTALIGN .T.
-        DISABLEDBACKCOLOR Nil
-        DISABLEDFONTCOLOR Nil
-        CASECONVERT NONE
-        BACKCOLOR NIL
-        FONTCOLOR NIL
-        INPUTMASK Nil
-        FORMAT Nil
-        NUMERIC .T. 
-        VALUE Nil
-    END TEXTBOX
 
     DEFINE TEXTBOX Text_19
         ROW    145

@@ -136,8 +136,8 @@ procedure realizarAccion()
 
 do case 
 	case  documentogen.text_4.value =="IMPRIMIR"
-	
-		imprimoMovimiento(documentogen.text_6.value,1,'','','')
+		imprimoPDF(documentogen.text_6.value)
+		// imprimoMovimiento(documentogen.text_6.value,1,'','','')
 	
 	case documentogen.text_4.value =="ANULAR"
 		nCajero := anulacion()

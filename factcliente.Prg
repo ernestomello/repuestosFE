@@ -159,10 +159,16 @@ nCliente:= factCliente.text_1.value
 cTipoDocumento := factCliente.text_14.value
 dFechaFactura := factCliente.datePicker_1.value
 nTotalFactura:= factCliente.text_5.value
-cDescripcion :=factCliente.text_13.value
+cAdenda :=factCliente.text_13.value
 nCaja := cajaId()
 nVendedor := factCliente.text_18.value
 nFormaPago := factCliente.text_21.value
+
+if nCliente = 0 .and. (cTipoDocumento = 111 .or. cTipoDocumento = 112)
+	cDescripcion := "2|"+factCliente.text_2.value+"|"+factCliente.text_3.value+"|"+factCliente.text_4.value+"|PAYSANDU"
+else
+	cDescripcion :=""
+endif
 
 	
 
@@ -197,7 +203,7 @@ endif
 
 
 if !graboFactClienteCabezal(nNumero ,nCaja,nCliente, cTipoDocumento,;
-														nTotalFactura,dFechaFactura,cDescripcion,nVendedor,nFormaPago)
+														nTotalFactura,dFechaFactura,cDescripcion,nVendedor,nFormaPago,cAdenda)
   msgInfo('No se pudieron grabar los datos, REINTENTE!!!')
 	return .f.
 endIf
@@ -229,6 +235,10 @@ finTransaccion()
 
 if ! facturaElectronica(nNumero,.f.,.f.)
 	msgInfo("no se pudo guardar el documento en DGI")
+endif
+
+if !imprimoMovimiento(nNumero)
+	msgInfo("No se pudo imprimir el Documento, Reintente")
 endif
 /*
 if factCliente.text_14.value = 101
@@ -280,7 +290,7 @@ endIf
 
 if len(factCliente.text_13.value)  < 4 .and. factCliente.text_21.value = 2
 	msgBox("Ingrese un Comentario")
-	factCliente.text_18.SetFocus
+	factCliente.text_13.SetFocus
 	return .f.
 endIf
 
@@ -466,7 +476,7 @@ endif
 *************************************************
 *************************************************
 
-function graboFactClienteCabezal(nNumero,nCaja,nCliente, nTipoDocumento,nImporte,dFechaFactura,cDescripcion,nVendedor,nFormaPago)
+function graboFactClienteCabezal(nNumero,nCaja,nCliente, nTipoDocumento,nImporte,dFechaFactura,cDescripcion,nVendedor,nFormaPago,cAdenda)
 local cQuery, oQuery
 
 	  
@@ -474,7 +484,7 @@ cQuery := " Insert into cfe_comprobante_cab values "
 cQuery += " ("+str(nNumero)+",'',0,"+str(nTipoDocumento)+","+str(nCaja)+", '"+dtos(dFechaFactura)+"', "
 cQuery += " "+str(nCliente)+","+str(nVendedor)+", "+str(nImporte)+" , "
 iif(nFormaPago = 2, cQuery += "  "+str(nImporte)+",  ", cQuery += " 0 ,")
-cQuery += " '"+cDescripcion+"' , current_timestamp , "+str(nFormaPago)+" ,null , null)"
+cQuery += " '"+cDescripcion+"' , current_timestamp , "+str(nFormaPago)+" ,null , '"+cAdenda+"' )"
 
 oQuery:= oServer:Query(  cQuery )
 If oQuery:NetErr() 

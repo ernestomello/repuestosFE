@@ -11,6 +11,7 @@ Function main()
 	Public 	oServer			:= 	Nil 
 	Public	cServidorSQL_nombre	:=	PARAMETROini("MYSQL_Servidor","C")
 	Public	cServidorSQL_usuario	:=lower(GetEnv( "USERNAME" ))
+	public exePDF := PARAMETROini("EXEPDF","C")
 	Public	cServidorSQL_Estado	:=	'S/D'
 	Public  cSucursal 		:= 	PARAMETROini("Sucursal","C")
 	Public nSocioGlobal := 0

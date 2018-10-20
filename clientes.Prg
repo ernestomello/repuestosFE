@@ -506,7 +506,7 @@ local cQuery
 local oQuery
 
 
-cQuery := " select concat(if(c.consumo_final = 0,3,2),'|',c.rut,'|',c.razon_social,'|',c.direccion_particular,'|','PAYSANDU') "
+cQuery := " select concat(if(c.consumo_final = 0,2,3),'|',c.rut,'|',c.razon_social,'|',c.direccion_particular,'|','PAYSANDU') "
 cQuery += " from cliente c  "
 cQuery += " where c.id_cliente = "+str(nIdCliente)+" "
 
@@ -514,7 +514,7 @@ oQuery := oServer:Query(cQuery)
 if oQuery:NetErr()												
   MsgInfo("Error executing Query "+cQuery+": "+ oQuery:Error())
 endif
-if oQuery:lastRec() > 1
+if oQuery:lastRec() > 0
 	return oQuery:GetRow(1):fieldget(1)
 else
 	return "3||||"

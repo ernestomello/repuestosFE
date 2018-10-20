@@ -6,4 +6,6 @@ instpaths=
 libs=hbcurls
 libs=hbcurl
 libs=libcurl
+libs=hbmxml
+libs=mxml
 
