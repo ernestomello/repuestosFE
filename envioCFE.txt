@@ -1,12 +1,4 @@
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:cxml="http://tempuri.org/">
-<soapenv:Header/>
-<soapenv:Body>
-<cxml:EnvioCFE>
-<cxml:nomusuario>erp2</cxml:nomusuario>
-<cxml:clave>erp2</cxml:clave>
-<cxml:tenant>morale</cxml:tenant>
-<cxml:cliente></cxml:cliente>
-<cxml:cfexml><![CDATA[<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <nsAdenda:CFE_Adenda xmlns:nsAdenda="http://cfe.dgi.gub.uy">
 <nsAd:CFE version="1.0" xmlns:nsAd="http://cfe.dgi.gub.uy">
 <nsAd:eFact>
@@ -26,14 +18,4 @@
 <nsAd:FechaCFEref>2018-08-28</nsAd:FechaCFEref>
 </nsAd:Referencia>
 </nsAd:Referencia>
-<nsAd:DscRcgGlobal></nsAd:DscRcgGlobal><nsAd:CAEData><nsAd:CAE_ID>1</nsAd:CAE_ID><nsAd:DNro>1</nsAd:DNro><nsAd:HNro>1</nsAd:HNro><nsAd:FecVenc></nsAd:FecVenc></nsAd:CAEData></nsAd:eFact></nsAd:CFE><nsAdenda:Adenda>  </nsAdenda:Adenda></nsAdenda:CFE_Adenda>]]></cxml:cfexml>
-<cxml:referenciaERP>326282</cxml:referenciaERP>
-<cxml:devolverQR>0</cxml:devolverQR>
-<cxml:sizeQR>10</cxml:sizeQR>
-<cxml:impprime>0</cxml:impprime>
-<cxml:template>Uso General</cxml:template>
-<cxml:devolverXML>0</cxml:devolverXML>
-<cxml:version>1.34.7</cxml:version>
-</cxml:EnvioCFE>
-</soapenv:Body>
-</soapenv:Envelope>
+<nsAd:DscRcgGlobal></nsAd:DscRcgGlobal><nsAd:CAEData><nsAd:CAE_ID>1</nsAd:CAE_ID><nsAd:DNro>1</nsAd:DNro><nsAd:HNro>1</nsAd:HNro><nsAd:FecVenc></nsAd:FecVenc></nsAd:CAEData></nsAd:eFact></nsAd:CFE><nsAdenda:Adenda>  </nsAdenda:Adenda></nsAdenda:CFE_Adenda>

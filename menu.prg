@@ -3,21 +3,27 @@
         
 		
 Function main() 
-	Public	cNroVersionAplicacion	:=	"2." + __DATE__ +"."+SUBST(__TIME__,1,2)+SUBST(__TIME__,4,2)
+	Public	cNroVersionAplicacion	:=	"3." + __DATE__ +"."+SUBST(__TIME__,1,2)+SUBST(__TIME__,4,2)
 	Public	cNombreTerminal		:=	GetEnv( "COMPUTERNAME" ) 
 	Public	cDirInicioAplicacion	:=	"C:\dm\nuevo" //PARAMETROini("DIR_APLICACION","C") //
-	Public	cDirDatos		:=	PARAMETROini("DIR_DBFs","C")
-  Public  cNombreEmpresa := PARAMETROini("EMPRESA","C")
 	Public 	oServer			:= 	Nil 
 	Public	cServidorSQL_nombre	:=	PARAMETROini("MYSQL_Servidor","C")
 	Public	cServidorSQL_usuario	:=lower(GetEnv( "USERNAME" ))
-	public exePDF := PARAMETROini("EXEPDF","C")
 	Public	cServidorSQL_Estado	:=	'S/D'
-	Public  cSucursal 		:= 	PARAMETROini("Sucursal","C")
-	Public nSocioGlobal := 0
-	Public cArticuloGlobal := ""
+	Public  cSucursal:= 	PARAMETROini("Sucursal","C")
+	Public  nSocioGlobal := 0
+	Public  cArticuloGlobal := ""
 	//para FE
-	 Public cDirFE		:=	PARAMETROini("DIR_FE","C")
+	Public  esFacturaElectronica := PARAMETROini("FACTURAE","L")
+	Public  cNombreEmpresa := PARAMETROini("EMPRESA","C")
+	Public  cDirFE		:=	PARAMETROini("DIR_FE","C")
+	Public  exePDF := PARAMETROini("EXEPDF","C")
+	Public  cRutEmisior := PARAMETROini("FERUTEMISOR","C")
+	Public  cRazonEmisior := PARAMETROini("FERAZONEMISOR","C")
+	Public  cDGIEmisior := PARAMETROini("FEDGIEMISOR","C")
+	Public  cDirEmisior := PARAMETROini("FEDIREMISOR","C")
+	Public  cCiuEmisior := PARAMETROini("FECIUEMISOR","C")
+	Public  cDepEmisior := PARAMETROini("FEDEPEMISOR","C")
 	 
 	
 	SeteoAmbiente() 

@@ -180,8 +180,10 @@ endif
 if !msgYesNo("Graba la Factura?","ATENCIÓN",.t.)
 	return .f.
 endif
+info_("Guardando en la Base de Datos ...")
 
 if !comienzoTransaccion()
+	WAIT CLEAR
 	msginfo("No se pudo guardar. REINTENTE! ! !")
 	return .f.
 endIf
@@ -189,12 +191,14 @@ endIf
 nNumero:= numeroDesde('CLIENTE')  	
 
 if !agregoNumeroDesde('CLIENTE')
+	WAIT CLEAR
 	msginfo("No se pudo actualizar el Número de la Factura")
 	return .f.
 endIf
 
 
 if nNumero == 0
+	WAIT CLEAR
 	msgInfo("No se pudo Guardar el Número. Reintente!!!")
 	return .f.
 endif
@@ -204,7 +208,8 @@ endif
 
 if !graboFactClienteCabezal(nNumero ,nCaja,nCliente, cTipoDocumento,;
 														nTotalFactura,dFechaFactura,cDescripcion,nVendedor,nFormaPago,cAdenda)
-  msgInfo('No se pudieron grabar los datos, REINTENTE!!!')
+	WAIT CLEAR
+	msgInfo('No se pudieron grabar los datos, REINTENTE!!!')
 	return .f.
 endIf
 //nFactura := ultimoId()
@@ -223,6 +228,7 @@ if facturaClienteConDetalle()
 			nImporte := factCliente.grid_1.cell(i,8)
 			if !graboFactClienteDetalle(nNumero ,i,cCodigo,nCantidadArt,nPrecioUnitario,;
 																	nIva,nDto,nImporte)
+				WAIT CLEAR
 				msgInfo("No se pudieron Guardar el detalle de la Factura. Reintente!!!")
 				return .f.
 			endIf
@@ -231,30 +237,23 @@ if facturaClienteConDetalle()
 endIf
 
 
-finTransaccion()
+
+info_("Registrando Documeto en DGI...")
 
 if ! facturaElectronica(nNumero,.f.,.f.)
-	msgInfo("no se pudo guardar el documento en DGI")
+	WAIT CLEAR
+	msgInfo("No se pudo guardar el documento en DGI, Reintente!!!")	
+	return .f.
 endif
-
+finTransaccion()
+info_("Imprimiendo Documento ...")
 if !imprimoMovimiento(nNumero)
+	WAIT CLEAR
 	msgInfo("No se pudo imprimir el Documento, Reintente")
+	return .f.
 endif
-/*
-if factCliente.text_14.value = 101
-	if factCliente.text_1.value = 0
-		imprimoMovimiento(nNumero,0,factCliente.text_2.value,factCliente.text_3.value,factCliente.text_4.value)
-	else
-		imprimoMovimiento(nNumero,0,'','','')
-	endif
 
-else
-	imprimoMovimiento(nNumero,0,'','','')
-endif
-*/
-//factCliente.grid_1.deleteAllItems
 cereoFormulario()
-//vacioDatosSociofactCliente()
 factCliente.text_1.SetFocus
 return .t.
 
@@ -520,9 +519,9 @@ endIf
 function facturaClienteCabezal(nFactura)
 local cQuery, oQuery
 
-cQuery := " select id_factura,fecha,id_cliente,tipoCFE,descripcion,serieCFE,numeroCFE " 
-cQuery += " from cfe_comprobante_cab "
-cQuery += " where id_factura = "+str(nFactura)+" "
+cQuery := " select c.id_factura,c.fecha,c.id_cliente,c.tipoCFE,c.descripcion,c.serieCFE,c.numeroCFE,c.forma_pago,t.cantidad_copias " 
+cQuery += " from cfe_comprobante_cab c, cfe_tipos t"
+cQuery += " where t.id_cfe = c.tipoCFE and c.id_factura = "+str(nFactura)+"  "
 
 oQuery:= oServer:Query(cQuery)
 

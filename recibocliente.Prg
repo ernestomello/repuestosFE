@@ -176,9 +176,8 @@ endIf
 			return .f.
 		endIf
 		// if !guardoCabezalreciboCliente(nNumeroR,cajaId(),reciboCliente.text_1.value,98,reciboCliente.text_6.value,reciboCliente.datePicker_1.value,"",0,1)
-		if !graboFactClienteCabezal(nNumeroR,cajaId(),reciboCliente.text_1.value,98,reciboCliente.text_6.value,reciboCliente.datePicker_1.value,"",0,1)
-			//graboFactClienteCabezal(nNumero,nCaja,nCliente, nTipoDocumento,nImporte,dFechaFactura,cDescripcion,nVendedor,nFormaPago)
-
+		if !graboFactClienteCabezal(nNumeroR,cajaId(),reciboCliente.text_1.value,98,reciboCliente.text_6.value,reciboCliente.datePicker_1.value,"",0,1,"")
+				// (nNumero,nCaja,nCliente, nTipoDocumento,nImporte,dFechaFactura,cDescripcion,nVendedor,nFormaPago,cAdenda)
 			msgInfo("No se pudo Guardar el Recibo. Reintente!!!")
 			return .f.
 		endIf	
@@ -211,7 +210,7 @@ endIf
 			msginfo("No se pudo actualizar el Número de la Nota de Crédito")
 			return .f.
 		endIf
-		if !graboFactClienteCabezal(nNumeroN,cajaId(),reciboCliente.text_1.value,112,reciboCliente.text_5.value,reciboCliente.datePicker_1.value,"",0,2)
+		if !graboFactClienteCabezal(nNumeroN,cajaId(),reciboCliente.text_1.value,112,reciboCliente.text_5.value,reciboCliente.datePicker_1.value,"",0,2,"")
 		// if !guardoCabezalNotaCredito(nNumeroN, cajaId(),reciboCliente.text_1.value,'N',reciboCliente.datePicker_1.value,reciboCliente.text_5.value)
 			msgInfo("No se pudo Guardar la Nota de Crédito. Reintente!!!")
 			return .f.
@@ -237,9 +236,25 @@ endIf
 		next
 	endIf
 	
+	
+	
+info_("Registrando Documeto en DGI...")
+
+if ! facturaElectronica(nNumeroN,.f.,.t.)
+	WAIT CLEAR
+	msgInfo("No se pudo guardar el documento en DGI, Reintente!!!")	
+	return .f.
+endif
 finTransaccion()
+info_("Imprimiendo Documento ...")
+if !imprimoMovimiento(nNumero)
+	WAIT CLEAR
+	msgInfo("No se pudo imprimir el Documento, Reintente")
+	return .f.
+endif
+
 iif(nNumeroR != 0,imprimoMovimiento(nNumeroR,0,'','',''),)
-iif(nNumeroN != 0, imprimoMovimiento(nNumeroN,0,'','',''),)
+//iif(nNumeroN != 0, imprimoMovimiento(nNumeroN,0,'','',''),)
 vacioDatosReciboCliente()
 reciboCliente.text_1.setfocus
 

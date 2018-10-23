@@ -219,36 +219,40 @@ endIf
 function imprimoMovimiento(nFactura,copia,cRut,cNombre,cDireccion)
 local nTipoDocumento := tipoDocumento(nFactura)
 
-if nTipoDocumento = 81 .or. nTipoDocumento = 91
+if nTipoDocumento = 81 .or. nTipoDocumento = 91 .or. nTipoDocumento = 98
 	if msgYesNo("Imprime el documento?",,.t.)
 		imprimoEnLaser(nFactura,copia,cRut,cNombre,cDireccion)
 	endif
 else
-	imprimoPDF(nFactura)
-	//imprimoEnMatriz(nFactura,copia,cRut,cNombre,cDireccion)
+	if esFacturaElectronica
+		imprimoPDF(nFactura)
+	else
+		imprimoEnMatriz(nFactura,copia,cRut,cNombre,cDireccion)
+	endif
 endif
 
 function imprimoPDF(nFactura)
-oCabezal :=facturaClienteCabezal(nFactura)
+local oCabezal :=facturaClienteCabezal(nFactura)
+local nCantCopias := iif(oCabezal:getRow(1):fieldGet(8) = 1,1,2)
 
-xml:='<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/" xmlns:sic="http://schemas.datacontract.org/2004/07/SICFEContract">'
-xml+="   <soapenv:Header/>"
-xml+="   <soapenv:Body>"
-xml+="      <tem:ObtenerPDF>"
-xml+="         <tem:nomusuario>erp2</tem:nomusuario>"
-xml+="         <tem:clave>erp2</tem:clave>"
-xml+="         <tem:p_idCFE>"
-xml+="            <sic:Numero>"+str(oCabezal:getRow(1):fieldGet(7))+"</sic:Numero>"
-xml+="            <sic:Serie>"+oCabezal:getRow(1):fieldGet(6)+"</sic:Serie>"
-xml+="            <sic:Tipo>"+str(oCabezal:getRow(1):fieldGet(4))+"</sic:Tipo>"
-xml+="            <sic:observado>0</sic:observado>"
-xml+="            <sic:rucemisor>120132110017</sic:rucemisor>"
-xml+="         </tem:p_idCFE>"
-xml+="         <tem:p_tenant>morale</tem:p_tenant>"
-xml+="         <tem:template>Uso General</tem:template>"
-xml+="      </tem:ObtenerPDF>"
-xml+="   </soapenv:Body>"
-xml+="</soapenv:Envelope>"
+xml:='<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/" xmlns:sic="http://schemas.datacontract.org/2004/07/SICFEContract">'+chr(13)
+xml+="   <soapenv:Header/>"+chr(13)
+xml+="   <soapenv:Body>"+chr(13)
+xml+="      <tem:ObtenerPDF>"+chr(13)
+xml+="         <tem:nomusuario>erp2</tem:nomusuario>"+chr(13)
+xml+="         <tem:clave>erp2</tem:clave>"+chr(13)
+xml+="         <tem:p_idCFE>"+chr(13)
+xml+="            <sic:Numero>"+str(oCabezal:getRow(1):fieldGet(7))+"</sic:Numero>"+chr(13)
+xml+="            <sic:Serie>"+oCabezal:getRow(1):fieldGet(6)+"</sic:Serie>"+chr(13)
+xml+="            <sic:Tipo>"+str(oCabezal:getRow(1):fieldGet(4))+"</sic:Tipo>"+chr(13)
+xml+="            <sic:observado>0</sic:observado>"+chr(13)
+xml+="            <sic:rucemisor>120132110017</sic:rucemisor>"+chr(13)
+xml+="         </tem:p_idCFE>"+chr(13)
+xml+="         <tem:p_tenant>morale</tem:p_tenant>"+chr(13)
+xml+="         <tem:template>Uso General</tem:template>"+chr(13)
+xml+="      </tem:ObtenerPDF>"+chr(13)
+xml+="   </soapenv:Body>"+chr(13)
+xml+="</soapenv:Envelope>"+chr(13)
 hb_memowrit("vapdf.xml",xml)
 cRespuesta := fHttpExecute("http://sicfedesa.eborne.com.uy/TEST/Services/Sicfe.svc",'SOAPAction:"http://tempuri.org/ISICFEEmisor/ObtenerPDF"',xml,.f.)
 hb_memowrit("soapanswerpdf.xml",cRespuesta)
@@ -257,7 +261,7 @@ hb_MEMOWRIT("factura.pdf",hb_base64decode(cValTag(cRespuesta,"a:Buffer")))
 
 	if val(cValTag(cRespuesta,"a:Codigo")) = 0
 		
-		EXECUTE FILE '"' + exePdf + '"' PARAMETERS  '' + "factura.pdf"
+		EXECUTE FILE '"' + exePdf + '"' PARAMETERS  '-print-to-default  factura.pdf '
 		
 	else
 		msgInfo(" Devolucion de Errores"+chr(13)+cValTag(cRespuesta,"a:Descripcion"))
