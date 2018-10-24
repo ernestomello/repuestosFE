@@ -247,7 +247,7 @@ if ! facturaElectronica(nNumeroN,.f.,.t.)
 endif
 finTransaccion()
 info_("Imprimiendo Documento ...")
-if !imprimoMovimiento(nNumero)
+if !imprimoMovimiento(nNumeroN)
 	WAIT CLEAR
 	msgInfo("No se pudo imprimir el Documento, Reintente")
 	return .f.

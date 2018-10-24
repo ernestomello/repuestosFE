@@ -49,7 +49,7 @@ if len(alltrim(oIdMov:getRow(1):fieldget(11))) != 0 .or. oIdMov:getRow(1):fieldg
 	endif
 endIf
 
-if !linea5(pArchivo,nIdMov)
+if !linea5(pArchivo,nIdMov,nTipoCFE)
 	return .f.
 endif
 fwrite(parchivo," </nsAd:Encabezado>"+chr(13))
@@ -69,8 +69,8 @@ if !linea8(pArchivo,nIdMov)
 	return .f.
 endif
 endif
-fwrite(parchivo,"<nsAd:DscRcgGlobal>"+chr(13))
-fwrite(parchivo,"</nsAd:DscRcgGlobal>"+chr(13))
+// fwrite(parchivo,"<nsAd:DscRcgGlobal>"+chr(13))
+// fwrite(parchivo,"</nsAd:DscRcgGlobal>"+chr(13))
 fwrite(parchivo,"<nsAd:CAEData>"+chr(13))
 fwrite(parchivo,"<nsAd:CAE_ID>1</nsAd:CAE_ID>"+chr(13))
 fwrite(parchivo,"<nsAd:DNro>1</nsAd:DNro>"+chr(13))
@@ -326,7 +326,7 @@ cLinea +="</nsAd:Receptor>"+chr(13)
 fwrite(parchivo,clinea)
 return .t.
 
-function linea5(pArchivo,nIdMov,nTotalLineas)
+function linea5(pArchivo,nIdMov,nTipoCFE)
 Local oDetalle := oDetalleFactura(nIdMov)//los detalles de cada factura Electronica**CAmbiar por otro que traiga los totales por tipo ind de facturacion
 local cMoneda := "UYU"//(oIdMov:getRow(1):fieldGet(1)
 local cIvaBas :=alltrim(PARAMETROini("FEIVABASE","C"))
@@ -338,21 +338,27 @@ local nMntIvaMinimo:=0.00
 local nIvaBasico:=0.00
 local nIvaMinimo:=0.00
 local nMntTotal:= 0.00
-local nLineas := oDetalle:lastRec()
+local nLineas := 0
 
+if nTipoCFE = 102 .or. nTipoCFE = 112
+	oDetalle := oDetalleFacturaDevolucion(nIdMov)
+else
+	oDetalle := oDetalleFactura(nIdMov)
+endif
+nLineas := oDetalle:lastRec()
 for i = 1 to oDetalle:lastRec()
 	do case
 		case oDetalle:getRow(i):fieldGet(5) = 0
-			nMntNoGrv +=oDetalle:getRow(i):fieldGet(4) 
-			nMntTotal += oDetalle:getRow(i):fieldGet(4) 
+			nMntNoGrv += round(oDetalle:getRow(i):fieldGet(4),0) * oDetalle:getRow(i):fieldGet(3)
+			nMntTotal += round(oDetalle:getRow(i):fieldGet(4),0) * oDetalle:getRow(i):fieldGet(3)
 		case oDetalle:getRow(i):fieldGet(5) = 10
-			nMntIvaMinimo += oDetalle:getRow(i):fieldGet(4)
-			nIvaMinimo += round(oDetalle:getRow(i):fieldGet(4) * (oDetalle:getRow(i):fieldGet(5) / 100),0)
-			nMntTotal += round(oDetalle:getRow(i):fieldGet(4) * (1+(oDetalle:getRow(i):fieldGet(5) / 100)),0)
+			nMntIvaMinimo += round(oDetalle:getRow(i):fieldGet(4),0) * oDetalle:getRow(i):fieldGet(3)
+			nIvaMinimo += round(oDetalle:getRow(i):fieldGet(4) * (oDetalle:getRow(i):fieldGet(5) / 100),0) * oDetalle:getRow(i):fieldGet(3)
+			nMntTotal += round(oDetalle:getRow(i):fieldGet(4) * (1+(oDetalle:getRow(i):fieldGet(5) / 100)),0) * oDetalle:getRow(i):fieldGet(3)
 		case oDetalle:getRow(i):fieldGet(5) = 22
-			nMntIvaBasico += oDetalle:getRow(i):fieldGet(4)
-			nIvaBasico += round( oDetalle:getRow(i):fieldGet(4)* (oDetalle:getRow(i):fieldGet(5) / 100),0)
-			nMntTotal += round(oDetalle:getRow(i):fieldGet(4) * (1+(oDetalle:getRow(i):fieldGet(5) / 100)),0)
+			nMntIvaBasico += oDetalle:getRow(i):fieldGet(4) * oDetalle:getRow(i):fieldGet(3)
+			nIvaBasico +=  oDetalle:getRow(i):fieldGet(4)* (oDetalle:getRow(i):fieldGet(5) / 100) * oDetalle:getRow(i):fieldGet(3)
+			nMntTotal += oDetalle:getRow(i):fieldGet(4) * (1+(oDetalle:getRow(i):fieldGet(5) / 100)) * oDetalle:getRow(i):fieldGet(3)
 	endcase
 	
 next
@@ -360,15 +366,15 @@ next
 cLinea +="<nsAd:TpoMoneda>UYU</nsAd:TpoMoneda>"+chr(13)
 cLinea +="<nsAd:MntNoGrv>"+alltrim(str(nMntNoGrv))+"</nsAd:MntNoGrv>"+chr(13)
 cLinea +="<nsAd:MntNetoIvaTasaMin>"+alltrim(str(nMntIvaMinimo))+"</nsAd:MntNetoIvaTasaMin>"+chr(13)
-cLinea +="<nsAd:MntNetoIVATasaBasica>"+alltrim(str(nMntIvaBasico))+"</nsAd:MntNetoIVATasaBasica>"+chr(13)
+cLinea +="<nsAd:MntNetoIVATasaBasica>"+alltrim(str(round(nMntIvaBasico,0)))+"</nsAd:MntNetoIVATasaBasica>"+chr(13)
 cLinea +="<nsAd:IVATasaMin>"+cIvaMin+"</nsAd:IVATasaMin>"+chr(13)
 cLinea +="<nsAd:IVATasaBasica>"+cIvaBas+"</nsAd:IVATasaBasica>"+chr(13)
 cLinea +="<nsAd:MntIVATasaMin>"+alltrim(str(nIvaMinimo))+"</nsAd:MntIVATasaMin>"+chr(13)
-cLinea +="<nsAd:MntIVATasaBasica>"+alltrim(str(nIvaBasico))+"</nsAd:MntIVATasaBasica>"+chr(13)
-cLinea +="<nsAd:MntTotal>"+alltrim(str(nMntTotal))+"</nsAd:MntTotal>"+chr(13)
+cLinea +="<nsAd:MntIVATasaBasica>"+alltrim(str(round(nIvaBasico,0)))+"</nsAd:MntIVATasaBasica>"+chr(13)
+cLinea +="<nsAd:MntTotal>"+alltrim(str(round(nMntTotal,0)))+"</nsAd:MntTotal>"+chr(13)
 cLinea +="<nsAd:CantLinDet>"+alltrim(str(nLineas))+"</nsAd:CantLinDet>"+chr(13)
 cLinea +="<nsAd:MontoNF>0.0</nsAd:MontoNF>"+chr(13)
-cLinea +="<nsAd:MntPagar>"+alltrim(str(nMntTotal))+"</nsAd:MntPagar>"+chr(13)
+cLinea +="<nsAd:MntPagar>"+alltrim(str(round(nMntTotal,0)))+"</nsAd:MntPagar>"+chr(13)
 cLinea +="</nsAd:Totales>"+chr(13)
 
 
@@ -379,7 +385,7 @@ return .t.
 
 
 function linea6(pArchivo,nIdMov,nTipoCFE)
-Local oDetalle := oDetalleFactura(nIdMov)//los detalles de cada factura Electronica
+Local oDetalle//:= oDetalleFactura(nIdMov)//los detalles de cada factura Electronica
 local cLinea := "",cCuota := "", cCant := "", cUnidad := "", cPrecUnit := 0.00
 local cIndica := "", cDescPor :="",cDescMon := "",cRecPor := "", cRecMon := ""
 local cMontoItem := "0",cDescExt := "",cDescArt:= ""
@@ -405,8 +411,9 @@ for j := 1 to oDetalle:lastRec()
 								
 		cCant := oDetalle:getRow(j):fieldGet(3)
 		cUnidad := "UN"
-		cPrecUnit :=  round(oDetalle:getRow(j):fieldGet(4) * (1+(oDetalle:getRow(j):fieldGet(5) / 100)),0)
+		cPrecUnit :=  oDetalle:getRow(j):fieldGet(4) * (1+(oDetalle:getRow(j):fieldGet(5) / 100))
 		cIndica := cfeIndFacturacion(oDetalle:getRow(j):fieldGet(5))
+		nTotItem :=round(cPrecUnit * cCant,0)
 		cLinea := "<nsAd:Item>"+chr(13)
         cLinea += "<nsAd:NroLinDet>"+alltrim(str(j))+"</nsAd:NroLinDet>"+chr(13)
         cLinea += "<nsAd:IndFact>"+str(cIndica)+"</nsAd:IndFact>"+chr(13)
@@ -414,7 +421,7 @@ for j := 1 to oDetalle:lastRec()
         cLinea += "<nsAd:Cantidad>"+str(cCant)+"</nsAd:Cantidad>"+chr(13)
         cLinea += "<nsAd:UniMed>"+cUnidad+"</nsAd:UniMed>"+chr(13)
         cLinea += "<nsAd:PrecioUnitario>"+alltrim(str(cPrecUnit))+"</nsAd:PrecioUnitario>"+chr(13)
-        cLinea += "<nsAd:MontoItem>"+alltrim(str(cPrecUnit))+"</nsAd:MontoItem>"+chr(13)
+        cLinea += "<nsAd:MontoItem>"+alltrim(str(nTotItem))+"</nsAd:MontoItem>"+chr(13)
         cLinea += "</nsAd:Item>"+chr(13)
 		
 		// cLinea := "6|"+alltrim(str(i))+"|"+str(cIndica)+"|"+cDescArt+"|"+str(cCant)+"|"+cUnidad+"|"+str(cPrecUnit)+"|"+;

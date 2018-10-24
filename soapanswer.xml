@@ -1,10 +1,1 @@
-<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><EnvioCFEResponse xmlns="http://tempuri.org/"><EnvioCFEResult xmlns:a="http://schemas.datacontract.org/2004/07/SICFEContract" xmlns:i="http://www.w3.org/2001/XMLSchema-instance"><a:Codigo>100004</a:Codigo><a:Descripcion>TOTAL ERRORES: 4 &#xD;
-1 Error: The 'http://cfe.dgi.gub.uy:CantLinDet' element is invalid - The value '0' is invalid according to its datatype 'Integer' - The MinInclusive constraint failed.--&gt; Linea : 1, Posición : 1595&#xD;
-&#xD;
-2 Error: The 'http://cfe.dgi.gub.uy:IndFact' element is invalid - The value '         0' is invalid according to its datatype 'PositiveInteger' - Value '0' was either too large or too small for PositiveInteger.--&gt; Linea : 1, Posición : 1796&#xD;
-&#xD;
-3 Error: The 'http://cfe.dgi.gub.uy:IndFact' element is invalid - The value '         0' is invalid according to its datatype 'PositiveInteger' - Value '0' was either too large or too small for PositiveInteger.--&gt; Linea : 1, Posición : 2106&#xD;
-&#xD;
-4 Error: The element 'eFact' in namespace 'http://cfe.dgi.gub.uy' has invalid child element 'DscRcgGlobal' in namespace 'http://cfe.dgi.gub.uy'. List of possible elements expected: 'CAEData' in namespace 'http://cfe.dgi.gub.uy'.--&gt; Linea : 1, Posición : 2833&#xD;
-&#xD;
-</a:Descripcion><a:EsReceptorElectronico>false</a:EsReceptorElectronico><a:IdCFE i:nil="true"/><a:ImagenQR i:nil="true"/><a:LinkQR i:nil="true"/><a:datosCAE i:nil="true"/><a:hash i:nil="true"/><a:xml i:nil="true"/></EnvioCFEResult></EnvioCFEResponse></s:Body></s:Envelope>
+<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/"><s:Body><EnvioCFEResponse xmlns="http://tempuri.org/"><EnvioCFEResult xmlns:a="http://schemas.datacontract.org/2004/07/SICFEContract" xmlns:i="http://www.w3.org/2001/XMLSchema-instance"><a:Codigo>512</a:Codigo><a:Descripcion>Error en el cálculo de Monto Item (detalle)</a:Descripcion><a:EsReceptorElectronico>false</a:EsReceptorElectronico><a:IdCFE i:nil="true"/><a:ImagenQR i:nil="true"/><a:LinkQR i:nil="true"/><a:datosCAE i:nil="true"/><a:hash i:nil="true"/><a:xml i:nil="true"/></EnvioCFEResult></EnvioCFEResponse></s:Body></s:Envelope>
