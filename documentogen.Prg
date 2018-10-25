@@ -44,7 +44,7 @@ do case
 		cargarReciboCliente(nDocumento)
 	case cTipoDoc == 102 
 		documentogen.title := "eTicket Nota de Crédito"
-		cargarReciboCliente(nDocumento)
+		cargarFacturaCreditoCliente(nDocumento)
 	case cTipoDoc == 112
 		documentogen.title := "eFactura Nota de Crédito"
 		cargarFacturaCreditoCliente(nDocumento)

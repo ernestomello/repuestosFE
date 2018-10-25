@@ -8,9 +8,10 @@ Function main()
 	Public	cDirInicioAplicacion	:=	"C:\dm\nuevo" //PARAMETROini("DIR_APLICACION","C") //
 	Public 	oServer			:= 	Nil 
 	Public	cServidorSQL_nombre	:=	PARAMETROini("MYSQL_Servidor","C")
-	Public	cServidorSQL_usuario	:=lower(GetEnv( "USERNAME" ))
+	Public	cServidorSQL_usuario :=lower(GetEnv( "USERNAME" ))
 	Public	cServidorSQL_Estado	:=	'S/D'
 	Public  cSucursal:= 	PARAMETROini("Sucursal","C")
+	Public  nDtoContado:= 	PARAMETROini("DTOCTADO","N")
 	Public  nSocioGlobal := 0
 	Public  cArticuloGlobal := ""
 	//para FE

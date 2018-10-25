@@ -14,10 +14,11 @@ if !IsWindowActive(factCliente)
 	factCliente.text_22.value := cTipoDocumento
 	factCliente.label_14.value := descripcionDocumento(cTipoDocumento)
 	factCliente.text_15.value := cajaId()
-	factCliente.text_11.value := iif(factCliente.text_21.value = 1 , 50, 0)
+	factCliente.text_21.value :=nFormaPago
+	factCliente.text_11.value := iif(factCliente.text_21.value = 1 ,nDtoContado, 0)
 	iif(nFormaPago = 1,factCliente.text_17.visible := .f.,)
 	iif(nFormaPago = 1,factCliente.frame_2.visible := .f.,)
-	factCliente.text_21.value :=nFormaPago
+	
 	factCliente.Center
 	factCliente.Activate	
 else
@@ -30,14 +31,16 @@ endIf
 Return
 
 procedure calculoPrecioFinal()
-nPrecioSinDescuento := factCliente.text_8.value * (factCliente.text_9.value * ((100+factCliente.text_16.value)/100))
+local nPrecioSinDescuento := 0
+
+nPrecioSinDescuento := round(factCliente.text_8.value * (factCliente.text_9.value * ((100+factCliente.text_16.value)/100)),0)
 factCliente.text_12.value := round(nPrecioSinDescuento - (nPrecioSinDescuento * factCliente.text_11.value / 100 ),0)
 
 factCliente.text_12.setfocus
 
 procedure agregoLinea()
 local nLinea := 	PARAMETROini("LineasDetalle","N")
-local nPrecioSinDescuento := 0
+local nPrecioUnitario := 0
 
   if (factCliente.text_9.value = 0 .or. factCliente.text_8.value =0)
   	msginfo('La cantidad no puede ser CERO',"ATENCIÓN")
@@ -49,7 +52,8 @@ local nPrecioSinDescuento := 0
   	Return
   endif
 	if msgYesNo("Ingresa la Línea?","ATENCIÓN",.t.)
-    factCliente.grid_1.addItem({factCliente.text_6.value,factCliente.text_7.value,factCliente.text_8.value,factCliente.text_9.value,factCliente.text_10.value,factCliente.text_16.value,factCliente.text_11.value,round(factCliente.text_12.value / (1+(factCliente.text_16.value / 100)),0) })
+	nPrecioUnitario:= round(factCliente.text_9.value - (factCliente.text_9.value * factCliente.text_11.value /100),2)
+    factCliente.grid_1.addItem({factCliente.text_6.value,factCliente.text_7.value,factCliente.text_8.value,nPrecioUnitario,factCliente.text_10.value,factCliente.text_16.value,factCliente.text_11.value,round(factCliente.text_8.value * nPrecioUnitario ,2) })
     factCliente.text_6.value:= ""
     factCliente.text_7.value:=""
     factCliente.text_8.value:= 1
@@ -57,7 +61,7 @@ local nPrecioSinDescuento := 0
     factCliente.text_9.fontcolor := {0,0,0}
     factCliente.text_10.value:= ctod("  /  /    ")
     factCliente.text_16.value := 0
-	factCliente.text_11.value := iif(factCliente.text_21.value = 1 , 50, 0)
+	factCliente.text_11.value := iif(factCliente.text_21.value = 1 , nDtoContado, 0)
     // factCliente.text_11.value := iif(alltrim(factCliente.text_14.value) == 'C' .or. alltrim(factCliente.text_14.value) == 'Q', 50, 0)
     factCliente.text_12.value := 0
     factCliente.text_20.value := ""
@@ -107,7 +111,7 @@ factCliente.text_9.fontcolor := {0,128,0}
 factCliente.text_14.value := cTipoDocumento
 factCliente.label_14.value := descripcionDocumento(cTipoDocumento)
 factCliente.text_10.value:= ctod("  /  /    ")
-factCliente.text_11.value := iif(factCliente.text_21.value = 1 , 50, 0)
+factCliente.text_11.value := iif(factCliente.text_21.value = 1 , nDtoContado, 0)
 // factCliente.text_11.value := iif(alltrim(factCliente.text_14.value) == 'C', 50, 0)
 factCliente.text_12.value := 0
 factCliente.text_13.value:=''
@@ -237,7 +241,7 @@ if facturaClienteConDetalle()
 endIf
 
 
-
+finTransaccion()
 info_("Registrando Documeto en DGI...")
 
 if ! facturaElectronica(nNumero,.f.,.f.)
@@ -245,14 +249,14 @@ if ! facturaElectronica(nNumero,.f.,.f.)
 	msgInfo("No se pudo guardar el documento en DGI, Reintente!!!")	
 	return .f.
 endif
-finTransaccion()
+
 info_("Imprimiendo Documento ...")
 if !imprimoMovimiento(nNumero)
 	WAIT CLEAR
-	msgInfo("No se pudo imprimir el Documento, Reintente")
+	msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menú")
 	return .f.
 endif
-
+WAIT CLEAR
 cereoFormulario()
 factCliente.text_1.SetFocus
 return .t.

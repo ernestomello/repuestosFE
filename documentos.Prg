@@ -218,14 +218,19 @@ endIf
 * ***********************************************
 function imprimoMovimiento(nFactura,copia,cRut,cNombre,cDireccion)
 local nTipoDocumento := tipoDocumento(nFactura)
-
-if nTipoDocumento = 81 .or. nTipoDocumento = 91 .or. nTipoDocumento = 98
-	if msgYesNo("Imprime el documento?",,.t.)
-		imprimoEnLaser(nFactura,copia,cRut,cNombre,cDireccion)
+if esFacturaElectronica
+	if nTipoDocumento = 81 .or. nTipoDocumento = 91 .or. nTipoDocumento = 98
+		if msgYesNo("Imprime el documento?",,.t.)
+			imprimoEnLaser(nFactura,copia,cRut,cNombre,cDireccion)
+		endif
+	else
+		imprimoPDF(nFactura)
 	endif
 else
-	if esFacturaElectronica
-		imprimoPDF(nFactura)
+	if nTipoDocumento = 81 .or. nTipoDocumento = 91 
+		if msgYesNo("Imprime el documento?",,.t.)
+			imprimoEnLaser(nFactura,copia,cRut,cNombre,cDireccion)
+		endif
 	else
 		imprimoEnMatriz(nFactura,copia,cRut,cNombre,cDireccion)
 	endif
