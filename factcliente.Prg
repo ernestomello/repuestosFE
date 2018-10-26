@@ -167,6 +167,9 @@ cAdenda :=factCliente.text_13.value
 nCaja := cajaId()
 nVendedor := factCliente.text_18.value
 nFormaPago := factCliente.text_21.value
+if nFormaPago = 2 .and. cTipoDocumento = 111
+cAdenda += chr(13)+chr(10)+mensaje1Documento(cTipoDocumento)+chr(13)+chr(10)+mensaje2Documento(cTipoDocumento)+chr(13)+chr(10)+mensaje3Documento(cTipoDocumento)+chr(13)chr(10)+
+endif
 
 if nCliente = 0 .and. (cTipoDocumento = 111 .or. cTipoDocumento = 112)
 	cDescripcion := "2|"+factCliente.text_2.value+"|"+factCliente.text_3.value+"|"+factCliente.text_4.value+"|PAYSANDU"
@@ -239,7 +242,7 @@ if facturaClienteConDetalle()
 	next
 
 endIf
-
+finTransaccion()
 if esFacturaElectronica
 	info_("Registrando Documento en DGI...")
 
@@ -250,7 +253,7 @@ if esFacturaElectronica
 	endif
 endif
 
-finTransaccion()
+
 
 info_("Imprimiendo Documento ...")
 if !imprimoMovimiento(nNumero)

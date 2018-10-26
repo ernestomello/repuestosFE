@@ -127,7 +127,7 @@ cxml +="</soapenv:Envelope>"+chr(13)+chr(10)
 
 
 hb_memowrit("aalgo.txt",cxml)
- cRespuesta := fHttpExecute("http://sicfedesa.eborne.com.uy/TEST/Services/Sicfe.svc",'SOAPAction:"http://tempuri.org/ISICFEEmisor/EnvioCFE"',cxml,.f.)
+ cRespuesta := fHttpExecute(nSOAPSW,'SOAPAction:"http://tempuri.org/ISICFEEmisor/EnvioCFE"',cxml,.f.)
 
  // msgInfo (cValTag(cRespuesta,"a:Codigo"))
  hb_memowrit("soapanswer.xml",cRespuesta)
@@ -484,7 +484,7 @@ return .t.
 function linea10(pArchivo,oIdMov)
 local cAdenda := strtran(oIdMov:getRow(1):fieldGet(15),chr(13)," ")
 // local cLinea := "<nsAdenda:Adenda>"+cAdenda+"</nsAdenda:Adenda>"+chr(13)
-local cLinea := "<nsAdenda:Adenda>  </nsAdenda:Adenda>"+chr(13)
+local cLinea := "<nsAdenda:Adenda>"+cAdenda+"</nsAdenda:Adenda>"+chr(13)
 // "10|"+cAdenda//+chr(13)+chr(10)
 
 fwrite(parchivo,cLinea)

@@ -259,7 +259,7 @@ xml+="      </tem:ObtenerPDF>"+chr(13)
 xml+="   </soapenv:Body>"+chr(13)
 xml+="</soapenv:Envelope>"+chr(13)
 hb_memowrit("vapdf.xml",xml)
-cRespuesta := fHttpExecute("http://sicfedesa.eborne.com.uy/TEST/Services/Sicfe.svc",'SOAPAction:"http://tempuri.org/ISICFEEmisor/ObtenerPDF"',xml,.f.)
+cRespuesta := fHttpExecute(nSOAPSW,'SOAPAction:"http://tempuri.org/ISICFEEmisor/ObtenerPDF"',xml,.f.)
 hb_memowrit("soapanswerpdf.xml",cRespuesta)
 hb_MEMOWRIT("factura.pdf",hb_base64decode(cValTag(cRespuesta,"a:Buffer")))
 	
