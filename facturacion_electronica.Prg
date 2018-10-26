@@ -327,7 +327,7 @@ fwrite(parchivo,clinea)
 return .t.
 
 function linea5(pArchivo,nIdMov,nTipoCFE)
-Local oDetalle := oDetalleFactura(nIdMov)//los detalles de cada factura Electronica**CAmbiar por otro que traiga los totales por tipo ind de facturacion
+Local oDetalle //:= oDetalleFactura(nIdMov)//los detalles de cada factura Electronica**CAmbiar por otro que traiga los totales por tipo ind de facturacion
 local cMoneda := "UYU"//(oIdMov:getRow(1):fieldGet(1)
 local nIvaBas :=PARAMETROini("FEIVABASE","N")
 local nIvaMin :=PARAMETROini("FEIVAMIN","N")
@@ -342,9 +342,14 @@ local nMntTotalBasico:= 0.00
 local nMntTotalNoGrv:= 0.00
 local nMntTotal:= 0.00
 local nLineas := 0
+local nGlobal := refGlobal(nIdMov)
 
 if nTipoCFE = 102 .or. nTipoCFE = 112
-	oDetalle := oDetalleFacturaDevolucion(nIdMov)
+if nGlobal == "1" 
+		oDetalle := oDetalleGlobalDevolucion(nIdMov)
+	else
+		oDetalle := oDetalleFacturaDevolucion(nIdMov)
+	endif
 else
 	oDetalle := oDetalleFactura(nIdMov)
 endif
@@ -357,11 +362,11 @@ for i = 1 to oDetalle:lastRec()
 		case oDetalle:getRow(i):fieldGet(5) = 10
 			// nMntIvaMinimo += round(oDetalle:getRow(i):fieldGet(4),0) * oDetalle:getRow(i):fieldGet(3)
 			// nIvaMinimo += round(oDetalle:getRow(i):fieldGet(4) * (oDetalle:getRow(i):fieldGet(5) / 100),0) * oDetalle:getRow(i):fieldGet(3)
-			nMntTotalMinimo += round(oDetalle:getRow(i):fieldGet(4) * (1+(oDetalle:getRow(i):fieldGet(5) / 100)),0) * oDetalle:getRow(i):fieldGet(3)
+			nMntTotalMinimo += round(oDetalle:getRow(i):fieldGet(4) * iif( nGlobal == "1",1, (1+(oDetalle:getRow(i):fieldGet(5) / 100))),0) * oDetalle:getRow(i):fieldGet(3)
 		case oDetalle:getRow(i):fieldGet(5) = 22
 			// nMntIvaBasico += round(oDetalle:getRow(i):fieldGet(4) * oDetalle:getRow(i):fieldGet(3),2)
 			// nIvaBasico +=  round(oDetalle:getRow(i):fieldGet(4)* (oDetalle:getRow(i):fieldGet(5) / 100),2) * oDetalle:getRow(i):fieldGet(3)
-			nMntTotalBasico += oDetalle:getRow(i):fieldGet(4) * (1+(oDetalle:getRow(i):fieldGet(5) / 100)) * oDetalle:getRow(i):fieldGet(3)
+			nMntTotalBasico += oDetalle:getRow(i):fieldGet(4) *  iif( nGlobal == "1",1, (1+(oDetalle:getRow(i):fieldGet(5) / 100))) * oDetalle:getRow(i):fieldGet(3)
 	endcase
 	
 next
@@ -371,18 +376,18 @@ nIvaBasico := round(nMntIvaBasico * (nIvaBas /100),2)
 nMntIvaMinimo := round(round(nMntTotalMinimo,0)/(1+(nIvaMin/100)),2)
 nIvaMinimo := round(nMntIvaMinimo * (nIvaMin /100),2)
 cLinea +="<nsAd:TpoMoneda>UYU</nsAd:TpoMoneda>"+chr(13)
-cLinea +="<nsAd:MntNoGrv>"+alltrim(str(nMntNoGrv))+"</nsAd:MntNoGrv>"+chr(13)
-cLinea +="<nsAd:MntNetoIvaTasaMin>"+alltrim(str(nMntIvaMinimo))+"</nsAd:MntNetoIvaTasaMin>"+chr(13)
-cLinea +="<nsAd:MntNetoIVATasaBasica>"+alltrim(str(nMntIvaBasico))+"</nsAd:MntNetoIVATasaBasica>"+chr(13)
-cLinea +="<nsAd:IVATasaMin>"+alltrim(str(nIvaMin))+"</nsAd:IVATasaMin>"+chr(13)
-cLinea +="<nsAd:IVATasaBasica>"+alltrim(str(nIvaBas))+"</nsAd:IVATasaBasica>"+chr(13)
-cLinea +="<nsAd:MntIVATasaMin>"+alltrim(str(nIvaMinimo))+"</nsAd:MntIVATasaMin>"+chr(13)
-cLinea +="<nsAd:MntIVATasaBasica>"+alltrim(str(nIvaBasico))+"</nsAd:MntIVATasaBasica>"+chr(13)
-cLinea +="<nsAd:MntTotal>"+alltrim(str(nMntTotal))+"</nsAd:MntTotal>"+chr(13)
-cLinea +="<nsAd:CantLinDet>"+alltrim(str(nLineas))+"</nsAd:CantLinDet>"+chr(13)
-cLinea +="<nsAd:MontoNF>0.0</nsAd:MontoNF>"+chr(13)
-cLinea +="<nsAd:MntPagar>"+alltrim(str(nMntTotal))+"</nsAd:MntPagar>"+chr(13)
-cLinea +="</nsAd:Totales>"+chr(13)
+cLinea +="<nsAd:MntNoGrv>"+alltrim(str(nMntNoGrv))+"</nsAd:MntNoGrv>"+chr(13)+chr(10)
+cLinea +="<nsAd:MntNetoIvaTasaMin>"+alltrim(str(nMntIvaMinimo))+"</nsAd:MntNetoIvaTasaMin>"+chr(13)+chr(10)
+cLinea +="<nsAd:MntNetoIVATasaBasica>"+alltrim(str(nMntIvaBasico))+"</nsAd:MntNetoIVATasaBasica>"+chr(13)+chr(10)
+cLinea +="<nsAd:IVATasaMin>"+alltrim(str(nIvaMin))+"</nsAd:IVATasaMin>"+chr(13)+chr(10)
+cLinea +="<nsAd:IVATasaBasica>"+alltrim(str(nIvaBas))+"</nsAd:IVATasaBasica>"+chr(13)+chr(10)
+cLinea +="<nsAd:MntIVATasaMin>"+alltrim(str(nIvaMinimo))+"</nsAd:MntIVATasaMin>"+chr(13)+chr(10)
+cLinea +="<nsAd:MntIVATasaBasica>"+alltrim(str(nIvaBasico))+"</nsAd:MntIVATasaBasica>"+chr(13)+chr(10)
+cLinea +="<nsAd:MntTotal>"+alltrim(str(nMntTotal))+"</nsAd:MntTotal>"+chr(13)+chr(10)
+cLinea +="<nsAd:CantLinDet>"+alltrim(str(nLineas))+"</nsAd:CantLinDet>"+chr(13)+chr(10)
+cLinea +="<nsAd:MontoNF>0.0</nsAd:MontoNF>"+chr(13)+chr(10)
+cLinea +="<nsAd:MntPagar>"+alltrim(str(nMntTotal))+"</nsAd:MntPagar>"+chr(13)+chr(10)
+cLinea +="</nsAd:Totales>"+chr(13)+chr(10)
 
 
 // "5|"+cMoneda+"||||"+cIvaMin+"|"+cIvaBas+"||||||"+chr(13)+chr(10)
@@ -397,57 +402,47 @@ local cLinea := "",cCuota := "", cCant := "", cUnidad := "", cPrecUnit := 0.00
 local cIndica := "", cDescPor :="",cDescMon := "",cRecPor := "", cRecMon := ""
 local cMontoItem := "0",cDescExt := "",cDescArt:= ""
 local nTotalLineas := 0
+local nGlobal := refGlobal(nIdMov)
 local j
 // msgInfo(str(oDetalle:lastRec()))
 	// " select d.item,d.codigo_barra, d.cantidad,d.precio_unitario,d.cfe_ind_fact,d.descripcion,ca.tipoCFE "
 if nTipoCFE = 102 .or. nTipoCFE = 112
-	oDetalle := oDetalleFacturaDevolucion(nIdMov)
+	if nGlobal == "1" 
+		oDetalle := oDetalleGlobalDevolucion(nIdMov)
+	else
+		oDetalle := oDetalleFacturaDevolucion(nIdMov)
+	endif
 else
 	oDetalle := oDetalleFactura(nIdMov)
 endif
 
 for j := 1 to oDetalle:lastRec()
-	if oDetalle:getRow(j):fieldGet(7) != 182
-		// msgInfo("linea "+str(j))
-			// if alltrim(oDetalle:getRow(i):fieldGet(9))== alltrim(oDetalle:getRow(i):fieldGet(8))
-				cDescArt :=alltrim(oDetalle:getRow(j):fieldGet(6))
-			// else
-				// cDescArt :=alltrim(oDetalle:getRow(i):fieldGet(8))+ alltrim(oDetalle:getRow(i):fieldGet(9))
-			// endif
-		
-								
+	
+		cDescArt :=alltrim(oDetalle:getRow(j):fieldGet(6))
 		cCant := oDetalle:getRow(j):fieldGet(3)
 		cUnidad := "UN"
-		cPrecUnit :=  round(oDetalle:getRow(j):fieldGet(4) * (1+(oDetalle:getRow(j):fieldGet(5) / 100)),2)
 		cIndica := cfeIndFacturacion(oDetalle:getRow(j):fieldGet(5))
-		nTotItem :=round(cPrecUnit * cCant,0)
-		cPrecUnit := nTotItem / cCant
-		cLinea := "<nsAd:Item>"+chr(13)
-        cLinea += "<nsAd:NroLinDet>"+alltrim(str(j))+"</nsAd:NroLinDet>"+chr(13)
-        cLinea += "<nsAd:IndFact>"+str(cIndica)+"</nsAd:IndFact>"+chr(13)
-        cLinea += "<nsAd:NomItem>"+cDescArt+"</nsAd:NomItem>"+chr(13)
-        cLinea += "<nsAd:Cantidad>"+str(cCant)+"</nsAd:Cantidad>"+chr(13)
-        cLinea += "<nsAd:UniMed>"+cUnidad+"</nsAd:UniMed>"+chr(13)
-        cLinea += "<nsAd:PrecioUnitario>"+alltrim(str(cPrecUnit))+"</nsAd:PrecioUnitario>"+chr(13)
-        cLinea += "<nsAd:MontoItem>"+alltrim(str(nTotItem))+"</nsAd:MontoItem>"+chr(13)
-        cLinea += "</nsAd:Item>"+chr(13)
+		if nGlobal == "1" 
+			cPrecUnit := oDetalle:getRow(j):fieldGet(4)
+			nTotItem := oDetalle:getRow(j):fieldGet(4)
+			
+		else
+			cPrecUnit :=  round(oDetalle:getRow(j):fieldGet(4) * (1+(oDetalle:getRow(j):fieldGet(5) / 100)),2)
+			nTotItem :=round(cPrecUnit * cCant,0)
+			cPrecUnit := nTotItem / cCant
+		endif
+		cLinea := "<nsAd:Item>"+chr(13)+chr(10)
+        cLinea += "<nsAd:NroLinDet>"+alltrim(str(j))+"</nsAd:NroLinDet>"+chr(13)+chr(10)
+        cLinea += "<nsAd:IndFact>"+str(cIndica)+"</nsAd:IndFact>"+chr(13)+chr(10)
+        cLinea += "<nsAd:NomItem>"+cDescArt+"</nsAd:NomItem>"+chr(13)+chr(10)
+        cLinea += "<nsAd:Cantidad>"+str(cCant)+"</nsAd:Cantidad>"+chr(13)+chr(10)
+        cLinea += "<nsAd:UniMed>"+cUnidad+"</nsAd:UniMed>"+chr(13)+chr(10)
+        cLinea += "<nsAd:PrecioUnitario>"+alltrim(str(cPrecUnit))+"</nsAd:PrecioUnitario>"+chr(13)+chr(10)
+        cLinea += "<nsAd:MontoItem>"+alltrim(str(nTotItem))+"</nsAd:MontoItem>"+chr(13)+chr(10)
+        cLinea += "</nsAd:Item>"+chr(13)+chr(10)
 		
-		// cLinea := "6|"+alltrim(str(i))+"|"+str(cIndica)+"|"+cDescArt+"|"+str(cCant)+"|"+cUnidad+"|"+str(cPrecUnit)+"|"+;
-							// cDescPor+"|"+cDescMon+"|"+cRecPor+"|"+cRecMon+"|"+cMontoItem+"|"+cDescExt+chr(13)+chr(10)
 		fwrite(parchivo,cLinea)
-	else
-		// cCodRet := oDetalle:getRow(i):fieldGet(2)
-		// cTasa := round(oDetalle:getRow(i):fieldGet(3),0)
-		// cMontSujetoRet := oDetalle:getRow(i):fieldGet(4)
-		// cMontoRet := round( cMontSujetoRet * (cTasa /100),2)
 		
-		// cLinea := "6|"+alltrim(str(i))+"|"+cIndica+"|"+cDescArt+"|"+cCant+"|"+cUnidad+"|"+cPrecUnit+"|"+;
-							// cDescPor+"|"+cDescMon+"|"+cRecPor+"|"+cRecMon+"|"+cMontoItem+"|"+cDescExt+chr(13)+chr(10)
-		// fwrite(parchivo,clinea)
-		// cLinea := "6B|"+alltrim(str(i))+"|"+alltrim(cCodRet)+"|"+str(cTasa)+"|"+str(cMontSujetoRet)+"|"+str(cMontoRet)+chr(13)+chr(10)
-		// fwrite(parchivo,clinea)
-	endif
-	
 next
 
 return .t.
@@ -470,11 +465,14 @@ local i
 		cNumero := oNotaCredDeb:getRow(i):fieldGet(6)
 		cRazon := oNotaCredDeb:getRow(i):fieldGet(8)
 		cFecha := dtos(oNotaCredDeb:getRow(i):fieldGet(7))
+		cIndGlobal := oNotaCredDeb:getRow(i):fieldGet(3)
 		cLinea += "<nsAd:Referencia>"+chr(13)+chr(10)
 		cLinea += "<nsAd:NroLinRef>"+str(i)+"</nsAd:NroLinRef>"+chr(13)+chr(10)
+		iif(cIndGlobal == "1",cLinea += "<nsAd:IndGlobal>"+cIndGlobal+"</nsAd:IndGlobal>"+chr(13)+chr(10),)
 		cLinea += "<nsAd:TpoDocRef>"+str(cTipoCFE)+"</nsAd:TpoDocRef>"+chr(13)+chr(10)
 		cLinea += "<nsAd:Serie>"+cSerie+"</nsAd:Serie>"+chr(13)+chr(10)
 		cLinea += "<nsAd:NroCFERef>"+str(cNumero)+"</nsAd:NroCFERef>"+chr(13)+chr(10)
+		iif(cIndGlobal == "1",cLinea += "<nsAd:RazonRef>Dto Global</nsAd:RazonRef>"+chr(13)+chr(10),)
 		cLinea += "<nsAd:FechaCFEref>"+substr(cFecha,1,4)+"-"+substr(cFecha,5,2)+"-"+substr(cFecha,7,2)+"</nsAd:FechaCFEref>"+chr(13)+chr(10)
 		cLinea += "</nsAd:Referencia>"+chr(13)+chr(10)
 	next
@@ -515,6 +513,18 @@ oQuery := oServer:Query(cQuery )
     Endif
 return oQuery
 
+function refGlobal(nIdMov)
+local oQuery
+local cQuery
+
+cQuery := " select r.ind_global "
+cQuery += " from   cfe_referencias_det r"
+cQuery += " where  r.id_factura = "+str(nIdMov)+"  "
+oQuery := oServer:Query(cQuery )
+    If oQuery:NetErr()												
+      MsgInfo("SQL SELECT error: "+cQuery+"=" + oQuery:Error())
+    Endif
+return oQuery:getRow(1):fieldGet(1)
 
 function oDetalleFacturaDevolucion(nIdMov)
 local oQuery
@@ -524,6 +534,19 @@ cQuery := " select d.item,d.codigo_barra, d.cantidad,d.precio_unitario,d.cfe_ind
 cQuery += " from  cfe_comprobante_cab ca, cfe_comprobante_det d , articulo a, cfe_referencias_det r"
 cQuery += " where  ca.id_factura = "+str(nIdMov)+" and r.id_factura = ca.id_factura "
 cQuery += " and r.id_factura_ref = d.id_factura and a.codigo_barra = d.codigo_barra "
+oQuery := oServer:Query(cQuery )
+    If oQuery:NetErr()												
+      MsgInfo("SQL SELECT error: "+cQuery+"=" + oQuery:Error())
+    Endif
+return oQuery
+
+function oDetalleGlobalDevolucion(nIdMov)
+local oQuery
+local cQuery
+
+cQuery := " select 1,2, 1,r.importe_aplicado, 22,concat( 'Dto Global en ',t.descripcion, ' ', r.serieCFE, '-',r.numeroCFE) "
+cQuery += " from  cfe_referencias_det r ,cfe_tipos t"
+cQuery += " where  r.id_factura = "+str(nIdMov)+" and r.tipoCFE= t.id_cfe "
 oQuery := oServer:Query(cQuery )
     If oQuery:NetErr()												
       MsgInfo("SQL SELECT error: "+cQuery+"=" + oQuery:Error())

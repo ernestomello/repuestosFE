@@ -104,23 +104,32 @@ procedure realizarAccion()
 do case 
 	case  documentogen.text_4.value =="IMPRIMIR"
 		// imprimoPDF(documentogen.text_6.value)
-		imprimoMovimiento(documentogen.text_6.value,1,'','','')
+		info_("Imprimiendo Documento ...")
+		if !imprimoMovimiento(documentogen.text_6.value,1,'','','')
+			WAIT CLEAR
+			msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menú")
+			return .f.
+		endif
+		WAIT CLEAR
+		
 	
 	case documentogen.text_4.value =="ANULAR"
+		nTipoDoc := tipoDocumento(documentogen.text_6.value)
 		nCajero := anulacion()
 		if nCajero != 0
-			if tipoDocumento(documentogen.text_6.value) == 'R' .or. tipoDocumento(documentogen.text_6.value)== 'N'				
+			do case 
+				case  nTipoDoc = 98 				
 					if !anuloRecibo(documentogen.text_6.value,nCajero)  
 						MsGInfo('No se pudo anular el Movimiento, Consulte al ADMINISTRADOR')
 					else
 						msgInfo('Documento No.'+str(documentogen.text_6.value)+' Anulado')
 					endIf
-			elseif tipoDocumento(documentogen.text_6.value) == 'F' .or. tipoDocumento(documentogen.text_6.value)== 'C'
-					anularFactura(documentogen.text_6.value,nCajero)  
-				else
-					anularDevolucion(documentogen.text_6.value,nCajero)
-				endIf
-//			endif
+				case nTipoDoc =101 .or.nTipoDoc = 111 
+					notaCreditoCliente(documentogen.text_6.value,nCajero)  
+				// else
+					// anularDevolucion(documentogen.text_6.value,nCajero)
+				// endIf
+			end case
 		else
 					msginfo("Usuario no autorizado")
 		endIf

@@ -193,7 +193,7 @@ endIf
 		for i = 1 to reciboCliente.grid_1.itemcount
 			if reciboCliente.grid_1.cell(i,8) = 'SI' .and. reciboCliente.grid_1.cell(i,5)!= 0
 				// if !guardoDetallereciboCliente(nNumeroR, reciboCliente.grid_1.cell(i,1),reciboCliente.grid_1.cell(i,5))
-				if !guardoRelacion( reciboCliente.grid_1.cell(i,1),nNumeroR,reciboCliente.grid_1.cell(i,5))
+				if !guardoRelacion( reciboCliente.grid_1.cell(i,1),nNumeroR,reciboCliente.grid_1.cell(i,5),1)
 					// guardoRelacion(nFactura, nNumero)
 					WAIT CLEAR
 					msgInfo("No se pudieron Guardar el detalle del Recibo. Reintente!!!")
@@ -231,7 +231,7 @@ endIf
 		for i = 1 to reciboCliente.grid_1.itemcount
 			if reciboCliente.grid_1.cell(i,8) = 'SI' .and. reciboCliente.grid_1.cell(i,6)!= 0
 				// if !guardoDetalleNotaCredito(nNumeroN,reciboCliente.grid_1.cell(i,1),reciboCliente.grid_1.cell(i,6))
-				if !guardoRelacion( reciboCliente.grid_1.cell(i,1),nNumeroN,reciboCliente.grid_1.cell(i,6))	
+				if !guardoRelacion( reciboCliente.grid_1.cell(i,1),nNumeroN,reciboCliente.grid_1.cell(i,6),1)	
 					WAIT CLEAR
 					msgInfo("No se pudo Guardar el detalle de NC. Reintente!!!")
 					return .f.
@@ -246,14 +246,16 @@ endIf
 	endIf
 	
 	
-	
-info_("Registrando Documeto en DGI...")
+if esFacturaElectronica
+	info_("Registrando Documeto en DGI...")
 
-if ! facturaElectronica(nNumeroN,.f.,.t.)
-	WAIT CLEAR
-	msgInfo("No se pudo guardar el documento en DGI, Reintente!!!")	
-	return .f.
-endif
+	if ! facturaElectronica(nNumeroN,.f.,.t.)
+		WAIT CLEAR
+		msgInfo("No se pudo guardar el documento en DGI, Reintente!!!")	
+		return .f.
+	endif
+endIf
+
 finTransaccion()
 info_("Imprimiendo Documento ...")
 if !imprimoMovimiento(nNumeroN)

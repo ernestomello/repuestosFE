@@ -240,15 +240,17 @@ if facturaClienteConDetalle()
 
 endIf
 
+if esFacturaElectronica
+	info_("Registrando Documento en DGI...")
+
+	if ! facturaElectronica(nNumero,.f.,.f.)
+		WAIT CLEAR
+		msgInfo("No se pudo guardar el documento en DGI, Reintente!!!")	
+		return .f.
+	endif
+endif
 
 finTransaccion()
-info_("Registrando Documeto en DGI...")
-
-if ! facturaElectronica(nNumero,.f.,.f.)
-	WAIT CLEAR
-	msgInfo("No se pudo guardar el documento en DGI, Reintente!!!")	
-	return .f.
-endif
 
 info_("Imprimiendo Documento ...")
 if !imprimoMovimiento(nNumero)
@@ -480,13 +482,18 @@ endif
 *************************************************
 
 function graboFactClienteCabezal(nNumero,nCaja,nCliente, nTipoDocumento,nImporte,dFechaFactura,cDescripcion,nVendedor,nFormaPago,cAdenda)
-local cQuery, oQuery
-
+local cQuery, oQuery,nSaldo
+if nTipoDocumento = 102 .or. nTipoDocumento = 112 .or. nTipoDocumento = 98
+	nSaldo := 0
+else
+	iif (nFormaPago = 2, nSaldo := nImporte, nSaldo := 0)
+endIf
+	
 	  
 cQuery := " Insert into cfe_comprobante_cab values "
 cQuery += " ("+str(nNumero)+",'',0,"+str(nTipoDocumento)+","+str(nCaja)+", '"+dtos(dFechaFactura)+"', "
 cQuery += " "+str(nCliente)+","+str(nVendedor)+", "+str(nImporte)+" , "
-iif(nFormaPago = 2, cQuery += "  "+str(nImporte)+",  ", cQuery += " 0 ,")
+cQuery += "  "+str(nSaldo)+" ,"
 cQuery += " '"+cDescripcion+"' , current_timestamp , "+str(nFormaPago)+" ,null , '"+cAdenda+"' )"
 
 oQuery:= oServer:Query(  cQuery )
