@@ -14,10 +14,11 @@ if !IsWindowActive(factCliente)
 	factCliente.text_22.value := cTipoDocumento
 	factCliente.label_14.value := descripcionDocumento(cTipoDocumento)
 	factCliente.text_15.value := cajaId()
-	factCliente.text_11.value := iif(factCliente.text_21.value = 1 , 50, 0)
+	factCliente.text_21.value :=nFormaPago
+	factCliente.text_11.value := iif(factCliente.text_21.value = 1 ,nDtoContado, 0)
 	iif(nFormaPago = 1,factCliente.text_17.visible := .f.,)
 	iif(nFormaPago = 1,factCliente.frame_2.visible := .f.,)
-	factCliente.text_21.value :=nFormaPago
+	
 	factCliente.Center
 	factCliente.Activate	
 else
@@ -30,14 +31,16 @@ endIf
 Return
 
 procedure calculoPrecioFinal()
-nPrecioSinDescuento := factCliente.text_8.value * (factCliente.text_9.value * ((100+factCliente.text_16.value)/100))
+local nPrecioSinDescuento := 0
+
+nPrecioSinDescuento := round(factCliente.text_8.value * (factCliente.text_9.value * ((100+factCliente.text_16.value)/100)),0)
 factCliente.text_12.value := round(nPrecioSinDescuento - (nPrecioSinDescuento * factCliente.text_11.value / 100 ),0)
 
 factCliente.text_12.setfocus
 
 procedure agregoLinea()
 local nLinea := 	PARAMETROini("LineasDetalle","N")
-local nPrecioSinDescuento := 0
+local nPrecioUnitario := 0
 
   if (factCliente.text_9.value = 0 .or. factCliente.text_8.value =0)
   	msginfo('La cantidad no puede ser CERO',"ATENCIÓN")
@@ -49,7 +52,8 @@ local nPrecioSinDescuento := 0
   	Return
   endif
 	if msgYesNo("Ingresa la Línea?","ATENCIÓN",.t.)
-    factCliente.grid_1.addItem({factCliente.text_6.value,factCliente.text_7.value,factCliente.text_8.value,factCliente.text_9.value,factCliente.text_10.value,factCliente.text_16.value,factCliente.text_11.value,round(factCliente.text_12.value / (1+(factCliente.text_16.value / 100)),0) })
+	nPrecioUnitario:= round(factCliente.text_9.value - (factCliente.text_9.value * factCliente.text_11.value /100),2)
+    factCliente.grid_1.addItem({factCliente.text_6.value,factCliente.text_7.value,factCliente.text_8.value,nPrecioUnitario,factCliente.text_10.value,factCliente.text_16.value,factCliente.text_11.value,round(factCliente.text_8.value * nPrecioUnitario ,2) })
     factCliente.text_6.value:= ""
     factCliente.text_7.value:=""
     factCliente.text_8.value:= 1
@@ -57,7 +61,7 @@ local nPrecioSinDescuento := 0
     factCliente.text_9.fontcolor := {0,0,0}
     factCliente.text_10.value:= ctod("  /  /    ")
     factCliente.text_16.value := 0
-	factCliente.text_11.value := iif(factCliente.text_21.value = 1 , 50, 0)
+	factCliente.text_11.value := iif(factCliente.text_21.value = 1 , nDtoContado, 0)
     // factCliente.text_11.value := iif(alltrim(factCliente.text_14.value) == 'C' .or. alltrim(factCliente.text_14.value) == 'Q', 50, 0)
     factCliente.text_12.value := 0
     factCliente.text_20.value := ""
@@ -107,7 +111,7 @@ factCliente.text_9.fontcolor := {0,128,0}
 factCliente.text_14.value := cTipoDocumento
 factCliente.label_14.value := descripcionDocumento(cTipoDocumento)
 factCliente.text_10.value:= ctod("  /  /    ")
-factCliente.text_11.value := iif(factCliente.text_21.value = 1 , 50, 0)
+factCliente.text_11.value := iif(factCliente.text_21.value = 1 , nDtoContado, 0)
 // factCliente.text_11.value := iif(alltrim(factCliente.text_14.value) == 'C', 50, 0)
 factCliente.text_12.value := 0
 factCliente.text_13.value:=''
@@ -163,6 +167,9 @@ cAdenda :=factCliente.text_13.value
 nCaja := cajaId()
 nVendedor := factCliente.text_18.value
 nFormaPago := factCliente.text_21.value
+if nFormaPago = 2 .and. cTipoDocumento = 111
+cAdenda += chr(13)+chr(10)+mensaje1Documento(cTipoDocumento)+chr(13)+chr(10)+mensaje2Documento(cTipoDocumento)+chr(13)+chr(10)+mensaje3Documento(cTipoDocumento)+chr(13)chr(10)+
+endif
 
 if nCliente = 0 .and. (cTipoDocumento = 111 .or. cTipoDocumento = 112)
 	cDescripcion := "2|"+factCliente.text_2.value+"|"+factCliente.text_3.value+"|"+factCliente.text_4.value+"|PAYSANDU"
@@ -180,8 +187,10 @@ endif
 if !msgYesNo("Graba la Factura?","ATENCIÓN",.t.)
 	return .f.
 endif
+info_("Guardando en la Base de Datos ...")
 
 if !comienzoTransaccion()
+	WAIT CLEAR
 	msginfo("No se pudo guardar. REINTENTE! ! !")
 	return .f.
 endIf
@@ -189,12 +198,14 @@ endIf
 nNumero:= numeroDesde('CLIENTE')  	
 
 if !agregoNumeroDesde('CLIENTE')
+	WAIT CLEAR
 	msginfo("No se pudo actualizar el Número de la Factura")
 	return .f.
 endIf
 
 
 if nNumero == 0
+	WAIT CLEAR
 	msgInfo("No se pudo Guardar el Número. Reintente!!!")
 	return .f.
 endif
@@ -204,7 +215,8 @@ endif
 
 if !graboFactClienteCabezal(nNumero ,nCaja,nCliente, cTipoDocumento,;
 														nTotalFactura,dFechaFactura,cDescripcion,nVendedor,nFormaPago,cAdenda)
-  msgInfo('No se pudieron grabar los datos, REINTENTE!!!')
+	WAIT CLEAR
+	msgInfo('No se pudieron grabar los datos, REINTENTE!!!')
 	return .f.
 endIf
 //nFactura := ultimoId()
@@ -223,38 +235,34 @@ if facturaClienteConDetalle()
 			nImporte := factCliente.grid_1.cell(i,8)
 			if !graboFactClienteDetalle(nNumero ,i,cCodigo,nCantidadArt,nPrecioUnitario,;
 																	nIva,nDto,nImporte)
+				WAIT CLEAR
 				msgInfo("No se pudieron Guardar el detalle de la Factura. Reintente!!!")
 				return .f.
 			endIf
 	next
 
 endIf
-
-
 finTransaccion()
+if esFacturaElectronica
+	info_("Registrando Documento en DGI...")
 
-if ! facturaElectronica(nNumero,.f.,.f.)
-	msgInfo("no se pudo guardar el documento en DGI")
-endif
-
-if !imprimoMovimiento(nNumero)
-	msgInfo("No se pudo imprimir el Documento, Reintente")
-endif
-/*
-if factCliente.text_14.value = 101
-	if factCliente.text_1.value = 0
-		imprimoMovimiento(nNumero,0,factCliente.text_2.value,factCliente.text_3.value,factCliente.text_4.value)
-	else
-		imprimoMovimiento(nNumero,0,'','','')
+	if ! facturaElectronica(nNumero,.f.,.f.)
+		WAIT CLEAR
+		msgInfo("No se pudo guardar el documento en DGI, Reintente!!!")	
+		return .f.
 	endif
-
-else
-	imprimoMovimiento(nNumero,0,'','','')
 endif
-*/
-//factCliente.grid_1.deleteAllItems
+
+
+
+info_("Imprimiendo Documento ...")
+if !imprimoMovimiento(nNumero)
+	WAIT CLEAR
+	msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menú")
+	return .f.
+endif
+WAIT CLEAR
 cereoFormulario()
-//vacioDatosSociofactCliente()
 factCliente.text_1.SetFocus
 return .t.
 
@@ -477,13 +485,18 @@ endif
 *************************************************
 
 function graboFactClienteCabezal(nNumero,nCaja,nCliente, nTipoDocumento,nImporte,dFechaFactura,cDescripcion,nVendedor,nFormaPago,cAdenda)
-local cQuery, oQuery
-
+local cQuery, oQuery,nSaldo
+if nTipoDocumento = 102 .or. nTipoDocumento = 112 .or. nTipoDocumento = 98
+	nSaldo := 0
+else
+	iif (nFormaPago = 2, nSaldo := nImporte, nSaldo := 0)
+endIf
+	
 	  
 cQuery := " Insert into cfe_comprobante_cab values "
 cQuery += " ("+str(nNumero)+",'',0,"+str(nTipoDocumento)+","+str(nCaja)+", '"+dtos(dFechaFactura)+"', "
 cQuery += " "+str(nCliente)+","+str(nVendedor)+", "+str(nImporte)+" , "
-iif(nFormaPago = 2, cQuery += "  "+str(nImporte)+",  ", cQuery += " 0 ,")
+cQuery += "  "+str(nSaldo)+" ,"
 cQuery += " '"+cDescripcion+"' , current_timestamp , "+str(nFormaPago)+" ,null , '"+cAdenda+"' )"
 
 oQuery:= oServer:Query(  cQuery )
@@ -520,9 +533,9 @@ endIf
 function facturaClienteCabezal(nFactura)
 local cQuery, oQuery
 
-cQuery := " select id_factura,fecha,id_cliente,tipoCFE,descripcion,serieCFE,numeroCFE " 
-cQuery += " from cfe_comprobante_cab "
-cQuery += " where id_factura = "+str(nFactura)+" "
+cQuery := " select c.id_factura,c.fecha,c.id_cliente,c.tipoCFE,c.descripcion,c.serieCFE,c.numeroCFE,c.forma_pago,t.cantidad_copias " 
+cQuery += " from cfe_comprobante_cab c, cfe_tipos t"
+cQuery += " where t.id_cfe = c.tipoCFE and c.id_factura = "+str(nFactura)+"  "
 
 oQuery:= oServer:Query(cQuery)
 

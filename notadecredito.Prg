@@ -31,7 +31,7 @@ local nTotalFactura := 0
 
 notaCredito.text_1.value := clienteFactura(nFactura)
 notaCredito.text_2.value := str(nFactura)+" - "+nombreCliente(clienteFactura(nFactura))+" - "+dtoc(fechaFacturaCliente(nFactura))
-notaCredito.text_4.value := str(nFactura)
+notaCredito.text_4.value := ""//str(nFactura)
 notaCredito.text_7.value := vendedorFacturaCliente(nFactura)
 
 for i = 1 to oDetalleFactura:lastrec()
@@ -64,15 +64,18 @@ nTotalFactura:= notaCredito.text_3.value
 cDescripcion :=notaCredito.text_4.value
 nVendedor := notacredito.text_7.value
 nCaja := cajaId()
-
+cAdenda := ""
 if !controloDevolucion()
 	return .f.
 endif	
 	
-if !msgYesNo("Graba la Devolucion?","ATENCION",.t.)
+if !msgYesNo("Graba la N/C ?","ATENCION",.t.)
 	return .f.
 endif
-
+if !comienzoTransaccion()
+	msginfo("No se pudo guardar. REINTENTE! ! !")
+	return .f.
+endIf
 nNumero:= numeroDesde('CLIENTE')    	
 
 if nNumero == 0
@@ -84,16 +87,13 @@ if !agregoNumeroDesde('CLIENTE')
 	msginfo("No se pudo actualizar el Numero de la Factura")
 	return .f.
 endIf
-if !comienzoTransaccion()
-	msginfo("No se pudo guardar. REINTENTE! ! !")
-	return .f.
-endIf
 
-if !graboFactClienteCabezal(nNumero,nCaja,nCliente, cTipoDocumento,nTotalFactura,dFechaFactura,cDescripcion,nVendedor,nformaPago)
+
+if !graboFactClienteCabezal(nNumero,nCaja,nCliente, cTipoDocumento,nTotalFactura,dFechaFactura,cDescripcion,nVendedor,nformaPago,cAdenda)
   msgInfo('No se pudieron grabar los datos, REINTENTE!!!')
 	return .f.
 endIf
-if !guardoRelacion(notaCredito.text_6.value,nNumero,notaCredito.text_5.value)
+if !guardoRelacion(notaCredito.text_6.value,nNumero,notaCredito.text_5.value,0)
 	return .f.
 endIf
 
@@ -117,10 +117,25 @@ if !modificoSaldoFacturaCliente(notaCredito.text_6.value,nTotalFactura)
 	msgInfo("No se pudo Modificar la Factura. Reintente!!!")
 	return .f.
 endIf
-
 finTransaccion()
+if esFacturaElectronica
+	info_("Registrando Documento en DGI...")
 
-imprimoMovimiento(nNumero,0,'','','')
+	if ! facturaElectronica(nNumero,.f.,.t.)
+		WAIT CLEAR
+		msgInfo("No se pudo guardar el documento en DGI, Reintente!!!")	
+		return .f.
+	endif
+endif
+
+info_("Imprimiendo Documento ...")
+if !imprimoMovimiento(nNumero)
+	WAIT CLEAR
+	msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menú")
+	return .f.
+endif
+WAIT CLEAR
+
 notaCredito.release
 return .t.
 
@@ -211,12 +226,12 @@ return oQuery
 
 
 
-function guardoRelacion(nFactura, nNumero,nImporteAplica)
+function guardoRelacion(nFactura, nNumero,nImporteAplica,nGlobal)
 local cQuery, oQuery,oFactura:= facturaClienteCabezal(nFactura)
 
 
 cQuery := " insert into cfe_referencias_det values( "
-cQuery += " "+str(nNumero)+",1,1,"+str(oFactura:getRow(1):fieldGet(4))+", "
+cQuery += " "+str(nNumero)+",1,"+str(nGlobal)+","+str(oFactura:getRow(1):fieldGet(4))+", "
 cQuery += " '"+oFactura:getRow(1):fieldGet(6)+"',"+str(oFactura:getRow(1):fieldGet(7))+", "
 cQuery += " '"+dtos(oFactura:getRow(1):fieldGet(2))+"', "
 cQuery += " '',"+str(nFactura)+", "+str(nImporteAplica)+" ) " 

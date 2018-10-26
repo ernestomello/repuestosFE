@@ -38,18 +38,18 @@ do case
 
 	case cTipoDoc == 111 
 		cargarFacturaCreditoCliente(nDocumento)
-		documentogen.title := "Factura de Crédito"
+		documentogen.title := "eFactura"
 	case cTipoDoc == 98
 		documentogen.title := "Recibo"
 		cargarReciboCliente(nDocumento)
 	case cTipoDoc == 102 
-		documentogen.title := "Nota de Crédito"
-		cargarReciboCliente(nDocumento)
+		documentogen.title := "eTicket Nota de Crédito"
+		cargarFacturaCreditoCliente(nDocumento)
 	case cTipoDoc == 112
-		documentogen.title := "Nota de Devolución"
+		documentogen.title := "eFactura Nota de Crédito"
 		cargarFacturaCreditoCliente(nDocumento)
 	case cTipoDoc == 101
-		documentogen.title := "Contado"
+		documentogen.title := "eTicket"
 		cargarFacturaCreditoCliente(nDocumento)
 	case cTipoDoc == 81
 		documentogen.title := "Presupuesto Crédito"
@@ -97,63 +97,39 @@ next
 
 
 procedure cargarNotaCreditoCliente(nDocumento)
-documentogen.title := "Nota de Crédito"
-
-
-//procedure cargarNotaDevolucionCliente(nDocumento)
-//
-//local oDetalleFactura := detalleFacturaCliente(nDocumento)
-//local nTotFactura := 0
-//
-//documentogen.text_2.value := alltrim(nombreCliente(clienteFactura(nDocumento)))
-//documentogen.datePicker_1.value := fechaFacturaCliente(nDocumento)
-//
-//for i = 1 to oDetalleFactura:lastrec()
-//	oRow := oDetalleFactura:getRow(i)
-//	documentogen.grid_1.additem({ oRow:fieldGet(7),oRow:fieldGet(1),oRow:fieldGet(2),oRow:fieldGet(3),oRow:fieldGet(4),oRow:fieldGet(5),oRow:fieldGet(6)  })
-//	nTotFactura += round(oRow:fieldGet(6) * (1 + oRow:fieldGet(4)/100),0)
-//next
-//	documentogen.text_5.value := nTotFactura
-//
-//procedure cargarContadoCliente(nDocumento)
-//local oDetalleFactura := detalleFacturaCliente(nDocumento)
-//local nTotFactura := 0
-//
-//
-//documentogen.text_2.value := alltrim(nombreCliente(clienteFactura(nDocumento)))
-//documentogen.datePicker_1.value := fechaFacturaCliente(nDocumento)
-//
-//for i = 1 to oDetalleFactura:lastrec()
-//	oRow := oDetalleFactura:getRow(i)
-//	documentogen.grid_1.additem({ oRow:fieldGet(7),oRow:fieldGet(1),oRow:fieldGet(2),oRow:fieldGet(3),oRow:fieldGet(4),oRow:fieldGet(5),oRow:fieldGet(6)  })
-//	nTotFactura += round(oRow:fieldGet(6) * (1 + oRow:fieldGet(4)/100),0)
-//next
-//	documentogen.text_5.value := nTotFactura
-
-
+// documentogen.title := "Nota de Crédito"
 
 procedure realizarAccion()
 
 do case 
 	case  documentogen.text_4.value =="IMPRIMIR"
-		imprimoPDF(documentogen.text_6.value)
-		// imprimoMovimiento(documentogen.text_6.value,1,'','','')
+		// imprimoPDF(documentogen.text_6.value)
+		info_("Imprimiendo Documento ...")
+		if !imprimoMovimiento(documentogen.text_6.value,1,'','','')
+			WAIT CLEAR
+			msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menú")
+			return .f.
+		endif
+		WAIT CLEAR
+		
 	
 	case documentogen.text_4.value =="ANULAR"
+		nTipoDoc := tipoDocumento(documentogen.text_6.value)
 		nCajero := anulacion()
 		if nCajero != 0
-			if tipoDocumento(documentogen.text_6.value) == 'R' .or. tipoDocumento(documentogen.text_6.value)== 'N'				
+			do case 
+				case  nTipoDoc = 98 				
 					if !anuloRecibo(documentogen.text_6.value,nCajero)  
 						MsGInfo('No se pudo anular el Movimiento, Consulte al ADMINISTRADOR')
 					else
 						msgInfo('Documento No.'+str(documentogen.text_6.value)+' Anulado')
 					endIf
-			elseif tipoDocumento(documentogen.text_6.value) == 'F' .or. tipoDocumento(documentogen.text_6.value)== 'C'
-					anularFactura(documentogen.text_6.value,nCajero)  
-				else
-					anularDevolucion(documentogen.text_6.value,nCajero)
-				endIf
-//			endif
+				case nTipoDoc =101 .or.nTipoDoc = 111 
+					notaCreditoCliente(documentogen.text_6.value,nCajero)  
+				// else
+					// anularDevolucion(documentogen.text_6.value,nCajero)
+				// endIf
+			end case
 		else
 					msginfo("Usuario no autorizado")
 		endIf

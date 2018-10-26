@@ -219,16 +219,16 @@ function ventasDesdeHasta(dFechaDesde, dFechaHasta)
 local cQuery, oQuery
 
 cQuery := " select  fecha,tipo_documento, sum(importe) "
-cQuery += " FROM factura_cliente_cab "
+cQuery += " FROM cfe_comprobante_cab "
 cQuery += " where fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
-cQuery += " and anulado = 'N' " 
+cQuery += " and anulado = 'N' " ////ver
 cQuery += " group by 1,2 "
-cQuery += " union all "
-cQuery += " select fecha, tipo_documento, sum(importe) "
-cQuery += " from recibo_cliente_cab "
-cQuery += " where fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
-cQuery += " and anulado = 'N' "
-cQuery += " group by 1,2 "
+// cQuery += " union all "
+// cQuery += " select fecha, tipo_documento, sum(importe) "
+// cQuery += " from recibo_cliente_cab "
+// cQuery += " where fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
+// cQuery += " and anulado = 'N' "
+// cQuery += " group by 1,2 "
 cQuery += " order by 1,2 " 
 
 oQuery := oServer:Query( cQuery )

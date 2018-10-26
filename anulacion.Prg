@@ -30,29 +30,29 @@ procedure anuloMovimientos()
 busquedaGeneral("l","","Documentos para Anular",1)   
 
 if nSocioGlobal != 0
-	if msgYesNo("Esta operación anulará el documento, CONTINÚA?")
-			/*nCajero := anulacion()
-			if nCajero != 0
-				if tipoDocumento(nSocioGlobal) == 'R' .or. tipoDocumento(nSocioGlobal)== 'N'
+	// if msgYesNo("Esta operación anulará el documento, CONTINÚA?")
+			
+		// cargoDocumentoGen(nSocioGlobal, "ANULAR")
+				
+	// EndIf
+	nTipoDoc := tipoDocumento(nSocioGlobal)
+		nCajero := anulacion()
+		if nCajero != 0
+			do case 
+				case  nTipoDoc = 98 				
 					if !anuloRecibo(nSocioGlobal,nCajero)  
 						MsGInfo('No se pudo anular el Movimiento, Consulte al ADMINISTRADOR')
 					else
 						msgInfo('Documento No.'+str(nSocioGlobal)+' Anulado')
-					endIf*/
-					cargoDocumentoGen(nSocioGlobal, "ANULAR")
-				/*else
-					if !anuloFactura(nSocioGlobal,nCajero)  
-						MsGInfo('No se pudo anular el Movimiento, Consulte al ADMINISTRADOR')
-					else
-						msgInfo('Documento No.'+str(nSocioGlobal)+' Anulado')
 					endIf
-					muestroDocumentoCliente(nSocioGlobal)
-
-				endif
-				
-			else
-				msginfo("Usuario no autorizado")
-			endIf*/
-	EndIf
+				case nTipoDoc =101 .or.nTipoDoc = 111 
+					notaCreditoCliente(nSocioGlobal,nCajero)  
+				// else
+					// anularDevolucion(documentogen.text_6.value,nCajero)
+				// endIf
+			end case
+		else
+					msginfo("Usuario no autorizado")
+		endIf
   nSocioGlobal := 0
 endIf                                                                                                    

@@ -168,17 +168,19 @@ endIf
 		msginfo("No se pudo guardar. REINTENTE! ! !")
 		return .f.
 	endIf
+	info_("Guardando en la Base de Datos...")
 	//guardo el recibo si el importe es distinto de cero
 	if reciboCliente.text_6.value != 0
 		nNumeroR:= numeroDesde('CLIENTE')  
 		if !agregoNumeroDesde('CLIENTE')
+			WAIT CLEAR
 			msginfo("No se pudo actualizar el Número del Recibo")
 			return .f.
 		endIf
 		// if !guardoCabezalreciboCliente(nNumeroR,cajaId(),reciboCliente.text_1.value,98,reciboCliente.text_6.value,reciboCliente.datePicker_1.value,"",0,1)
-		if !graboFactClienteCabezal(nNumeroR,cajaId(),reciboCliente.text_1.value,98,reciboCliente.text_6.value,reciboCliente.datePicker_1.value,"",0,1)
-			//graboFactClienteCabezal(nNumero,nCaja,nCliente, nTipoDocumento,nImporte,dFechaFactura,cDescripcion,nVendedor,nFormaPago)
-
+		if !graboFactClienteCabezal(nNumeroR,cajaId(),reciboCliente.text_1.value,98,reciboCliente.text_6.value,reciboCliente.datePicker_1.value,"",0,1,"")
+				// (nNumero,nCaja,nCliente, nTipoDocumento,nImporte,dFechaFactura,cDescripcion,nVendedor,nFormaPago,cAdenda)
+			WAIT CLEAR
 			msgInfo("No se pudo Guardar el Recibo. Reintente!!!")
 			return .f.
 		endIf	
@@ -191,14 +193,16 @@ endIf
 		for i = 1 to reciboCliente.grid_1.itemcount
 			if reciboCliente.grid_1.cell(i,8) = 'SI' .and. reciboCliente.grid_1.cell(i,5)!= 0
 				// if !guardoDetallereciboCliente(nNumeroR, reciboCliente.grid_1.cell(i,1),reciboCliente.grid_1.cell(i,5))
-				if !guardoRelacion( reciboCliente.grid_1.cell(i,1),nNumeroR,reciboCliente.grid_1.cell(i,5))
+				if !guardoRelacion( reciboCliente.grid_1.cell(i,1),nNumeroR,reciboCliente.grid_1.cell(i,5),1)
 					// guardoRelacion(nFactura, nNumero)
+					WAIT CLEAR
 					msgInfo("No se pudieron Guardar el detalle del Recibo. Reintente!!!")
 					return .f.
 				endIf					
 				if !modificoSaldoFacturaCliente(reciboCliente.grid_1.cell(i,1),reciboCliente.grid_1.cell(i,5))
-						msgInfo("No se pudo Modificar la Factura. Reintente!!!")
-						return .f.
+					WAIT CLEAR
+					msgInfo("No se pudo Modificar la Factura. Reintente!!!")
+					return .f.
 				endIf
 			endIf
 		next
@@ -208,11 +212,13 @@ endIf
 	if reciboCliente.text_5.value != 0
 		nNumeroN:= numeroDesde('CLIENTE')
 		if !agregoNumeroDesde('CLIENTE')
+			WAIT CLEAR
 			msginfo("No se pudo actualizar el Número de la Nota de Crédito")
 			return .f.
 		endIf
-		if !graboFactClienteCabezal(nNumeroN,cajaId(),reciboCliente.text_1.value,112,reciboCliente.text_5.value,reciboCliente.datePicker_1.value,"",0,2)
+		if !graboFactClienteCabezal(nNumeroN,cajaId(),reciboCliente.text_1.value,112,reciboCliente.text_5.value,reciboCliente.datePicker_1.value,"",0,2,"")
 		// if !guardoCabezalNotaCredito(nNumeroN, cajaId(),reciboCliente.text_1.value,'N',reciboCliente.datePicker_1.value,reciboCliente.text_5.value)
+			WAIT CLEAR
 			msgInfo("No se pudo Guardar la Nota de Crédito. Reintente!!!")
 			return .f.
 		endIf	
@@ -225,21 +231,43 @@ endIf
 		for i = 1 to reciboCliente.grid_1.itemcount
 			if reciboCliente.grid_1.cell(i,8) = 'SI' .and. reciboCliente.grid_1.cell(i,6)!= 0
 				// if !guardoDetalleNotaCredito(nNumeroN,reciboCliente.grid_1.cell(i,1),reciboCliente.grid_1.cell(i,6))
-				if !guardoRelacion( reciboCliente.grid_1.cell(i,1),nNumeroN,reciboCliente.grid_1.cell(i,6))	
+				if !guardoRelacion( reciboCliente.grid_1.cell(i,1),nNumeroN,reciboCliente.grid_1.cell(i,6),1)	
+					WAIT CLEAR
 					msgInfo("No se pudo Guardar el detalle de NC. Reintente!!!")
 					return .f.
 				endIf					
 				if !modificoSaldoFacturaCliente(reciboCliente.grid_1.cell(i,1),reciboCliente.grid_1.cell(i,6))
-						msgInfo("No se pudo Modificar la Factura. Reintente!!!")
-						return .f.
+					WAIT CLEAR
+					msgInfo("No se pudo Modificar la Factura. Reintente!!!")
+					return .f.
 				endIf
 			endIf	
 		next
 	endIf
 	
+	
+if esFacturaElectronica
+	info_("Registrando Documeto en DGI...")
+
+	if ! facturaElectronica(nNumeroN,.f.,.t.)
+		WAIT CLEAR
+		msgInfo("No se pudo guardar el documento en DGI, Reintente!!!")	
+		return .f.
+	endif
+endIf
+
 finTransaccion()
+info_("Imprimiendo Documento ...")
+if !imprimoMovimiento(nNumeroN)
+	WAIT CLEAR
+	msgInfo("No se pudo imprimir el Documento, Reintente")
+	return .f.
+endif
+
 iif(nNumeroR != 0,imprimoMovimiento(nNumeroR,0,'','',''),)
-iif(nNumeroN != 0, imprimoMovimiento(nNumeroN,0,'','',''),)
+//iif(nNumeroN != 0, imprimoMovimiento(nNumeroN,0,'','',''),)
+
+WAIT CLEAR
 vacioDatosReciboCliente()
 reciboCliente.text_1.setfocus
 
