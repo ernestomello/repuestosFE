@@ -11,7 +11,7 @@ DEFINE WINDOW TEMPLATE AT 146 , 363 WIDTH 531 HEIGHT 453 VIRTUAL WIDTH Nil VIRTU
         FONTNAME "Arial"
         FONTSIZE 9
         TOOLTIP ""
-        ONCHANGE busConFiltro(convenioPagoCobrador.text_2.value,,convenioPagoCobrador.radioGroup_1.value)
+        ONCHANGE busConFiltro(convenioPagoCobrador.text_2.value,convenioPagoCobrador.radioGroup_1.value)
         ONGOTFOCUS Nil
         ONLOSTFOCUS Nil
         FONTBOLD .F.
@@ -41,8 +41,8 @@ DEFINE WINDOW TEMPLATE AT 146 , 363 WIDTH 531 HEIGHT 453 VIRTUAL WIDTH Nil VIRTU
         HEIGHT 290
         ITEMS nil
         VALUE Nil
-        WIDTHS { 120, 200,120}
-        HEADERS {'id', 'Nombre','Fecha'}
+        WIDTHS { 80, 120,100,120}
+        HEADERS {'id', 'Documento','Importe','Fecha'}
         FONTNAME "Arial"
         FONTSIZE 9
         TOOLTIP ""

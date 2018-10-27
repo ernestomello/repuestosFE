@@ -9,10 +9,12 @@ if !IsWindowActive(factCliente)
 		rellenoFacturaCliente(nNumero)
 	endif
 	factCliente.label_14.fontcolor := {0,128,0}
+	factCliente.label_1.fontcolor := {0,128,0}
 	factCliente.text_8.value:= 1
 	factCliente.text_14.value := cTipoDocumento
 	factCliente.text_22.value := cTipoDocumento
-	factCliente.label_14.value := descripcionDocumento(cTipoDocumento)
+	factCliente.label_14.value := alltrim(descripcionDocumento(cTipoDocumento))
+	factCliente.label_1.value := iif (nFormaPago = 1, "Contado","Crédito")
 	factCliente.text_15.value := cajaId()
 	factCliente.text_21.value :=nFormaPago
 	factCliente.text_11.value := iif(factCliente.text_21.value = 1 ,nDtoContado, 0)
@@ -109,7 +111,7 @@ factCliente.text_8.value:= 1
 factCliente.text_9.value:= 0
 factCliente.text_9.fontcolor := {0,128,0}
 factCliente.text_14.value := cTipoDocumento
-factCliente.label_14.value := descripcionDocumento(cTipoDocumento)
+factCliente.label_14.value := alltrim(descripcionDocumento(cTipoDocumento))
 factCliente.text_10.value:= ctod("  /  /    ")
 factCliente.text_11.value := iif(factCliente.text_21.value = 1 , nDtoContado, 0)
 // factCliente.text_11.value := iif(alltrim(factCliente.text_14.value) == 'C', 50, 0)
@@ -168,7 +170,7 @@ nCaja := cajaId()
 nVendedor := factCliente.text_18.value
 nFormaPago := factCliente.text_21.value
 if nFormaPago = 2 .and. cTipoDocumento = 111
-cAdenda += chr(13)+chr(10)+mensaje1Documento(cTipoDocumento)+chr(13)+chr(10)+mensaje2Documento(cTipoDocumento)+chr(13)+chr(10)+mensaje3Documento(cTipoDocumento)+chr(13)chr(10)+
+cAdenda += chr(13)+chr(10)+mensaje1Documento(cTipoDocumento)+chr(13)+chr(10)+mensaje2Documento(cTipoDocumento)+chr(13)+chr(10)+mensaje3Documento(cTipoDocumento)+chr(13)+chr(10)
 endif
 
 if nCliente = 0 .and. (cTipoDocumento = 111 .or. cTipoDocumento = 112)
@@ -205,13 +207,14 @@ endIf
 
 
 if nNumero == 0
+	noTran()
 	WAIT CLEAR
 	msgInfo("No se pudo Guardar el Número. Reintente!!!")
 	return .f.
 endif
 
 
-
+cAdenda += "Ref: "+str(nNumero)
 
 if !graboFactClienteCabezal(nNumero ,nCaja,nCliente, cTipoDocumento,;
 														nTotalFactura,dFechaFactura,cDescripcion,nVendedor,nFormaPago,cAdenda)
@@ -247,6 +250,7 @@ if esFacturaElectronica
 	info_("Registrando Documento en DGI...")
 
 	if ! facturaElectronica(nNumero,.f.,.f.)
+		noTran()
 		WAIT CLEAR
 		msgInfo("No se pudo guardar el documento en DGI, Reintente!!!")	
 		return .f.
@@ -394,7 +398,7 @@ else
 	factCliente.text_2.value := ""
 	factCliente.text_14.value := 101
 endif
-factCliente.label_14.value := descripcionDocumento(factCliente.text_14.value)
+factCliente.label_14.value := alltrim(descripcionDocumento(factCliente.text_14.value))
 
 
 
@@ -623,10 +627,9 @@ function detalleFacturaCliente(nFactura)
 local cQuery
 local oQuery
 
-cQuery := "select  a.descripcion,d.cantidad,d.precio_unitario,f.valor,cast(d.descripcion as unsigned),d.importe,d.codigo_barra "
-cQuery += " from cfe_comprobante_cab c, cfe_comprobante_det d, articulo a , cfe_ind_facturacion f"
+cQuery := "select  a.descripcion,d.cantidad,d.precio_unitario,d.cfe_ind_fact,cast(d.descripcion as unsigned),d.importe,d.codigo_barra "
+cQuery += " from cfe_comprobante_cab c, cfe_comprobante_det d, articulo a "
 cQuery += " where c.id_factura = d.id_factura"
-cQuery += " and f.id_indicador = d.cfe_ind_fact "
 cQuery += " and a.codigo_barra = d.codigo_barra "
 cQuery += " and c.id_factura = "+str(nFactura)+" "
 

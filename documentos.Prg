@@ -26,13 +26,13 @@ do case
 		else
 			msgInfo("La ventana ya está en uso")
 		endif
-			case cTipoDoc = 112
+	case cTipoDoc = 112
 		if !IsWindowActive(recibo)
 				cargoDocumentoGen(nDocumento, "MOSTRAR")
 		else
 			msgInfo("La ventana ya está en uso")
 		endif
-		case cTipoDoc == 91
+	case cTipoDoc == 91
 		if !IsWindowActive(recibo)
 				cargoDocumentoGen(nDocumento, "MOSTRAR")
 		else
@@ -266,7 +266,7 @@ hb_MEMOWRIT("factura.pdf",hb_base64decode(cValTag(cRespuesta,"a:Buffer")))
 
 	if val(cValTag(cRespuesta,"a:Codigo")) = 0
 		
-		EXECUTE FILE '"' + exePdf + '"' PARAMETERS  '-print-to-default  factura.pdf '
+		EXECUTE FILE '"' + exePdf + '"' PARAMETERS  '-print-to-default -print-settings "'+str(nCantCopias)+'x"  factura.pdf '
 		
 	else
 		msgInfo(" Devolucion de Errores"+chr(13)+cValTag(cRespuesta,"a:Descripcion"))
@@ -286,15 +286,11 @@ local nTipoDocumento :=tipoDocumento(nFactura)
 local nCantidaCopias := cantidadCopias(nTipoDocumento)
 local nVendedor := vendedorFacturaCliente(nFactura)
 
-if nTipoDocumento == 'R' .or. nTipoDocumento== 'N'
-	oCabezal :=reciboClienteCabezal(nFactura)
-	oDetalle :=reciboClienteDetalle(nFactura)
 
-else
 	oCabezal :=facturaClienteCabezal(nFactura)
 	oDetalle :=facturaClienteDetalle(nFactura)
 
-endif
+
 
 if len(alltrim(cRut)) != 0
 	cRutImpreso := cRut
@@ -427,15 +423,10 @@ local nIvaBasico := PARAMETROini("IVA","N")
 local nTipoDocumento :=tipoDocumento(nFactura)
 local nCantidaCopias := cantidadCopias(nTipoDocumento)
 
-if nTipoDocumento == 'R' .or. nTipoDocumento== 'N'
-	oCabezal :=reciboClienteCabezal(nFactura)
-	oDetalle :=reciboClienteDetalle(nFactura)
 
-else
 	oCabezal :=facturaClienteCabezal(nFactura)
 	oDetalle :=facturaClienteDetalle(nFactura)
 
-endif
 
 if len(alltrim(cRut)) != 0
 	cRutImpreso := cRut

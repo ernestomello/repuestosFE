@@ -155,6 +155,7 @@ local nCantidad := len(reciboCliente.grid_1.value)
 local nImportePagoreciboCliente :=  reciboCliente.text_6.value
 local nImporteNotaCredito := reciboCliente.text_5.value
 local nImporte, nNumeroR, nNumeroN := 0
+local cAdenda := ""
 
 
 if !msgYesNo("Graba el Recibo y la Bonificacion?","ATENCIÓN",.T.)
@@ -177,8 +178,9 @@ endIf
 			msginfo("No se pudo actualizar el Número del Recibo")
 			return .f.
 		endIf
+		cAdenda += "Ref: "+str(nNumeroR)
 		// if !guardoCabezalreciboCliente(nNumeroR,cajaId(),reciboCliente.text_1.value,98,reciboCliente.text_6.value,reciboCliente.datePicker_1.value,"",0,1)
-		if !graboFactClienteCabezal(nNumeroR,cajaId(),reciboCliente.text_1.value,98,reciboCliente.text_6.value,reciboCliente.datePicker_1.value,"",0,1,"")
+		if !graboFactClienteCabezal(nNumeroR,cajaId(),reciboCliente.text_1.value,98,reciboCliente.text_6.value,reciboCliente.datePicker_1.value,"",0,1,cAdenda)
 				// (nNumero,nCaja,nCliente, nTipoDocumento,nImporte,dFechaFactura,cDescripcion,nVendedor,nFormaPago,cAdenda)
 			WAIT CLEAR
 			msgInfo("No se pudo Guardar el Recibo. Reintente!!!")
@@ -216,7 +218,8 @@ endIf
 			msginfo("No se pudo actualizar el Número de la Nota de Crédito")
 			return .f.
 		endIf
-		if !graboFactClienteCabezal(nNumeroN,cajaId(),reciboCliente.text_1.value,112,reciboCliente.text_5.value,reciboCliente.datePicker_1.value,"",0,2,"")
+		cAdenda += "Ref: "+str(nNumeroN)
+		if !graboFactClienteCabezal(nNumeroN,cajaId(),reciboCliente.text_1.value,112,reciboCliente.text_5.value,reciboCliente.datePicker_1.value,"",0,2,cAdenda)
 		// if !guardoCabezalNotaCredito(nNumeroN, cajaId(),reciboCliente.text_1.value,'N',reciboCliente.datePicker_1.value,reciboCliente.text_5.value)
 			WAIT CLEAR
 			msgInfo("No se pudo Guardar la Nota de Crédito. Reintente!!!")
@@ -244,7 +247,7 @@ endIf
 			endIf	
 		next
 	endIf
-	
+finTransaccion()	
 	
 if esFacturaElectronica
 	info_("Registrando Documeto en DGI...")
@@ -256,7 +259,7 @@ if esFacturaElectronica
 	endif
 endIf
 
-finTransaccion()
+
 info_("Imprimiendo Documento ...")
 if !imprimoMovimiento(nNumeroN)
 	WAIT CLEAR
@@ -416,11 +419,11 @@ return oQuery
 function facturasRecibosCliente(nRecibo)
 local cQuery, oQuery
 
-cQuery := " select c.numero_factura,c.importe,c.fecha,d.importe,c.saldo "
-cQuery += " from recibo_cliente_cab r, recibo_cliente_det d, factura_cliente_cab c" 
-cQuery += " where r.id_recibo = d.id_recibo "
-cQuery += " and r.id_recibo= "+str(nRecibo)+" "
-cQuery += " and c.numero_factura = d.numero_factura "
+cQuery := " select c.id_factura,c.importe,c.fecha,d.importe_aplicado,c.saldo "
+cQuery += " from cfe_comprobante_cab c, cfe_referencias_det d " 
+cQuery += " where c.id_factura = d.id_factura_ref "
+cQuery += " and c.id_factura= "+str(nRecibo)+" "
+// cQuery += " and c.numero_factura = d.numero_factura "
 
 
 
