@@ -288,8 +288,11 @@ local nVendedor := vendedorFacturaCliente(nFactura)
 
 
 	oCabezal :=facturaClienteCabezal(nFactura)
-	oDetalle :=facturaClienteDetalle(nFactura)
-
+	if nTipoDocumento = 98 .or. nTipoDocumento = 112 .or.nTipoDocumento = 102
+		oDetalle :=reciboClienteDetalle(nFactura)
+	else
+		oDetalle :=facturaClienteDetalle(nFactura)
+	endif
 
 
 if len(alltrim(cRut)) != 0
@@ -309,7 +312,7 @@ else
 	cDireccionImpresa := dirParticularCliente(oCabezal:GetRow(1):fieldGet(3))
 endif
 
-if nTipoDocumento = 102 .or. nTipoDocumento = 112
+if nTipoDocumento = 102 .or. nTipoDocumento = 112 .or. nTipoDocumento = 98
 	cDescripcion := "Afecta Factura Nro. "+alltrim(oCabezal:GetRow(1):fieldGet(5))
 else
 	cDescripcion := alltrim(oCabezal:GetRow(1):fieldGet(5))
@@ -353,7 +356,7 @@ endif
 	for i= 1 to oDetalle:lastRec()
 	  
 	  @ fila+lin,col+001 say alltrim(oDetalle:GetRow(i):fieldGet(3)) //CODREPF
-	  if nTipoDocumento = 102 .or. nTipoDocumento = 112
+	  if nTipoDocumento = 102 .or. nTipoDocumento = 112 .or. nTipoDocumento = 98
 	  	@ fila+lin,col+022 say "Afecta Fac. Nro: "+ str(oDetalle:GetRow(i):fieldGet(4))+"-"+dtoc(fechaFacturaCliente(oDetalle:GetRow(i):fieldGet(4))) //NOMREPF
 	  else
 	  	@ fila+lin,col+022 say alltrim(oDetalle:GetRow(i):fieldGet(4))+"-"+locacionArticulo(oDetalle:GetRow(i):fieldGet(3)) //NOMREPF
@@ -361,12 +364,12 @@ endif
 	  @ fila+lin,col+075 say oDetalle:GetRow(i):fieldGet(5)  pict '999999.99' //CANTF
 	  @ fila+lin,col+098 say oDetalle:GetRow(i):fieldGet(6)  pict '99999.99' //PRVENTAF
 	  @ fila+lin,col+114 say oDetalle:GetRow(i):fieldGet(9)  pict '99.9' //PCTDESCF
-	  if nTipoDocumento = 102 .or. nTipoDocumento = 112
+	  if nTipoDocumento = 102 .or. nTipoDocumento = 112 .or. nTipoDocumento = 98
 	  	@ fila+lin,col+119 say round(oDetalle:GetRow(i):fieldGet(10),2)/(1 + nIvaBasico/100) pict '99999999999.99' //IMPORTEF
 	  else
 	  @ fila+lin,col+119 say round(oDetalle:GetRow(i):fieldGet(10),2) pict '99999999999.99' //IMPORTEF
 	  endif
-	  if nTipoDocumento = 102 .or. nTipoDocumento = 112
+	  if nTipoDocumento = 102 .or. nTipoDocumento = 112 .or. nTipoDocumento = 98
 	  	nLineaSinIva :=  round(oDetalle:GetRow(i):fieldGet(10),2) /(1 + nIvaBasico/100)
 	  	nTotalSIva := nTotalSIva + nLineaSinIva
 			nIva := nIva +  round(nLineaSinIva * nIvaBasico/100,2)

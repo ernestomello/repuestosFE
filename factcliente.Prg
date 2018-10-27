@@ -260,7 +260,7 @@ endif
 
 
 info_("Imprimiendo Documento ...")
-if !imprimoMovimiento(nNumero)
+if !imprimoMovimiento(nNumero,0,'','','')
 	WAIT CLEAR
 	msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menú")
 	return .f.

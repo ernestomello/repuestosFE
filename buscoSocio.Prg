@@ -21,22 +21,21 @@ local cFechaAnular:= 	PARAMETROini("FECHANULAR","C")
       Load Window conveniopagocobrador
       conveniopagocobrador.title := titulo
       conveniopagocobrador.text_2.value := vpc
-      
       do case 
         case vpc == 'cc'
           conveniopagocobrador.frame_1.caption := 'Clientes'
-          cQuery := "select id_cliente, nombre,direccion_particular,'' "
+          cQuery := "select id_cliente, nombre,direccion_particular,'.' "
           cQuery += " from cliente "
           cQuery += " order by "+str(orden)+" LIMIT 200"
 		case vpc == 'cf'
           conveniopagocobrador.frame_1.caption := 'Clientes'
-          cQuery := "select id_cliente, nombre,direccion_particular,'' "
+          cQuery := "select id_cliente, nombre,direccion_particular,'.' "
           cQuery += " from cliente "
           cQuery += " where cta_cte = 1 order by 2 "
           
         case vpc == 'a'
           conveniopagocobrador.frame_1.caption := 'Repuestos'
-          cQuery := "select codigo_barra, descripcion,concat('$',precio_venta),'' from articulo order by 2 limit 200"          
+          cQuery := "select codigo_barra, descripcion,concat('$',precio_venta),'.' from articulo order by 2 limit 200"          
   
         case vpc == 'l'
           conveniopagocobrador.frame_1.caption := 'Facturas'
@@ -54,26 +53,25 @@ local cFechaAnular:= 	PARAMETROini("FECHANULAR","C")
 		 
         case vpc == 'm'
           conveniopagocobrador.frame_1.caption := 'Marcas'
-          cQuery := "select id_marca, descripcion,'','' from marca order by 2"
+          cQuery := "select id_marca, descripcion,'.','.' from marca order by 2"
         case vpc == 'p'
           conveniopagocobrador.frame_1.caption := 'Proveedor'
-          cQuery := "select id_proveedor, nombre,'','' from proveedor order by 2"
+          cQuery := "select id_proveedor, nombre,'.','.' from proveedor order by 2"
         case vpc = 'u'
           conveniopagocobrador.frame_1.caption := 'Vendedor'
-          cQuery := "select id_cajero, nombre,'','' from cajero order by 2"
+          cQuery := "select id_cajero, nombre,'.','.' from cajero order by 2"
         case vpc == 'o'
           conveniopagocobrador.frame_1.caption := 'Modelos'
-          cQuery := "select id_modelo, descripcion,'','' from modelo "
+          cQuery := "select id_modelo, descripcion,'.','.' from modelo "
           cQuery := cQuery+ " where id_marca = "+str(filtro)+" order by 2"
 		
 		case vpc =='pc'
 		  conveniopagocobrador.frame_1.caption := titulo
-		  cQuery := " select f.numero_factura,f.descripcion,date_format(f.fecha,'%d/%m/%Y'),'' "
+		  cQuery := " select f.id_factura,f.descripcion,date_format(f.fecha,'%d/%m/%Y'),'.' "
 		  cQuery += " from cfe_comprobante_cab f,cfe_tipos d "
 		  cQuery += " where  where f.tipoCFE = d.id_cfe "
 		  cQuery += " and f.tipoCFE = 91 "
 	end case
-  
   
   oQuery := oServer:Query(cQuery )
     If oQuery:NetErr()												
@@ -107,17 +105,17 @@ cNombre := iif(len(alltrim(conveniopagocobrador.text_1.value)) = 0, '"%"',' "'+A
  do case 
         case vpc == 'cc'
           conveniopagocobrador.frame_1.caption := 'Clientes'
-          cQuery := " select id_cliente, nombre,direccion_particular,'' from cliente "
+          cQuery := " select id_cliente, nombre,direccion_particular,'.' from cliente "
           cQuery += " where nombre LIKE "+cNombre+"  order by "+str(orden)+" limit 100 "
 		case vpc == 'cf'
           conveniopagocobrador.frame_1.caption := 'Clientes'
-          cQuery := "select id_cliente, nombre,direccion_particular "
+          cQuery := "select id_cliente, nombre,direccion_particular ,'.'"
           cQuery += " from cliente "
           cQuery += " where cta_cte = 1 and nombre LIKE "+cNombre+"  order by "+str(orden)+" limit 100 "
           
         case vpc == 'a'
 			conveniopagocobrador.frame_1.caption := 'Repuestos'
-			cQuery := "select codigo_barra, descripcion,concat('$',precio_venta) from articulo "          
+			cQuery := "select codigo_barra, descripcion,concat('$',precio_venta),'.' from articulo "          
 			cQuery += " where descripcion LIKE "+cNombre+"  order by "+str(orden)+" limit 100"
         case vpc == 'l'
           conveniopagocobrador.frame_1.caption := 'Facturas'
@@ -156,24 +154,24 @@ cNombre := iif(len(alltrim(conveniopagocobrador.text_1.value)) = 0, '"%"',' "'+A
 		
         case vpc == 'm'
           conveniopagocobrador.frame_1.caption := 'Marcas'
-          cQuery := "select id_marca, descripcion,'','' from marca "
+          cQuery := "select id_marca, descripcion,'.','.' from marca "
           cQuery += " where descripcion LIKE "+cNombre+"  order by "+str(orden)+" limit 100"
         case vpc == 'p'
 	        conveniopagocobrador.frame_1.caption := 'Proveedor'
-	        cQuery := "select id_proveedor, nombre,'','' from proveedor "
+	        cQuery := "select id_proveedor, nombre,'.','.' from proveedor "
 	        cQuery += " where nombre LIKE "+cNombre+"  order by "+str(orden)+" limit 100"
         case vpc = 'u'
 	        conveniopagocobrador.frame_1.caption := 'Usuarios'
-	        cQuery := "select id_cajero, nombre,'','' from cajero "
+	        cQuery := "select id_cajero, nombre,'.','.' from cajero "
 	        cQuery += " where nombre LIKE "+cNombre+"  order by "+str(orden)+" "
          case vpc == 'o'
           conveniopagocobrador.frame_1.caption := 'Modelos'
-          cQuery := "select id_modelo, descripcion,'1' from modelo "
+          cQuery := "select id_modelo, descripcion,'1','.' from modelo "
           cQuery += " where id_marca = "+str(filtro)+" and descripcion LIKE "+cNombre+" "
           cQuery += " order by "+str(orden)+" limit 100"
 		 case vpc =='pc'
 		  conveniopagocobrador.frame_1.caption := "Presupuestos Contado"
-		  cQuery := " select f.numero_factura,f.descripcion,date_format(f.fecha,'%d/%m/%Y') "
+		  cQuery := " select f.id_factura,f.descripcion,date_format(f.fecha,'%d/%m/%Y') ,'.'"
 		    cQuery += " from cfe_comprobante_cab f,cfe_tipos d"
           cQuery += " where f.tipoCFE = d.id_cfe "         
 		  cQuery += " and  f.descripcion LIKE "+cNombre+" "

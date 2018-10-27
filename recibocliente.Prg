@@ -261,7 +261,7 @@ endIf
 
 
 info_("Imprimiendo Documento ...")
-if !imprimoMovimiento(nNumeroN)
+if !imprimoMovimiento(nNumeroN,0,'','','')
 	WAIT CLEAR
 	msgInfo("No se pudo imprimir el Documento, Reintente")
 	return .f.
@@ -422,7 +422,7 @@ local cQuery, oQuery
 cQuery := " select c.id_factura,c.importe,c.fecha,d.importe_aplicado,c.saldo "
 cQuery += " from cfe_comprobante_cab c, cfe_referencias_det d " 
 cQuery += " where c.id_factura = d.id_factura_ref "
-cQuery += " and c.id_factura= "+str(nRecibo)+" "
+cQuery += " and d.id_factura= "+str(nRecibo)+" "
 // cQuery += " and c.numero_factura = d.numero_factura "
 
 
@@ -478,11 +478,11 @@ return oQuery
 function reciboClienteDetalle(nRecibo)
 local cQuery, oQuery
 
-cQuery := " select d.id_recibo,0, '-',d.numero_factura , 0, "
-cQuery += " 0,1 , 0, 0, d.importe "
-cQuery += " from recibo_cliente_cab c, recibo_cliente_det d "
-cQuery += " where c.id_recibo = d.id_recibo "
-cQuery += " and c.id_recibo = "+str(nRecibo)+" "
+cQuery := " select d.id_factura_ref,0, '-',d.id_factura_ref , 0, "
+cQuery += " 0,1 , 0, 0, d.importe_aplicado "
+cQuery += " from cfe_comprobante_cab c, cfe_referencias_det d "
+cQuery += " where c.id_factura = d.id_factura_ref"
+cQuery += " and d.id_factura = "+str(nRecibo)+" "
 cQuery += " order by 3 "
 
 

@@ -39,7 +39,7 @@ Function main()
     		MINBUTTON .T.;
     		MAXBUTTON .F.;
     		titlebar .T.;
-    		TITLE "Gesti¢n de Ventas de "+cNombreEmpresa+" - Version " + cNroVersionAplicacion + ' - Terminal ' + cNombreTerminal ;
+    		TITLE "Gestión de Ventas de "+cNombreEmpresa+" - Version " + cNroVersionAplicacion + ' - Terminal ' + cNombreTerminal ;
     		ICON	"MAINICON"			;
     		MAIN; 
     		ON RELEASE MySQL_Disconnect()
@@ -99,7 +99,7 @@ Function main()
       				ITEM 'Proveedores' 	ACTION mantenimientoProveedor(0)
       				SEPARATOR
       				ITEM 'Marcas ' 			ACTION mantenimientoMarca(0)
-      				ITEM 'Locaci¢n ' 		ACTION mantenimientoLocacion(0)
+      				ITEM 'Locación ' 		ACTION mantenimientoLocacion(0)
       				SEPARATOR
       				ITEM 'Usuario '			ACTION mantenimientoUsuario(0)
       			
@@ -138,8 +138,8 @@ Function main()
                 
       												
       			END POPUP
-      			POPUP "Cotizacion Moneda"
-      				ITEM 'Cotizaci¢n Moneda' ACTION cotizacion_moneda()
+      			POPUP "Cotización Moneda"
+      				ITEM 'Cotización Moneda' ACTION cotizacion_moneda()
       			END POPUP
 //      				ITEM 'Migrar Detalle FAC-REC' ACTION migraDetalle()
 //							ITEM 'Migrar Repuestos' ACTION migraArticulo()
@@ -290,11 +290,11 @@ Procedure MySQL_Connect()
 	Else
 
 		cServidorSQL_Estado	:=	'<Conectado>'
-		if msgYesNO("Usa la base de FE")
-			oServer:SelectDB( "comercio_fe" )
-		else	
+		// if msgYesNO("Usa la base de FE")
+			// oServer:SelectDB( "comercio_fe" )
+		// else	
 			oServer:SelectDB( cBase )
-		endif
+		// endif
 		If oServer:NetErr()	
 			MsgStop("No se pudo conectar con Servidor:"+chr(13)+cServidor+chr(13)+oServer:Error())
 		endif
