@@ -129,7 +129,7 @@ if esFacturaElectronica
 endif
 
 info_("Imprimiendo Documento ...")
-if !imprimoMovimiento(nNumero)
+if !imprimoMovimiento(nNumero,0,'','','')
 	WAIT CLEAR
 	msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menú")
 	return .f.
@@ -214,7 +214,7 @@ cQuery += " from cfe_comprobante_cab c, cfe_tipos d, cfe_referencias_det r"
 cQuery += " where r.id_factura = c.id_factura "
 cQuery += " and d.id_cfe = c.tipoCFE "
 cQuery += " and r.id_factura_ref = "+str(nFactura)+" "
-cQuery += " and c.tipoCFE in (102,112) "
+cQuery += " and c.tipoCFE in (103,113) "
 // cQuery += " and c.anulado = 'N' "
 
 oQuery:= oServer:Query(cQuery)

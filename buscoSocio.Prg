@@ -13,74 +13,65 @@ local cFechaAnular:= 	PARAMETROini("FECHANULAR","C")
  
   if !IsWindowActive(busqueda)
   		if vpc == 'a'
-  			aBusca:= { {'TEXTBOX','CHARACTER'}, {'TEXTBOX','CHARACTER'},{'TEXTBOX','CHARACTER'}}
+  			aBusca:= { {'TEXTBOX','CHARACTER'}, {'TEXTBOX','CHARACTER'},{'TEXTBOX','CHARACTER'},{'TEXTBOX','CHARACTER'}}
   		else
-  			aBusca := {{'TEXTBOX','NUMERIC','9999999999'}, {'TEXTBOX','CHARACTER'}, {'TEXTBOX','CHARACTER'}}
+  			aBusca := {{'TEXTBOX','NUMERIC','9999999999'}, {'TEXTBOX','CHARACTER'}, {'TEXTBOX','CHARACTER'},{'TEXTBOX','CHARACTER'}}
   		endif
   		
       Load Window conveniopagocobrador
       conveniopagocobrador.title := titulo
       conveniopagocobrador.text_2.value := vpc
-      
       do case 
         case vpc == 'cc'
           conveniopagocobrador.frame_1.caption := 'Clientes'
-          cQuery := "select id_cliente, nombre,direccion_particular "
+          cQuery := "select id_cliente, nombre,direccion_particular,'.' "
           cQuery += " from cliente "
           cQuery += " order by "+str(orden)+" LIMIT 200"
 		case vpc == 'cf'
           conveniopagocobrador.frame_1.caption := 'Clientes'
-          cQuery := "select id_cliente, nombre,direccion_particular "
+          cQuery := "select id_cliente, nombre,direccion_particular,'.' "
           cQuery += " from cliente "
           cQuery += " where cta_cte = 1 order by 2 "
           
         case vpc == 'a'
           conveniopagocobrador.frame_1.caption := 'Repuestos'
-          cQuery := "select codigo_barra, descripcion,concat('$',precio_venta) from articulo order by 2 limit 200"          
+          cQuery := "select codigo_barra, descripcion,concat('$',precio_venta),'.' from articulo order by 2 limit 200"          
   
         case vpc == 'l'
           conveniopagocobrador.frame_1.caption := 'Facturas'
-          cQuery := " select f.id_factura,d.descripcion,date_format(f.fecha,'%d/%m/%Y') "
+          cQuery := " select f.id_factura,concat(d.descripcion,' ',f.serieCFE,'-',f.numeroCFE),concat(f.importe),date_format(f.fecha,'%d/%m/%Y') "
           cQuery += " from cfe_comprobante_cab f,cfe_tipos d"
           cQuery += " where f.tipoCFE = d.id_cfe "         
           cQuery += " and date(f.fecha) = "+cFechaAnular+" "        
-          cQuery += " order by 3 desc ,1 desc  "
-        case vpc == 'n'
-          conveniopagocobrador.frame_1.caption := 'Documentos Por Número'
-          cQuery := " select f.numero_factura,d.descripcion,date_format(f.fecha,'%d/%m/%Y %H:%i') "
-          cQuery += " from factura_cliente_cab f,documento d"
-          cQuery += " where d.id_documento = f.tipo_documento "
-          //cQuery += " and f.anulado = 'N' "
-          cQuery += " union all " 
-          cQuery += " select r.id_recibo, d.descripcion, date_format(r.fecha,'%d/%m/%Y') "
-          cQuery += " from recibo_cliente_cab r, documento d "
-          cQuery += " where d.id_documento = r.tipo_documento "
-          //cQuery += " and r.anulado ='N' "
-          cQuery += " order by  1  limit 200"
+          cQuery += " order by 1 desc  "
+		 case vpc == 'n'
+          conveniopagocobrador.frame_1.caption := 'Facturas'
+          cQuery := " select f.id_factura,concat(d.descripcion,' ',f.serieCFE,'-',f.numeroCFE),concat(f.importe),date_format(f.fecha,'%d/%m/%Y') "
+          cQuery += " from cfe_comprobante_cab f,cfe_tipos d"
+          cQuery += " where f.tipoCFE = d.id_cfe "         
+          cQuery += " order by 1 desc  limit 200" 
+		 
         case vpc == 'm'
           conveniopagocobrador.frame_1.caption := 'Marcas'
-          cQuery := "select id_marca, descripcion,'1' from marca order by 2"
+          cQuery := "select id_marca, descripcion,'.','.' from marca order by 2"
         case vpc == 'p'
           conveniopagocobrador.frame_1.caption := 'Proveedor'
-          cQuery := "select id_proveedor, nombre,'1' from proveedor order by 2"
+          cQuery := "select id_proveedor, nombre,'.','.' from proveedor order by 2"
         case vpc = 'u'
           conveniopagocobrador.frame_1.caption := 'Vendedor'
-          cQuery := "select id_cajero, nombre,'1' from cajero order by 2"
+          cQuery := "select id_cajero, nombre,'.','.' from cajero order by 2"
         case vpc == 'o'
           conveniopagocobrador.frame_1.caption := 'Modelos'
-          cQuery := "select id_modelo, descripcion,'1' from modelo "
+          cQuery := "select id_modelo, descripcion,'.','.' from modelo "
           cQuery := cQuery+ " where id_marca = "+str(filtro)+" order by 2"
 		
 		case vpc =='pc'
 		  conveniopagocobrador.frame_1.caption := titulo
-		  cQuery := " select f.numero_factura,f.descripcion,date_format(f.fecha,'%d/%m/%Y') "
-		  cQuery += " from factura_cliente_cab f,documento d"
-		  cQuery += " where d.id_documento = f.tipo_documento "
-		  cQuery += " and f.anulado = 'N' "
-		  // cQuery += " and date(f.fecha) = "+cFechaAnular+" "
-		  cQuery += " and f.tipo_documento = 'Q' "
+		  cQuery := " select f.id_factura,f.descripcion,date_format(f.fecha,'%d/%m/%Y'),'.' "
+		  cQuery += " from cfe_comprobante_cab f,cfe_tipos d "
+		  cQuery += " where  where f.tipoCFE = d.id_cfe "
+		  cQuery += " and f.tipoCFE = 91 "
 	end case
-  
   
   oQuery := oServer:Query(cQuery )
     If oQuery:NetErr()												
@@ -91,7 +82,7 @@ local cFechaAnular:= 	PARAMETROini("FECHANULAR","C")
 
     For i := 1 To oQuery:LastRec()
       oRow := oQuery:GetRow(i)
-    	conveniopagocobrador.grid_1.addItem({oRow:fieldGet(1),oRow:fieldGet(2) ,iif(oRow:fieldGet(3)='1','',oRow:fieldGet(3))})
+    	conveniopagocobrador.grid_1.addItem({oRow:fieldGet(1),oRow:fieldGet(2) ,oRow:fieldGet(3),oRow:fieldGet(4) })
     Next
 
     oQuery:Destroy()
@@ -103,85 +94,88 @@ return
 
 procedure busConFiltro(vpc,filtro,nOrden)
 local cQuery,oQuery
-local orden := nOrden 
+local orden := filtro 
 local cFechaAnular:= PARAMETROini("FECHANULAR","C")
 
 //MsgInfo(str(nOrden))
 
-If len(conveniopagocobrador.text_1.value) > 2
+If len(conveniopagocobrador.text_1.value) > 1
 conveniopagocobrador.grid_1.deleteAllItems
-cNombre := iif(conveniopagocobrador.text_1.value = nil, '"%"',' "%'+AllTrim(conveniopagocobrador.text_1.value)+'%"' )
+cNombre := iif(len(alltrim(conveniopagocobrador.text_1.value)) = 0, '"%"',' "'+AllTrim(conveniopagocobrador.text_1.value)+'%"' )
  do case 
         case vpc == 'cc'
           conveniopagocobrador.frame_1.caption := 'Clientes'
-          cQuery := " select id_cliente, nombre,direccion_particular from cliente "
+          cQuery := " select id_cliente, nombre,direccion_particular,'.' from cliente "
           cQuery += " where nombre LIKE "+cNombre+"  order by "+str(orden)+" limit 100 "
 		case vpc == 'cf'
           conveniopagocobrador.frame_1.caption := 'Clientes'
-          cQuery := "select id_cliente, nombre,direccion_particular "
+          cQuery := "select id_cliente, nombre,direccion_particular ,'.'"
           cQuery += " from cliente "
           cQuery += " where cta_cte = 1 and nombre LIKE "+cNombre+"  order by "+str(orden)+" limit 100 "
           
         case vpc == 'a'
 			conveniopagocobrador.frame_1.caption := 'Repuestos'
-			cQuery := "select codigo_barra, descripcion,concat('$',precio_venta) from articulo "          
+			cQuery := "select codigo_barra, descripcion,concat('$',precio_venta),'.' from articulo "          
 			cQuery += " where descripcion LIKE "+cNombre+"  order by "+str(orden)+" limit 100"
         case vpc == 'l'
           conveniopagocobrador.frame_1.caption := 'Facturas'
-          cQuery := " select f.numero_factura,d.descripcion,date_format(f.fecha,'%d/%m/%Y %H:%i') "
-          cQuery += " from factura_cliente_cab f,documento d"
-          cQuery += " where d.id_documento = f.tipo_documento "
-          cQuery += " and f.anulado = 'N' "
-          cQuery += " and date(f.fecha) = "+cFechaAnular+" "
-          cQuery += " and  d.descripcion LIKE "+cNombre+" "
-          cQuery += " union all " 
-          cQuery += " select r.id_recibo, d.descripcion, date_format(r.fecha,'%d/%m/%Y') "
-          cQuery += " from recibo_cliente_cab r, documento d "
-          cQuery += " where d.id_documento = r.tipo_documento "
-          cQuery += " and r.anulado ='N' "
-          cQuery += " and date(r.fecha) = "+cFechaAnular+" "
-          cQuery += " and  d.descripcion LIKE "+cNombre+" "
-          cQuery += " order by "+str(orden)+" desc, 1 desc"
-				case vpc == 'n'
-          conveniopagocobrador.frame_1.caption := 'Documentos Por Número'
-          cQuery := " select f.numero_factura,d.descripcion,date_format(f.fecha,'%d/%m/%Y %H:%i') "
-          cQuery += " from factura_cliente_cab f,documento d"
-          cQuery += " where d.id_documento = f.tipo_documento "
-        //  cQuery += " and f.anulado = 'N' "
-          cQuery += " and  f.numero_factura LIKE "+cNombre+" "
-          cQuery += " union all " 
-          cQuery += " select r.id_recibo, d.descripcion, date_format(r.fecha,'%d/%m/%Y') "
-          cQuery += " from recibo_cliente_cab r, documento d "
-          cQuery += " where d.id_documento = r.tipo_documento "
-         // cQuery += " and r.anulado ='N' "
-          cQuery += " and  r.id_recibo LIKE "+cNombre+" "
-          cQuery += " order by "+str(orden)+" limit 100"
+		  cQuery := " select f.id_factura,concat(d.descripcion,' ',f.serieCFE,'-',f.numeroCFE),concat(f.importe),date_format(f.fecha,'%d/%m/%Y') "
+          cQuery += " from cfe_comprobante_cab f,cfe_tipos d"
+          cQuery += " where f.tipoCFE = d.id_cfe "         
+          cQuery += " and date(f.fecha) = "+cFechaAnular+" "        
+			do case 
+				case filtro = 1
+				cQuery += " and  f.id_factura LIKE "+cNombre+" "
+				case filtro = 2
+				cQuery += " and  f.numeroCFE LIKE "+cNombre+" "
+				case filtro = 3
+				cQuery += " and date_format(f.fecha,'%d/%m/%Y')LIKE "+cNombre+" "
+			end case
+          
+		  cQuery += " order by "+str(orden)+" desc  limit 100"
+		  
+		  
+		  case vpc == 'n'
+          conveniopagocobrador.frame_1.caption := 'Facturas'
+		  cQuery := " select f.id_factura,concat(d.descripcion,' ',f.serieCFE,'-',f.numeroCFE),concat(f.importe),date_format(f.fecha,'%d/%m/%Y') "
+          cQuery += " from cfe_comprobante_cab f,cfe_tipos d"
+          cQuery += " where f.tipoCFE = d.id_cfe "         
+             
+			do case 
+				case filtro = 1
+				cQuery += " and  f.id_factura LIKE "+cNombre+" "
+				case filtro = 2
+				cQuery += " and  f.numeroCFE LIKE "+cNombre+" "
+				case filtro = 3
+				cQuery += " and date(f.fecha)LIKE "+cNombre+" "
+			end case
+          
+		  cQuery += " order by "+str(orden)+" desc  limit 100"
+		
         case vpc == 'm'
           conveniopagocobrador.frame_1.caption := 'Marcas'
-          cQuery := "select id_marca, descripcion,'1' from marca "
+          cQuery := "select id_marca, descripcion,'.','.' from marca "
           cQuery += " where descripcion LIKE "+cNombre+"  order by "+str(orden)+" limit 100"
         case vpc == 'p'
 	        conveniopagocobrador.frame_1.caption := 'Proveedor'
-	        cQuery := "select id_proveedor, nombre,'1' from proveedor "
+	        cQuery := "select id_proveedor, nombre,'.','.' from proveedor "
 	        cQuery += " where nombre LIKE "+cNombre+"  order by "+str(orden)+" limit 100"
         case vpc = 'u'
 	        conveniopagocobrador.frame_1.caption := 'Usuarios'
-	        cQuery := "select id_cajero, nombre,'1' from cajero "
+	        cQuery := "select id_cajero, nombre,'.','.' from cajero "
 	        cQuery += " where nombre LIKE "+cNombre+"  order by "+str(orden)+" "
          case vpc == 'o'
           conveniopagocobrador.frame_1.caption := 'Modelos'
-          cQuery := "select id_modelo, descripcion,'1' from modelo "
+          cQuery := "select id_modelo, descripcion,'1','.' from modelo "
           cQuery += " where id_marca = "+str(filtro)+" and descripcion LIKE "+cNombre+" "
           cQuery += " order by "+str(orden)+" limit 100"
 		 case vpc =='pc'
 		  conveniopagocobrador.frame_1.caption := "Presupuestos Contado"
-		  cQuery := " select f.numero_factura,f.descripcion,date_format(f.fecha,'%d/%m/%Y') "
-		  cQuery += " from factura_cliente_cab f,documento d"
-		  cQuery += " where d.id_documento = f.tipo_documento "
-		  cQuery += " and f.anulado = 'N' "
+		  cQuery := " select f.id_factura,f.descripcion,date_format(f.fecha,'%d/%m/%Y') ,'.'"
+		    cQuery += " from cfe_comprobante_cab f,cfe_tipos d"
+          cQuery += " where f.tipoCFE = d.id_cfe "         
 		  cQuery += " and  f.descripcion LIKE "+cNombre+" "
-		  // cQuery += " and date(f.fecha) = "+cFechaAnular+" "
-		  cQuery += " and f.tipo_documento = 'Q' "
+		  cQuery += " and f.tipoCFE = 91 "
 		  cQuery += " order by "+str(orden)+" desc limit 100"
 		  end case
           
@@ -194,7 +188,7 @@ cNombre := iif(conveniopagocobrador.text_1.value = nil, '"%"',' "%'+AllTrim(conv
 
     For i := 1 To oQuery:LastRec()
     	oRow := oQuery:GetRow(i)
-      conveniopagocobrador.grid_1.addItem({oRow:fieldGet(1),oRow:fieldGet(2),iif(oRow:fieldGet(3)='1','',oRow:fieldGet(3)) })
+      conveniopagocobrador.grid_1.addItem({oRow:fieldGet(1),oRow:fieldGet(2),oRow:fieldGet(3),oRow:fieldGet(4)  })
     Next
 
     oQuery:Destroy()

@@ -26,13 +26,13 @@ do case
 		else
 			msgInfo("La ventana ya está en uso")
 		endif
-			case cTipoDoc = 112
+	case cTipoDoc = 112
 		if !IsWindowActive(recibo)
 				cargoDocumentoGen(nDocumento, "MOSTRAR")
 		else
 			msgInfo("La ventana ya está en uso")
 		endif
-		case cTipoDoc == 91
+	case cTipoDoc == 91
 		if !IsWindowActive(recibo)
 				cargoDocumentoGen(nDocumento, "MOSTRAR")
 		else
@@ -230,11 +230,14 @@ else
 	if nTipoDocumento = 81 .or. nTipoDocumento = 91 
 		if msgYesNo("Imprime el documento?",,.t.)
 			imprimoEnLaser(nFactura,copia,cRut,cNombre,cDireccion)
+			
 		endif
 	else
 		imprimoEnMatriz(nFactura,copia,cRut,cNombre,cDireccion)
+		
 	endif
 endif
+return .t.
 
 function imprimoPDF(nFactura)
 local oCabezal :=facturaClienteCabezal(nFactura)
@@ -266,7 +269,7 @@ hb_MEMOWRIT("factura.pdf",hb_base64decode(cValTag(cRespuesta,"a:Buffer")))
 
 	if val(cValTag(cRespuesta,"a:Codigo")) = 0
 		
-		EXECUTE FILE '"' + exePdf + '"' PARAMETERS  '-print-to-default  factura.pdf '
+		EXECUTE FILE '"' + exePdf + '"' PARAMETERS  '-print-to-default -print-settings "'+str(nCantCopias)+'x"  factura.pdf '
 		
 	else
 		msgInfo(" Devolucion de Errores"+chr(13)+cValTag(cRespuesta,"a:Descripcion"))
@@ -286,15 +289,14 @@ local nTipoDocumento :=tipoDocumento(nFactura)
 local nCantidaCopias := cantidadCopias(nTipoDocumento)
 local nVendedor := vendedorFacturaCliente(nFactura)
 
-if nTipoDocumento == 'R' .or. nTipoDocumento== 'N'
-	oCabezal :=reciboClienteCabezal(nFactura)
-	oDetalle :=reciboClienteDetalle(nFactura)
 
-else
 	oCabezal :=facturaClienteCabezal(nFactura)
-	oDetalle :=facturaClienteDetalle(nFactura)
+	if nTipoDocumento = 98 .or. nTipoDocumento = 112 .or.nTipoDocumento = 102
+		oDetalle :=reciboClienteDetalle(nFactura)
+	else
+		oDetalle :=facturaClienteDetalle(nFactura)
+	endif
 
-endif
 
 if len(alltrim(cRut)) != 0
 	cRutImpreso := cRut
@@ -313,7 +315,7 @@ else
 	cDireccionImpresa := dirParticularCliente(oCabezal:GetRow(1):fieldGet(3))
 endif
 
-if nTipoDocumento = 102 .or. nTipoDocumento = 112
+if nTipoDocumento = 102 .or. nTipoDocumento = 112 .or. nTipoDocumento = 98
 	cDescripcion := "Afecta Factura Nro. "+alltrim(oCabezal:GetRow(1):fieldGet(5))
 else
 	cDescripcion := alltrim(oCabezal:GetRow(1):fieldGet(5))
@@ -357,7 +359,7 @@ endif
 	for i= 1 to oDetalle:lastRec()
 	  
 	  @ fila+lin,col+001 say alltrim(oDetalle:GetRow(i):fieldGet(3)) //CODREPF
-	  if nTipoDocumento = 102 .or. nTipoDocumento = 112
+	  if nTipoDocumento = 102 .or. nTipoDocumento = 112 .or. nTipoDocumento = 98
 	  	@ fila+lin,col+022 say "Afecta Fac. Nro: "+ str(oDetalle:GetRow(i):fieldGet(4))+"-"+dtoc(fechaFacturaCliente(oDetalle:GetRow(i):fieldGet(4))) //NOMREPF
 	  else
 	  	@ fila+lin,col+022 say alltrim(oDetalle:GetRow(i):fieldGet(4))+"-"+locacionArticulo(oDetalle:GetRow(i):fieldGet(3)) //NOMREPF
@@ -365,12 +367,12 @@ endif
 	  @ fila+lin,col+075 say oDetalle:GetRow(i):fieldGet(5)  pict '999999.99' //CANTF
 	  @ fila+lin,col+098 say oDetalle:GetRow(i):fieldGet(6)  pict '99999.99' //PRVENTAF
 	  @ fila+lin,col+114 say oDetalle:GetRow(i):fieldGet(9)  pict '99.9' //PCTDESCF
-	  if nTipoDocumento = 102 .or. nTipoDocumento = 112
+	  if nTipoDocumento = 102 .or. nTipoDocumento = 112 .or. nTipoDocumento = 98
 	  	@ fila+lin,col+119 say round(oDetalle:GetRow(i):fieldGet(10),2)/(1 + nIvaBasico/100) pict '99999999999.99' //IMPORTEF
 	  else
 	  @ fila+lin,col+119 say round(oDetalle:GetRow(i):fieldGet(10),2) pict '99999999999.99' //IMPORTEF
 	  endif
-	  if nTipoDocumento = 102 .or. nTipoDocumento = 112
+	  if nTipoDocumento = 102 .or. nTipoDocumento = 112 .or. nTipoDocumento = 98
 	  	nLineaSinIva :=  round(oDetalle:GetRow(i):fieldGet(10),2) /(1 + nIvaBasico/100)
 	  	nTotalSIva := nTotalSIva + nLineaSinIva
 			nIva := nIva +  round(nLineaSinIva * nIvaBasico/100,2)
@@ -427,15 +429,10 @@ local nIvaBasico := PARAMETROini("IVA","N")
 local nTipoDocumento :=tipoDocumento(nFactura)
 local nCantidaCopias := cantidadCopias(nTipoDocumento)
 
-if nTipoDocumento == 'R' .or. nTipoDocumento== 'N'
-	oCabezal :=reciboClienteCabezal(nFactura)
-	oDetalle :=reciboClienteDetalle(nFactura)
 
-else
 	oCabezal :=facturaClienteCabezal(nFactura)
 	oDetalle :=facturaClienteDetalle(nFactura)
 
-endif
 
 if len(alltrim(cRut)) != 0
 	cRutImpreso := cRut
@@ -795,7 +792,7 @@ endif
 function documentosPorArticulo(cArticulo,dFechaDesde,dFechaHasta)
 local cQuery, oQuery
 
-cQuery := " select c.fecha,c.numero_factura,d.descripcion, c.id_cliente, c.id_usuario,c.importe "
+cQuery := " select c.fecha,c.id_factura,d.descripcion, c.id_cliente, c.id_usuario,c.importe "
 // cQuery += " from factura_cliente_cab c, documento d, factura_cliente_det e "
 cQuery += " from cfe_comprobante_cab c, cfe_tipos d, cfe_comprobante_det e "
 cQuery += " where d.id_cfe = c.tipoCFE "

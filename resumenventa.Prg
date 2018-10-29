@@ -50,37 +50,37 @@ for i= 1 to oVentas:lastRec()
 	if dfechaAnt == oVentas:getRow(i):fieldget(1)
 		//msginfo(str(oVentas:getRow(i):fieldget(3)))
 		do case 
-			case oVentas:getRow(i):fieldget(2) = 'C' 
+			case oVentas:getRow(i):fieldget(2) = 101
 				contado :=oVentas:getRow(i):fieldget(3)
 				totalListadoContado += oVentas:getRow(i):fieldget(3)
 				
-			case oVentas:getRow(i):fieldget(2) = 'F'
+			case oVentas:getRow(i):fieldget(2) = 111
 				factura :=oVentas:getRow(i):fieldget(3)
 				totalListadoFactura += oVentas:getRow(i):fieldget(3)
 
-			case oVentas:getRow(i):fieldget(2) = 'R'
+			case oVentas:getRow(i):fieldget(2) = 98
 				recibo :=oVentas:getRow(i):fieldget(3)
 				totalListadoRecibo += oVentas:getRow(i):fieldget(3)
 
-			case oVentas:getRow(i):fieldget(2) = 'N'
+			case oVentas:getRow(i):fieldget(2) = 112
 				notacredito :=oVentas:getRow(i):fieldget(3)
 				totalListadoNotasCredito += oVentas:getRow(i):fieldget(3)
 
-			case oVentas:getRow(i):fieldget(2) = 'D'
+			case oVentas:getRow(i):fieldget(2) = 102
 			  devolucion :=oVentas:getRow(i):fieldget(3)
 				totalListadoDevolucion += oVentas:getRow(i):fieldget(3)
 				
-			case oVentas:getRow(i):fieldget(2) = 'P'
+			case oVentas:getRow(i):fieldget(2) = 81
 				pCredito:=oVentas:getRow(i):fieldget(3)
 				totalListadoPCredito += oVentas:getRow(i):fieldget(3)
 			
-			case oVentas:getRow(i):fieldget(2) = 'Q'
+			case oVentas:getRow(i):fieldget(2) = 91
 				pContado:=oVentas:getRow(i):fieldget(3)
 				totalListadoPContado += oVentas:getRow(i):fieldget(3)
 
 		end case
 	else
-		resumenventa.grid_1.addItem({dtoc(dfechaAnt),factura,recibo,notacredito,devolucion,contado,pCredito,pContado})
+		resumenventa.grid_1.addItem({dtoc(dfechaAnt),factura,notacredito,contado,devolucion,recibo,pCredito,pContado})
 		contado := 0
 		factura := 0
 		recibo := 0
@@ -89,31 +89,31 @@ for i= 1 to oVentas:lastRec()
 		pCredito := 0
 		pContado := 0
 		do case 
-			case oVentas:getRow(i):fieldget(2) = 'C' 
+			case oVentas:getRow(i):fieldget(2) = 101 
 				contado :=oVentas:getRow(i):fieldget(3)
 				totalListadoContado += oVentas:getRow(i):fieldget(3)
 				
-			case oVentas:getRow(i):fieldget(2) = 'F'
+			case oVentas:getRow(i):fieldget(2) = 111
 				factura :=oVentas:getRow(i):fieldget(3)
 				totalListadoFactura += oVentas:getRow(i):fieldget(3)
 
-			case oVentas:getRow(i):fieldget(2) = 'R'
+			case oVentas:getRow(i):fieldget(2) = 98
 				recibo :=oVentas:getRow(i):fieldget(3)
 				totalListadoRecibo += oVentas:getRow(i):fieldget(3)
 
-			case oVentas:getRow(i):fieldget(2) = 'N'
+			case oVentas:getRow(i):fieldget(2) = 112
 				notacredito :=oVentas:getRow(i):fieldget(3)
 				totalListadoNotasCredito += oVentas:getRow(i):fieldget(3)
 
-			case oVentas:getRow(i):fieldget(2) = 'D'
+			case oVentas:getRow(i):fieldget(2) = 102
 			  devolucion :=oVentas:getRow(i):fieldget(3)
 				totalListadoDevolucion += oVentas:getRow(i):fieldget(3)
 				
-			case oVentas:getRow(i):fieldget(2) = 'P'
+			case oVentas:getRow(i):fieldget(2) = 81
 				pCredito:=oVentas:getRow(i):fieldget(3)
 				totalListadoPCredito += oVentas:getRow(i):fieldget(3)
 			
-			case oVentas:getRow(i):fieldget(2) = 'Q'
+			case oVentas:getRow(i):fieldget(2) = 91
 				pContado:=oVentas:getRow(i):fieldget(3)
 				totalListadoPContado += oVentas:getRow(i):fieldget(3)
 
@@ -121,9 +121,9 @@ for i= 1 to oVentas:lastRec()
 	endif
 	dFechaAnt :=  oVentas:getRow(i):fieldget(1)
 next 
-resumenventa.grid_1.addItem({dtoc(dfechaAnt),factura,recibo,notacredito,devolucion,contado,pCredito,pContado})
+resumenventa.grid_1.addItem({dtoc(dfechaAnt),factura,notacredito,contado,devolucion,recibo,pCredito,pContado})
 
-resumenventa.grid_1.addItem({'Totales',totalListadoFactura,totalListadoRecibo,totalListadoNotasCredito, totalListadoDevolucion,totalListadoContado,totalListadoPCredito,totalListadoPContado })
+resumenventa.grid_1.addItem({'Totales',totalListadoFactura,totalListadoNotasCredito,totalListadoContado, totalListadoDevolucion,totalListadoRecibo,totalListadoPCredito,totalListadoPContado })
 Close Database
 
 
@@ -196,7 +196,7 @@ cDescripcion := "\TotalComprobantes.csv"
 
 pArchivo := fcreate(GetDesktopFolder()+cDescripcion,0)
 
-clinea :='Fecha,Facturas,Recibos,Notas Credito,Devolucion,Contado'
+clinea :='Fecha,eFacturas,eFacturas N/C,eTicket,eTicket N/C,Recibos'
 fwrite(parchivo,clinea  + chr(10))
 for i= 1 to resumenventa.grid_1.itemCount
 	clinea := alltrim(resumenventa.grid_1.item(i)[1]) ;
@@ -218,10 +218,10 @@ fclose(parchivo)
 function ventasDesdeHasta(dFechaDesde, dFechaHasta)
 local cQuery, oQuery
 
-cQuery := " select  fecha,tipo_documento, sum(importe) "
+cQuery := " select  fecha,tipoCFE, sum(importe) "
 cQuery += " FROM cfe_comprobante_cab "
 cQuery += " where fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
-cQuery += " and anulado = 'N' " ////ver
+//cQuery += " and id_factura not in (Select id_factura_ref from cfe_referencias_det ) " ////vercket
 cQuery += " group by 1,2 "
 // cQuery += " union all "
 // cQuery += " select fecha, tipo_documento, sum(importe) "

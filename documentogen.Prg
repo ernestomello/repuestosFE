@@ -9,11 +9,11 @@ local cTipoDoc := tipoDocumento(nDocumento)
 do case
 
 	// case cTipoDoc == 'F' .or. cTipoDoc == 'D' .or. cTipoDoc == 'C' .or. cTipoDoc == 'P' .or. cTipoDoc == 'Q'
-	case cTipoDoc == 101 .or. cTipoDoc == 111 .or. cTipoDoc == 91 .or. cTipoDoc == 81
+	case cTipoDoc == 101 .or. cTipoDoc == 111 .or. cTipoDoc == 91 .or. cTipoDoc == 81 .or. cTipoDoc == 102 .or. cTipoDoc == 112 
 		aLargos := {120,200,45,80,30,40,80 }
 		aTitulos := {'Codigo','Articulo','Cant.','Precio Unit.','Iva','Dto.','PrecioFinal'}
 		aControls := {{'TEXTBOX','CHARACTER'},{'TEXTBOX','CHARACTER'},{'TEXTBOX','NUMERIC','999.99'},{'TEXTBOX','NUMERIC','999,999.99'},{'TEXTBOX','NUMERIC','99'},{'TEXTBOX','NUMERIC','999'},{'TEXTBOX','NUMERIC','999,999,999.99'}}
-	case cTipoDoc == 98 .or. cTipoDoc == 102 .or. cTipoDoc == 112 
+	case cTipoDoc == 98 
 		aLargos := {120,120,120,120,120 }
 		aTitulos := {'Nro Factura','Imp.Factura','Fecha','Imp.Aplicado','Saldo Factura'}
 	 	aControls :={{'TEXTBOX','NUMERIC','99999999'},{'TEXTBOX','NUMERIC','999,999.99'},{'TEXTBOX','CHARACTER'},{'TEXTBOX','NUMERIC','999,999.99'},{'TEXTBOX','NUMERIC','999,999.99'}}
@@ -68,12 +68,13 @@ procedure cargarFacturaCreditoCliente(nDocumento)
 local oDetalleFactura := detalleFacturaCliente(nDocumento)
 local nTotFactura := 0
 documentogen.text_1.value := clienteFactura(nDocumento)
-documentogen.text_2.value := alltrim(nombreCliente(clienteFactura(nDocumento)))
+documentogen.text_2.value := alltrim(nombreCliente(documentogen.text_1.value))
 documentogen.datePicker_1.value := fechaFacturaCliente(nDocumento)
 documentogen.label_1.value := ""
 
 for i = 1 to oDetalleFactura:lastrec()
 	oRow := oDetalleFactura:getRow(i)
+	
 	documentogen.grid_1.additem({ oRow:fieldGet(7),oRow:fieldGet(1),oRow:fieldGet(2),oRow:fieldGet(3),oRow:fieldGet(4),oRow:fieldGet(5),oRow:fieldGet(6)  })
 	nTotFactura += round(oRow:fieldGet(6) * (1 + oRow:fieldGet(4)/100),0)
 next
@@ -84,9 +85,9 @@ next
 procedure cargarReciboCliente(nDocumento)
 local nTotFactura := 0
 local oFacturas := facturasRecibosCliente(nDocumento)
-documentogen.text_1.value := clienteRecibo(nDocumento)
-documentogen.text_2.value := alltrim(nombreCliente(clienteRecibo(nDocumento)))
-documentogen.datePicker_1.value := fechaReciboCliente(nDocumento)
+documentogen.text_1.value := clienteFactura(nDocumento)
+documentogen.text_2.value := alltrim(nombreCliente(documentogen.text_1.value))
+documentogen.datePicker_1.value := fechaFacturaCliente(nDocumento)
 
 for i = 1 to oFacturas:lastrec()
 	oRow := oFacturas:getRow(i)
