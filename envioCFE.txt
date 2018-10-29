@@ -1,37 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <nsAdenda:CFE_Adenda xmlns:nsAdenda="http://cfe.dgi.gub.uy">
 <nsAd:CFE version="1.0" xmlns:nsAd="http://cfe.dgi.gub.uy">
-<nsAd:eFact>
- <nsAd:Encabezado><nsAd:IdDoc><nsAd:TipoCFE>112</nsAd:TipoCFE><nsAd:Serie></nsAd:Serie><nsAd:Nro></nsAd:Nro><nsAd:FchEmis>2018-10-27</nsAd:FchEmis><nsAd:MntBruto>1</nsAd:MntBruto><nsAd:FmaPago>2</nsAd:FmaPago></nsAd:IdDoc><nsAd:Emisor><nsAd:RUCEmisor>120132110017</nsAd:RUCEmisor><nsAd:RznSoc>Heriberto Daniel Morales Ayende</nsAd:RznSoc><nsAd:NomComercial>Morales Repuestos</nsAd:NomComercial><nsAd:EmiSucursal>Sucursal principal</nsAd:EmiSucursal><nsAd:CdgDGISucur>2</nsAd:CdgDGISucur><nsAd:DomFiscal>Rep. Argentina 1718</nsAd:DomFiscal><nsAd:Ciudad>PAYSANDU</nsAd:Ciudad><nsAd:Departamento>PAYSANDU</nsAd:Departamento></nsAd:Emisor><nsAd:Receptor><nsAd:TipoDocRecep>2</nsAd:TipoDocRecep><nsAd:CodPaisRecep>UY</nsAd:CodPaisRecep><nsAd:DocRecep>120227790015</nsAd:DocRecep><nsAd:RznSocRecep>SERVICIOS FORESTALES APROFOR S.R.L.</nsAd:RznSocRecep><nsAd:DirRecep>SARANDI 1758</nsAd:DirRecep><nsAd:CiudadRecep>PAYSANDU</nsAd:CiudadRecep><nsAd:DeptoRecep>PAYSANDU</nsAd:DeptoRecep><nsAd:PaisRecep>URUGUAY</nsAd:PaisRecep></nsAd:Receptor><nsAd:Totales><nsAd:TpoMoneda>UYU</nsAd:TpoMoneda><nsAd:MntNoGrv>0.00</nsAd:MntNoGrv>
+<nsAd:eTck>
+ <nsAd:Encabezado><nsAd:IdDoc><nsAd:TipoCFE>101</nsAd:TipoCFE><nsAd:Serie></nsAd:Serie><nsAd:Nro></nsAd:Nro><nsAd:FchEmis>2018-10-29</nsAd:FchEmis><nsAd:MntBruto>1</nsAd:MntBruto><nsAd:FmaPago>1</nsAd:FmaPago></nsAd:IdDoc><nsAd:Emisor><nsAd:RUCEmisor>120132110017</nsAd:RUCEmisor><nsAd:RznSoc>Heriberto Daniel Morales Ayende</nsAd:RznSoc><nsAd:NomComercial>Morales Repuestos</nsAd:NomComercial><nsAd:EmiSucursal>Sucursal principal</nsAd:EmiSucursal><nsAd:CdgDGISucur>2</nsAd:CdgDGISucur><nsAd:DomFiscal>Rep. Argentina 1718</nsAd:DomFiscal><nsAd:Ciudad>PAYSANDU</nsAd:Ciudad><nsAd:Departamento>PAYSANDU</nsAd:Departamento></nsAd:Emisor><nsAd:Totales><nsAd:TpoMoneda>UYU</nsAd:TpoMoneda><nsAd:MntNoGrv>0.00</nsAd:MntNoGrv>
 <nsAd:MntNetoIvaTasaMin>0.00</nsAd:MntNetoIvaTasaMin>
-<nsAd:MntNetoIVATasaBasica>395.08</nsAd:MntNetoIVATasaBasica>
+<nsAd:MntNetoIVATasaBasica>2216.39</nsAd:MntNetoIVATasaBasica>
 <nsAd:IVATasaMin>10</nsAd:IVATasaMin>
 <nsAd:IVATasaBasica>22</nsAd:IVATasaBasica>
 <nsAd:MntIVATasaMin>0.00</nsAd:MntIVATasaMin>
-<nsAd:MntIVATasaBasica>86.92</nsAd:MntIVATasaBasica>
-<nsAd:MntTotal>482</nsAd:MntTotal>
-<nsAd:CantLinDet>1</nsAd:CantLinDet>
+<nsAd:MntIVATasaBasica>487.61</nsAd:MntIVATasaBasica>
+<nsAd:MntTotal>2704</nsAd:MntTotal>
+<nsAd:CantLinDet>2</nsAd:CantLinDet>
 <nsAd:MontoNF>0.0</nsAd:MontoNF>
-<nsAd:MntPagar>482</nsAd:MntPagar>
+<nsAd:MntPagar>2704</nsAd:MntPagar>
 </nsAd:Totales>
  </nsAd:Encabezado><nsAd:Detalle><nsAd:Item>
 <nsAd:NroLinDet>1</nsAd:NroLinDet>
 <nsAd:IndFact>3</nsAd:IndFact>
-<nsAd:NomItem>Dto Global en eFactura A-28</nsAd:NomItem>
-<nsAd:Cantidad>1</nsAd:Cantidad>
+<nsAd:NomItem>REP B FRENOS R 12</nsAd:NomItem>
+<nsAd:Cantidad>1.00</nsAd:Cantidad>
 <nsAd:UniMed>UN</nsAd:UniMed>
-<nsAd:PrecioUnitario>482.00</nsAd:PrecioUnitario>
-<nsAd:MontoItem>482.00</nsAd:MontoItem>
+<nsAd:PrecioUnitario>142.00</nsAd:PrecioUnitario>
+<nsAd:MontoItem>142</nsAd:MontoItem>
 </nsAd:Item>
-</nsAd:Detalle><nsAd:Referencia>
-<nsAd:Referencia>
-<nsAd:NroLinRef>         1</nsAd:NroLinRef>
-<nsAd:IndGlobal>1</nsAd:IndGlobal>
-<nsAd:TpoDocRef>111</nsAd:TpoDocRef>
-<nsAd:Serie>A </nsAd:Serie>
-<nsAd:NroCFERef>28</nsAd:NroCFERef>
-<nsAd:RazonRef>Dto Global</nsAd:RazonRef>
-<nsAd:FechaCFEref>2018-10-26</nsAd:FechaCFEref>
-</nsAd:Referencia>
-</nsAd:Referencia>
-<nsAd:CAEData><nsAd:CAE_ID>1</nsAd:CAE_ID><nsAd:DNro>1</nsAd:DNro><nsAd:HNro>1</nsAd:HNro><nsAd:FecVenc></nsAd:FecVenc></nsAd:CAEData></nsAd:eFact></nsAd:CFE><nsAdenda:Adenda>Ref: 326332Ref: 326333                                                                                                                                                                                  </nsAdenda:Adenda></nsAdenda:CFE_Adenda>
+<nsAd:Item>
+<nsAd:NroLinDet>2</nsAd:NroLinDet>
+<nsAd:IndFact>3</nsAd:IndFact>
+<nsAd:NomItem>SIN FIN DIRECCION</nsAd:NomItem>
+<nsAd:Cantidad>1.00</nsAd:Cantidad>
+<nsAd:UniMed>UN</nsAd:UniMed>
+<nsAd:PrecioUnitario>2562.00</nsAd:PrecioUnitario>
+<nsAd:MontoItem>2562</nsAd:MontoItem>
+</nsAd:Item>
+</nsAd:Detalle><nsAd:CAEData><nsAd:CAE_ID>1</nsAd:CAE_ID><nsAd:DNro>1</nsAd:DNro><nsAd:HNro>1</nsAd:HNro><nsAd:FecVenc></nsAd:FecVenc></nsAd:CAEData></nsAd:eTck></nsAd:CFE><nsAdenda:Adenda>Ref: 326345                                                                                                                                                                                             </nsAdenda:Adenda></nsAdenda:CFE_Adenda>

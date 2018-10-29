@@ -230,11 +230,14 @@ else
 	if nTipoDocumento = 81 .or. nTipoDocumento = 91 
 		if msgYesNo("Imprime el documento?",,.t.)
 			imprimoEnLaser(nFactura,copia,cRut,cNombre,cDireccion)
+			
 		endif
 	else
 		imprimoEnMatriz(nFactura,copia,cRut,cNombre,cDireccion)
+		
 	endif
 endif
+return .t.
 
 function imprimoPDF(nFactura)
 local oCabezal :=facturaClienteCabezal(nFactura)
@@ -789,7 +792,7 @@ endif
 function documentosPorArticulo(cArticulo,dFechaDesde,dFechaHasta)
 local cQuery, oQuery
 
-cQuery := " select c.fecha,c.numero_factura,d.descripcion, c.id_cliente, c.id_usuario,c.importe "
+cQuery := " select c.fecha,c.id_factura,d.descripcion, c.id_cliente, c.id_usuario,c.importe "
 // cQuery += " from factura_cliente_cab c, documento d, factura_cliente_det e "
 cQuery += " from cfe_comprobante_cab c, cfe_tipos d, cfe_comprobante_det e "
 cQuery += " where d.id_cfe = c.tipoCFE "

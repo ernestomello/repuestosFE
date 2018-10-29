@@ -246,7 +246,7 @@ if facturaClienteConDetalle()
 
 endIf
 finTransaccion()
-if esFacturaElectronica
+if esFacturaElectronica .and. cTipoDocumento != 81 .and. cTipoDocumento != 91
 	info_("Registrando Documento en DGI...")
 
 	if ! facturaElectronica(nNumero,.f.,.f.)
@@ -389,6 +389,8 @@ iif(factCliente.text_21.value = 2,factCliente.text_17.value := saldoEntreFechasC
 return
 
 function cambiaTipoCFE()
+
+if factCliente.text_14.value != 81 .and. factCliente.text_14.value != 91
 if formatoRut(factCliente.text_2.value) 
 	factCliente.text_14.value := 111	
 else
@@ -399,7 +401,7 @@ else
 	factCliente.text_14.value := 101
 endif
 factCliente.label_14.value := alltrim(descripcionDocumento(factCliente.text_14.value))
-
+endif
 
 
 procedure rellenoDatosLinea(nArticulo)
