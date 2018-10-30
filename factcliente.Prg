@@ -248,7 +248,7 @@ endIf
 finTransaccion()
 if esFacturaElectronica .and. cTipoDocumento != 81 .and. cTipoDocumento != 91
 	info_("Registrando Documento en DGI...")
-
+	comienzoTransaccion()
 	if ! facturaElectronica(nNumero,.f.,.f.)
 		noTran()
 		WAIT CLEAR
@@ -256,7 +256,7 @@ if esFacturaElectronica .and. cTipoDocumento != 81 .and. cTipoDocumento != 91
 		return .f.
 	endif
 endif
-
+finTransaccion()
 
 
 info_("Imprimiendo Documento ...")

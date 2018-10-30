@@ -209,7 +209,41 @@ if nSocioGlobal != 0
 	cargoDocumentoGen(nSocioGlobal,"IMPRIMIR")
   //imprimoMovimiento(nSocioGlobal,1,'','','') //mando imprimir ese movimiento con el idMov
 	nSocioGlobal := 0
+endIf     
+
+procedure emiteFacturaElectronica()
+
+busquedaGeneral("fe","","Documentos sin FE",1)   
+
+if nSocioGlobal != 0
+	cTipoDocumento := tipoDocumento(nSocioGlobal)
+	if esFacturaElectronica .and. cTipoDocumento != 81 .and. cTipoDocumento != 91
+	info_("Registrando Documento en DGI...")
+	comienzoTransaccion()
+	if cTipoDocumento = 102 .or. cTipoDocumento = 112
+		lAnula := .t.
+	else
+		lAnula := .f.
+	endif
+	if ! facturaElectronica(nSocioGlobal,.f.,lAnula)
+		noTran()
+		WAIT CLEAR
+		msgInfo("No se pudo guardar el documento en DGI, Reintente!!!")	
+		return .f.
+	endif
+	finTransaccion()
+	info_("Imprimiendo Documento ...")
+	if !imprimoMovimiento(nSocioGlobal,0,'','','')
+		WAIT CLEAR
+		msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menú")
+		return .f.
+	endif
+
+endif
+	nSocioGlobal := 0
 endIf                                                                                                    
+WAIT CLEAR
+
 
 *************************************************
 * función para imprimir un documento emitido

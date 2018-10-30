@@ -135,8 +135,9 @@ hb_memowrit("aalgo.txt",cxml)
   // msgInfo(cRespuesta)
  
 	aLineasL:= cValTag(cRespuesta,"a:Descripcion")+"|"+cValTag(cRespuesta,"a:Serie")+"|"+cValTag(cRespuesta,"a:Numero")+"|"+cValTag(cRespuesta,"a:Hash")
-	
-	if val(cValTag(cRespuesta,"a:Codigo")) = 0
+	cCodigoRespuesta := val(cValTag(cRespuesta,"a:Codigo"))
+	//codigo = 0 sin errore, codigo 100009 que ya fue emitido, así que igual sirve para grabar los datos faltantes.
+	if cCodigoRespuesta = 0 .or. cCodigoRespuesta = 100009
 		
 		actualizaFE(nIdMov, aLineasL)
 		
@@ -981,7 +982,7 @@ IF !EMPTY(_hcurl)
 	curl_easy_setopt(_hcurl, HB_CURLOPT_POST, 1)
 	curl_easy_setopt(_hcurl, HB_CURLOPT_POSTFIELDS, cxml)
 	curl_easy_setopt(_hcurl, HB_CURLOPT_CONNECTTIMEOUT, 8)
-	curl_easy_setopt(_hcurl, HB_CURLOPT_TIMEOUT,       60)
+	curl_easy_setopt(_hcurl, HB_CURLOPT_TIMEOUT,       40)
 	curl_easy_setopt(_hcurl, HB_CURLOPT_SSL_VERIFYPEER, IIF(_ssl,1,0))
 	curl_easy_setopt(_hcurl, HB_CURLOPT_SSL_VERIFYHOST, IIF(_ssl,1,0))
 

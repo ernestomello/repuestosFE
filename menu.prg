@@ -56,12 +56,12 @@ Function main()
 
               ITEM 'Reimprimir Movimientos '	ACTION reImprimoMOvimientos()
 
-              SEPARATOR
+				SEPARATOR
 
               ITEM 'Anulación Movimientos'    ACTION anuloMovimientos()
-              
-              SEPARATOR
-              
+				SEPARATOR
+              ITEM 'Pendientes de Facturacion Electrónica'    ACTION emiteFacturaElectronica()
+				SEPARATOR
               ITEM 'Buscar documentos' ACTION buscaDocumentos()
               
     				END POPUP 
