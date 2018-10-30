@@ -83,7 +83,7 @@ Function main()
       				ITEM 'Registro Contado'	ACTION factCliente(91,0,1)
       				ITEM 'Búsqueda Contados' ACTION busquedaGeneral("pc","","Presupuestos Contado",1)  
       				SEPARATOR
-      				ITEM 'Registro Crédito' ACTION factCliente(81,0,1)
+      				ITEM 'Registro Crédito' ACTION factCliente(81,0,2)
       				ITEM 'Estado de Cuenta' ACTION presupuestos()
       				
       			END POPUP

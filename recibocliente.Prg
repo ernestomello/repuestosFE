@@ -479,7 +479,7 @@ function reciboClienteDetalle(nRecibo)
 local cQuery, oQuery
 
 cQuery := " select d.id_factura_ref,0, '-',d.id_factura_ref , 0, "
-cQuery += " 0,1 , 0, 0, d.importe_aplicado "
+cQuery += " 0,c.serieCFE , c.numeroCFE, 0, d.importe_aplicado "
 cQuery += " from cfe_comprobante_cab c, cfe_referencias_det d "
 cQuery += " where c.id_factura = d.id_factura_ref"
 cQuery += " and d.id_factura = "+str(nRecibo)+" "

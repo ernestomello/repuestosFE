@@ -1,15 +1,17 @@
 #include <hmg.ch>
 
 procedure notaCreditoCliente(nFactura)
+local nTipoDoc:= tipoDocumento(nFactura)
+local cTipoDocumento := descripcionDocumento(nTipoDoc)
 if cajaAbierta()
 if !IsWindowActive(notaCredito)
-	if (tipoDocumento(nFactura) = 101 .or. tipoDocumento(nFactura) = 111) 
+	if ( nTipoDoc = 101 .or. nTipoDoc = 111) 
 		if !facturaSinDevolucion(nFactura)
-			msginfo("Factura con Devolucion")
+			msginfo(cTipoDocumento+" con Devolucion")
 			return
 		endif
 		if !facturaSinRecibos(nFactura)
-			msginfo("Factura Con Recibos")
+			msginfo(cTipoDocumento+" Con Recibos")
 			return
 		endif
 		load window notaCredito
@@ -18,7 +20,7 @@ if !IsWindowActive(notaCredito)
 		notaCredito.center
 		notaCredito.activate
 	else
-		msgInfo("No es una Factura")
+		msgInfo("No es una eFactura o eTicket")
 	endif
 endif
 else
