@@ -170,7 +170,7 @@ nCaja := cajaId()
 nVendedor := factCliente.text_18.value
 nFormaPago := factCliente.text_21.value
 if nFormaPago = 2 .and. cTipoDocumento = 111
-cAdenda += chr(13)+chr(10)+mensaje1Documento(cTipoDocumento)+chr(13)+chr(10)+mensaje2Documento(cTipoDocumento)+chr(13)+chr(10)+mensaje3Documento(cTipoDocumento)+chr(13)+chr(10)
+cAdenda +="&lt;br&gt;"+mensaje1Documento(cTipoDocumento)+"&lt;br&gt;"+mensaje2Documento(cTipoDocumento)+"&lt;br&gt;"+mensaje3Documento(cTipoDocumento)
 endif
 
 if nCliente = 0 .and. (cTipoDocumento = 111 .or. cTipoDocumento = 112)
@@ -214,10 +214,11 @@ if nNumero == 0
 endif
 
 
-cAdenda += "Ref: "+str(nNumero)
+cAdenda += "&lt;br&gt;"+"Ref: "+str(nNumero)
 
 if !graboFactClienteCabezal(nNumero ,nCaja,nCliente, cTipoDocumento,;
 														nTotalFactura,dFechaFactura,cDescripcion,nVendedor,nFormaPago,cAdenda)
+	noTran()
 	WAIT CLEAR
 	msgInfo('No se pudieron grabar los datos, REINTENTE!!!')
 	return .f.
@@ -238,6 +239,7 @@ if facturaClienteConDetalle()
 			nImporte := factCliente.grid_1.cell(i,8)
 			if !graboFactClienteDetalle(nNumero ,i,cCodigo,nCantidadArt,nPrecioUnitario,;
 																	nIva,nDto,nImporte)
+				noTran()
 				WAIT CLEAR
 				msgInfo("No se pudieron Guardar el detalle de la Factura. Reintente!!!")
 				return .f.
@@ -539,7 +541,7 @@ endIf
 function facturaClienteCabezal(nFactura)
 local cQuery, oQuery
 
-cQuery := " select c.id_factura,c.fecha,c.id_cliente,c.tipoCFE,c.descripcion,c.serieCFE,c.numeroCFE,c.forma_pago,t.cantidad_copias " 
+cQuery := " select c.id_factura,c.fecha,c.id_cliente,c.tipoCFE,c.descripcion,c.serieCFE,c.numeroCFE,c.forma_pago,t.cantidad_copias, c.id_usuario" 
 cQuery += " from cfe_comprobante_cab c, cfe_tipos t"
 cQuery += " where t.id_cfe = c.tipoCFE and c.id_factura = "+str(nFactura)+"  "
 
@@ -555,9 +557,8 @@ local cQuery, oQuery
 
 cQuery := " select d.id_factura,d.item, d.codigo_barra,a.descripcion, d.cantidad, "
 cQuery += " d.precio_unitario,a.fecha_precio, d.cfe_ind_fact, d.descripcion, d.importe "
-cQuery += " from cfe_comprobante_cab c, cfe_comprobante_det d, articulo a "
-cQuery += " where c.id_factura = d.id_factura "
-cQuery += " and c.id_factura = "+str(nFactura)+" "
+cQuery += " from cfe_comprobante_det d, articulo a "
+cQuery += " where d.id_factura = "+str(nFactura)+" "
 cQuery += " and a.codigo_barra = d.codigo_barra "
 cQuery += " order by 2"
 oQuery:= oServer:Query(cQuery)
@@ -615,7 +616,7 @@ cQuery += " from cfe_comprobante_cab "
 cQuery += " where id_cliente = "+str(nCliente)+" "
 cQuery += " and saldo != 0 "
 // cQuery += " and anulado = 'N' "
-cQuery += " and id_factura not in (Select id_factura_ref from cfe_referencias_det ) "
+cQuery += " and id_factura not in (Select d.id_factura_ref from cfe_referencias_det d, cfe_comprobante_cab c where c.id_factura = d.id_factura and c.id_cliente  = "+str(nCliente)+" ) "
 cQuery += " and tipoCFE in (101,111) "
 cQuery += " and forma_pago = 2 "
 oQuery := oServer:Query(cQuery)
@@ -630,10 +631,9 @@ local cQuery
 local oQuery
 
 cQuery := "select  a.descripcion,d.cantidad,d.precio_unitario,d.cfe_ind_fact,cast(d.descripcion as unsigned),d.importe,d.codigo_barra "
-cQuery += " from cfe_comprobante_cab c, cfe_comprobante_det d, articulo a "
-cQuery += " where c.id_factura = d.id_factura"
-cQuery += " and a.codigo_barra = d.codigo_barra "
-cQuery += " and c.id_factura = "+str(nFactura)+" "
+cQuery += " from  cfe_comprobante_det d, articulo a "
+cQuery += " where a.codigo_barra = d.codigo_barra "
+cQuery += " and d.id_factura = "+str(nFactura)+" "
 
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												

@@ -28,13 +28,15 @@ else
 endIf       
 
 procedure rellenoFacturaDevolucion(nFactura)
+local oCabezalFactura := facturaClienteCabezal(nFactura)
 local oDetalleFactura := detalleFacturaCliente(nFactura)
 local nTotalFactura := 0
 
-notaCredito.text_1.value := clienteFactura(nFactura)
+notaCredito.text_1.value := oCabezalFactura:getRow(1):fieldGet(3)
 notaCredito.text_2.value := str(nFactura)+" - "+nombreCliente(clienteFactura(nFactura))+" - "+dtoc(fechaFacturaCliente(nFactura))
-notaCredito.text_4.value := ""//str(nFactura)
-notaCredito.text_7.value := vendedorFacturaCliente(nFactura)
+notaCredito.text_4.value := oCabezalFactura:getRow(1):fieldGet(5)
+notaCredito.text_7.value := oCabezalFactura:getRow(1):fieldGet(10)
+notaCredito.text_8.value := oCabezalFactura:getRow(1):fieldGet(8)
 
 for i = 1 to oDetalleFactura:lastrec()
 	oRow := oDetalleFactura:getRow(i)
@@ -55,18 +57,17 @@ next
 notaCredito.text_3.value := nTotImporte
 
 procedure guardarDevolucion()
-local nCliente, cTipoDocumento,dFechaFactura,nTotalFactura,cDescripcion
+local nCliente:= notaCredito.text_1.value 
+local cTipoDocumento := iif( tipoDocumento(notaCredito.text_6.value) = 101 , 102 , iif( tipoDocumento(notaCredito.text_6.value) = 111 , 112 , 0 ))
+local dFechaFactura:= notaCredito.datePicker_1.value
+local nTotalFactura:= notaCredito.text_3.value
+local cDescripcion:= notaCredito.text_4.value
 local nCantidad := len(notaCredito.grid_1.value)
+local nformaPago := notaCredito.text_8.value
+local nVendedor := notacredito.text_7.value
+local nCaja := cajaId()
+local cAdenda := ""
 
-nformaPago := formaPago(notaCredito.text_6.value)
-nCliente:= notaCredito.text_1.value  
-cTipoDocumento := iif( tipoDocumento(notaCredito.text_6.value) = 101 , 102 , iif( tipoDocumento(notaCredito.text_6.value) = 111 , 112 , 0 ))
-dFechaFactura := notaCredito.datePicker_1.value
-nTotalFactura:= notaCredito.text_3.value
-cDescripcion :=notaCredito.text_4.value
-nVendedor := notacredito.text_7.value
-nCaja := cajaId()
-cAdenda := ""
 if !controloDevolucion()
 	return .f.
 endif	
@@ -74,6 +75,8 @@ endif
 if !msgYesNo("Graba la N/C ?","ATENCION",.t.)
 	return .f.
 endif
+
+info_("Guardando en la Base de Datos ...")
 if !comienzoTransaccion()
 	msginfo("No se pudo guardar. REINTENTE! ! !")
 	return .f.
@@ -81,21 +84,29 @@ endIf
 nNumero:= numeroDesde('CLIENTE')    	
 
 if nNumero == 0
+	noTran()
+	WAIT CLEAR
 	msgInfo("No se pudo Guardar el Numero. Reintente!!!")
 	return .f.
 endif
 
 if !agregoNumeroDesde('CLIENTE')
+	noTran()
+	WAIT CLEAR
 	msginfo("No se pudo actualizar el Numero de la Factura")
 	return .f.
 endIf
-
+cAdenda += "Ref:"+str(nNumero)
 
 if !graboFactClienteCabezal(nNumero,nCaja,nCliente, cTipoDocumento,nTotalFactura,dFechaFactura,cDescripcion,nVendedor,nformaPago,cAdenda)
-  msgInfo('No se pudieron grabar los datos, REINTENTE!!!')
+	noTran()
+	WAIT CLEAR
+	msgInfo('No se pudieron grabar los datos, REINTENTE!!!')
 	return .f.
 endIf
 if !guardoRelacion(notaCredito.text_6.value,nNumero,notaCredito.text_5.value,0)
+	noTran()
+	WAIT CLEAR
 	return .f.
 endIf
 
@@ -109,6 +120,8 @@ endIf
 			nDto := notaCredito.grid_1.cell(i,6)
 			nImporte := notaCredito.grid_1.cell(i,7)
 			if !graboFactClienteDetalle(nNumero,i,cCodigo,nCantidad,nPrecioUnitario,nIva,nDto,nImporte)
+				noTran()
+				WAIT CLEAR
 				msgInfo("No se pudieron Guardar el detalle de la NOta de Crédito. Reintente!!!")
 				return .f.
 			endIf
@@ -116,20 +129,23 @@ endIf
 
 // endIf
 if !modificoSaldoFacturaCliente(notaCredito.text_6.value,nTotalFactura)
+	noTran()
+	WAIT CLEAR
 	msgInfo("No se pudo Modificar la Factura. Reintente!!!")
 	return .f.
 endIf
 finTransaccion()
 if esFacturaElectronica
 	info_("Registrando Documento en DGI...")
-
+	comienzoTransaccion()
 	if ! facturaElectronica(nNumero,.f.,.t.)
+		noTran()
 		WAIT CLEAR
 		msgInfo("No se pudo guardar el documento en DGI, Reintente!!!")	
 		return .f.
 	endif
 endif
-
+finTransaccion()
 info_("Imprimiendo Documento ...")
 if !imprimoMovimiento(nNumero,0,'','','')
 	WAIT CLEAR
