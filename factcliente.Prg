@@ -169,9 +169,7 @@ cAdenda :=factCliente.text_13.value
 nCaja := cajaId()
 nVendedor := factCliente.text_18.value
 nFormaPago := factCliente.text_21.value
-if nFormaPago = 2 .and. cTipoDocumento = 111
-cAdenda +="&lt;br&gt;"+mensaje1Documento(cTipoDocumento)+"&lt;br&gt;"+mensaje2Documento(cTipoDocumento)+"&lt;br&gt;"+mensaje3Documento(cTipoDocumento)
-endif
+
 
 if nCliente = 0 .and. (cTipoDocumento = 111 .or. cTipoDocumento = 112)
 	cDescripcion := "2|"+factCliente.text_2.value+"|"+factCliente.text_3.value+"|"+factCliente.text_4.value+"|PAYSANDU"
@@ -214,7 +212,7 @@ if nNumero == 0
 endif
 
 
-cAdenda += "&lt;br&gt;"+"Ref: "+str(nNumero)
+
 
 if !graboFactClienteCabezal(nNumero ,nCaja,nCliente, cTipoDocumento,;
 														nTotalFactura,dFechaFactura,cDescripcion,nVendedor,nFormaPago,cAdenda)
@@ -248,13 +246,16 @@ if facturaClienteConDetalle()
 
 endIf
 finTransaccion()
+cereoFormulario()
+factCliente.text_1.SetFocus
+
 if esFacturaElectronica .and. cTipoDocumento != 81 .and. cTipoDocumento != 91
 	info_("Registrando Documento en DGI...")
 	comienzoTransaccion()
 	if ! facturaElectronica(nNumero,.f.,.f.)
 		noTran()
 		WAIT CLEAR
-		msgInfo("No se pudo guardar el documento en DGI, Reintente!!!")	
+		msgInfo("No se pudo guardar el documento en DGI, Reintente desde el Menú !!!")	
 		return .f.
 	endif
 endif
@@ -268,8 +269,7 @@ if !imprimoMovimiento(nNumero,0,'','','')
 	return .f.
 endif
 WAIT CLEAR
-cereoFormulario()
-factCliente.text_1.SetFocus
+
 return .t.
 
 
