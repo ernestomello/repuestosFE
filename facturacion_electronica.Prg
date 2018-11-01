@@ -42,8 +42,8 @@ endif
 if !linea3(pArchivo,oIdMov)
 	return .f.
 endif
-
-if len(alltrim(oIdMov:getRow(1):fieldget(11))) != 0 .or. oIdMov:getRow(1):fieldget(7) != 0
+// msgInfo (alltrim(aCliente)+ str(oIdMov:getRow(1):fieldget(7)))
+if len(alltrim(aCliente)) != 0 //.or. oIdMov:getRow(1):fieldget(7) != 0
 	if !linea4(pArchivo,aCliente)
 		return .f.
 	endif
@@ -344,6 +344,7 @@ local nMntTotalNoGrv:= 0.00
 local nMntTotal:= 0.00
 local nLineas := 0
 local nGlobal := refGlobal(nIdMov)
+// msgInfo("Referencia Global: "+nGlobal)
 
 if nTipoCFE = 102 .or. nTipoCFE = 112
 if nGlobal == "1" 
@@ -367,7 +368,7 @@ for i = 1 to oDetalle:lastRec()
 		case oDetalle:getRow(i):fieldGet(5) = 22
 			// nMntIvaBasico += round(oDetalle:getRow(i):fieldGet(4) * oDetalle:getRow(i):fieldGet(3),2)
 			// nIvaBasico +=  round(oDetalle:getRow(i):fieldGet(4)* (oDetalle:getRow(i):fieldGet(5) / 100),2) * oDetalle:getRow(i):fieldGet(3)
-			nMntTotalBasico += oDetalle:getRow(i):fieldGet(4) *  iif( nGlobal == "1",1, (1+(oDetalle:getRow(i):fieldGet(5) / 100))) * oDetalle:getRow(i):fieldGet(3)
+			nMntTotalBasico += round(oDetalle:getRow(i):fieldGet(4) *  iif( nGlobal == "1",1, (1+(oDetalle:getRow(i):fieldGet(5) / 100))) * oDetalle:getRow(i):fieldGet(3),0)
 	endcase
 	
 next
@@ -405,7 +406,7 @@ local cMontoItem := "0",cDescExt := "",cDescArt:= ""
 local nTotalLineas := 0
 local nGlobal := refGlobal(nIdMov)
 local j
-// msgInfo(str(oDetalle:lastRec()))
+// msgInfo("Referencia Global: "+nGlobal)
 	// " select d.item,d.codigo_barra, d.cantidad,d.precio_unitario,d.cfe_ind_fact,d.descripcion,ca.tipoCFE "
 if nTipoCFE = 102 .or. nTipoCFE = 112
 	if nGlobal == "1" 
@@ -419,7 +420,15 @@ endif
 
 for j := 1 to oDetalle:lastRec()
 	
-		cDescArt :=alltrim(oDetalle:getRow(j):fieldGet(6))
+		cDescArt := alltrim(oDetalle:getRow(j):fieldGet(2))+"-"+alltrim(oDetalle:getRow(j):fieldGet(6))
+		cDescArt := strtran(cDescArt,"&","&amp;")
+		cDescArt := strtran(cDescArt,">","&gt;")
+		cDescArt := strtran(cDescArt,"<","&lt;")		
+		cDescArt := strtran(cDescArt,'"',"&quot;")
+		cDescArt := strtran(cDescArt,"'","&apos;")
+		 //"
+		
+		
 		cCant := oDetalle:getRow(j):fieldGet(3)
 		cUnidad := "UN"
 		cIndica := cfeIndFacturacion(oDetalle:getRow(j):fieldGet(5))
@@ -545,7 +554,7 @@ function oDetalleGlobalDevolucion(nIdMov)
 local oQuery
 local cQuery
 
-cQuery := " select 1,2, 1,r.importe_aplicado, 22,concat( 'Dto Global en ',t.descripcion, ' ', r.serieCFE, '-',r.numeroCFE) "
+cQuery := " select 1,'2', 1,r.importe_aplicado, 22,concat( 'Dto Global en ',t.descripcion, ' ', r.serieCFE, '-',r.numeroCFE) "
 cQuery += " from  cfe_referencias_det r ,cfe_tipos t"
 cQuery += " where  r.id_factura = "+str(nIdMov)+" and r.tipoCFE= t.id_cfe "
 oQuery := oServer:Query(cQuery )
