@@ -803,7 +803,7 @@ cQuery += " where c.id_cliente = "+str(nCliente)+" "
 // cQuery += " union all "
 // cQuery += " select fecha from recibo_cliente_cab "
 // cQuery += " where id_cliente = "+str(nCliente)+" "
-cQuery += " and c.id_factura not in (select id_factura_ref from cfe_referencias_det) "
+//cQuery += " and c.id_factura not in (select id_factura_ref from cfe_referencias_det) "
 cQuery += " order by 1 desc "
 
 oQuery:= oServer:Query(cQuery)

@@ -501,6 +501,19 @@ else
   return oQuery
 endIf
 
+function fechaUltMovCliente(nOrden)
+local cQuery, oQuery
+
+cQuery := " select t.* from (select c.id_cliente,c.nombre, ca.fecha "
+cQuery += "  from cliente c, cfe_comprobante_cab ca"
+cQuery += " where ca.id_cliente = c.id_cliente order by ca.fecha desc, c.id_cliente) as t group by 1 "
+oQuery := oServer:Query(cQuery)
+If oQuery:NetErr()												
+  MsgInfo("SQL SELECT error: "+cQuery+":" + oQuery:Error())
+else
+  return oQuery
+endIf
+
 function datoCliente(nIdCliente)
 local cQuery
 local oQuery

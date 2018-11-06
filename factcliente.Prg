@@ -172,7 +172,7 @@ nFormaPago := factCliente.text_21.value
 
 
 if nCliente = 0 .and. (cTipoDocumento = 111 .or. cTipoDocumento = 112)
-	cDescripcion := "2|"+factCliente.text_2.value+"|"+factCliente.text_3.value+"|"+factCliente.text_4.value+"|PAYSANDU"
+	cDescripcion := "2|"+factCliente.text_2.value+"|"+factCliente.text_3.value+"|"+factCliente.text_4.value+"|PAYSANDU|"+str(nCliente)
 else
 	cDescripcion :=""
 endif

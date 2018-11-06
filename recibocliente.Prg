@@ -256,7 +256,9 @@ endIf
 		next
 	endIf
 finTransaccion()	
-	
+
+vacioDatosReciboCliente()
+reciboCliente.text_1.setfocus
 if esFacturaElectronica
 	info_("Registrando Documeto en DGI...")
 	comienzoTransaccion()
@@ -280,8 +282,7 @@ iif(nNumeroR != 0,imprimoMovimiento(nNumeroR,0,'','',''),)
 //iif(nNumeroN != 0, imprimoMovimiento(nNumeroN,0,'','',''),)
 
 WAIT CLEAR
-vacioDatosReciboCliente()
-reciboCliente.text_1.setfocus
+
 
 return .t.
 

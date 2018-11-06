@@ -111,10 +111,10 @@ oDocumentos := documentosCliente(nCliente,dFechaDesde,dFechaHasta )
 if oDocumentos:lastRec() >	0 
 	
 	nSaldoActual := saldoEntreFechasCliente(nCliente,ctod("01/01/1980"),dFechaHasta)
-	
-		nSaldoAnterior := saldoEntreFechasCliente(nCliente,ctod("01/01/1980"),dFechaSaldoAnt)
-		imprimoEstadoCuenta(nCliente,oDocumentos,nSaldoAnterior,dFechaSaldoAnt,nSaldoActual,dFechaHasta,nPrevio)
-	
+	nSaldoAnterior := saldoEntreFechasCliente(nCliente,ctod("01/01/1980"),dFechaSaldoAnt)
+	imprimoEstadoCuenta(nCliente,oDocumentos,nSaldoAnterior,dFechaSaldoAnt,nSaldoActual,dFechaHasta,nPrevio)
+else
+	info_("El cliente Nro: "+str(nCliente)+" no tiene Movimientos entre las Fechas ",.t.)
 endif
 
 
