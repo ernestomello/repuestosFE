@@ -616,7 +616,7 @@ cQuery += " from cfe_comprobante_cab "
 cQuery += " where id_cliente = "+str(nCliente)+" "
 cQuery += " and saldo != 0 "
 // cQuery += " and anulado = 'N' "
-cQuery += " and id_factura not in (Select d.id_factura_ref from cfe_referencias_det d, cfe_comprobante_cab c where c.id_factura = d.id_factura and c.id_cliente  = "+str(nCliente)+" ) "
+// cQuery += " and id_factura not in (Select d.id_factura_ref from cfe_referencias_det d, cfe_comprobante_cab c where c.id_factura = d.id_factura and c.id_cliente  = "+str(nCliente)+" ) "
 cQuery += " and tipoCFE in (101,111) "
 cQuery += " and forma_pago = 2 "
 oQuery := oServer:Query(cQuery)
@@ -776,7 +776,7 @@ cQuery += " where id_cliente = "+str(nCliente)+" "
 cQuery += " and tipoCFE in (101,111) "
 cQuery += " and forma_pago = 2 "
 // cQuery += " and anulado = 'N' "
-cQuery += " and id_factura not in (Select id_factura_ref from cfe_referencias_det ) "
+//cQuery += " and id_factura not in (Select id_factura_ref from cfe_referencias_det ) "
 cQuery += " and fecha <= '"+dtos(dFecha)+"' "
 
 oQuery:= oServer:Query(cQuery)

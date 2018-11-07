@@ -175,7 +175,7 @@ fuente    := PARAMETROini("FuenteInforme","N")
 esp       := PARAMETROini("Espacio","N")
 
 SELECT PRINTER  dialog  preview
-
+info_("Buscando en la Base de Datos ...")
 start printdoc
 START PRINTPAGE
 
@@ -196,7 +196,7 @@ START PRINTPAGE
 for i= 1 to oClienteNumero:lastRec()
 	ultimoMes := saldoFacturas(oClienteNumero:getrow(i):fieldget(1),dMesUno)
 if 	ultimoMes != 0
-
+	info_("Cliente Nro: "+str(oClienteNumero:getrow(i):fieldget(1))+" ...")
 	@ xpos + 20 + l , ypos + 2   PRINT data oClienteNumero:getrow(i):fieldget(1) size fuente
 	@ xpos + 20 + l , ypos + 20  PRINT data oClienteNumero:getrow(i):fieldget(2) size fuente
 	@ xpos + 20 + l , ypos + 124  PRINT data saldoFacturas(oClienteNumero:getrow(i):fieldget(1),dMesCuatro) right size fuente
@@ -229,7 +229,7 @@ endif
 
 next
 
-
+WAIT CLEAR
 
 
 END PRINTPAGE
