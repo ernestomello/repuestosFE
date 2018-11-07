@@ -25,18 +25,22 @@ local dFechaDesde := impresionEstado.datePicker_1.value - 1
 local dFechaHasta := impresionEstado.datePicker_2.value
 local nPrevio := impresionEstado.radioGroup_1.value
 
+if nPrevio = 3
+	info_("Esta función no esta implementada, Consulte al Desarrollador",.t.)
+	WAIT CLEAR
+	return .f.
+endif
+
 	for i= impresionEstado.text_1.value to impresionEstado.text_2.value
 		 
 		if fechaUltimoMovimientoCliente(i) > impresionEstado.datePicker_3.value 
-			imprimeEstadoCuentaCliente(i,dFechaDesde,dFechaHasta,nPrevio)
-			// oDocumentos := documentosCliente(i,impresionEstado.datePicker_1.value,impresionEstado.datePicker_2.value )
-			// nSaldoActual := saldoEntreFechasCliente(i,ctod("01/01/1980"),impresionEstado.datePicker_2.value)
-			// if  nSaldoActual <= -20 .or. nSaldoActual >= 20 
-					// nSaldoAnterior := saldoEntreFechasCliente(i,ctod("01/01/1980"),dFechaHasta)
-					// imprimoEstadoCuenta(i,oDocumentos,nSaldoAnterior,dFechaHasta,nSaldoActual,impresionEstado.datePicker_2.value, impresionEstado.radioGroup_1.value)
-			// endif
+			if nPrevio != 3
+				imprimeEstadoCuentaCliente(i,dFechaDesde,dFechaHasta,nPrevio)
+			endif 
 		endif
 	next
+	
+return .t.
 
 procedure imprimoEstadoCuenta(nCliente,oDocumentos,nSaldoAnterior,dFechaDesde,nSaldoActual,dFechaHasta, nPrevio)
 local cCliente := nombreCliente(nCliente)
@@ -82,7 +86,7 @@ case nPrevio = 1
 	SELECT PRINTER  DEFAULT  PAPERSIZE PRINTER_PAPER_A4 ORIENTATION PRINTER_ORIENT_PORTRAIT 
 case nPrevio = 2
 	SELECT PRINTER  dialog  preview  
-case nPrevio = 3
+// case nPrevio = 3
 	//SELECT PRINTER  'Informes' SAVEAS 'C:\estadoCuenta.PDF'
 endcase
 

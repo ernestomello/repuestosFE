@@ -422,9 +422,6 @@ endif
 
 for j := 1 to oDetalle:lastRec()
 		cDescArt:= cEspeciales(alltrim(oDetalle:getRow(j):fieldGet(2))+"-"+alltrim(oDetalle:getRow(j):fieldGet(6)))
-		
-		
-		
 		cCant := oDetalle:getRow(j):fieldGet(3)
 		cUnidad := "UN"
 		cIndica := cfeIndFacturacion(oDetalle:getRow(j):fieldGet(5))
@@ -472,13 +469,14 @@ local i
 		cRazon := oNotaCredDeb:getRow(i):fieldGet(8)
 		cFecha := dtos(oNotaCredDeb:getRow(i):fieldGet(7))
 		cIndGlobal := oNotaCredDeb:getRow(i):fieldGet(3)
+		nIdFacturaRef :=  oNotaCredDeb:getRow(i):fieldGet(9)
 		cLinea += "<nsAd:Referencia>"+chr(13)+chr(10)
 		cLinea += "<nsAd:NroLinRef>"+str(i)+"</nsAd:NroLinRef>"+chr(13)+chr(10)
 		iif(cIndGlobal == "1",cLinea += "<nsAd:IndGlobal>"+cIndGlobal+"</nsAd:IndGlobal>"+chr(13)+chr(10),)
 		cLinea += "<nsAd:TpoDocRef>"+str(cTipoCFE)+"</nsAd:TpoDocRef>"+chr(13)+chr(10)
 		cLinea += "<nsAd:Serie>"+cSerie+"</nsAd:Serie>"+chr(13)+chr(10)
 		cLinea += "<nsAd:NroCFERef>"+str(cNumero)+"</nsAd:NroCFERef>"+chr(13)+chr(10)
-		iif(cIndGlobal == "1",cLinea += "<nsAd:RazonRef>Dto Global</nsAd:RazonRef>"+chr(13)+chr(10),)
+		iif(cIndGlobal == "1",cLinea += "<nsAd:RazonRef>Bonificacion Ref: "+str(nIdFacturaRef)+"</nsAd:RazonRef>"+chr(13)+chr(10),)
 		cLinea += "<nsAd:FechaCFEref>"+substr(cFecha,1,4)+"-"+substr(cFecha,5,2)+"-"+substr(cFecha,7,2)+"</nsAd:FechaCFEref>"+chr(13)+chr(10)
 		cLinea += "</nsAd:Referencia>"+chr(13)+chr(10)
 	next
@@ -492,11 +490,14 @@ local cAdenda := cEspeciales(oIdMov:getRow(1):fieldGet(15))
 local nFormaPago := oIdMov:getRow(1):fieldGet(13)
 local nTipoDocumento := oIdMov:getRow(1):fieldGet(4)
 local cLinea := ""
-if nFormaPago = 2 .and. (nTipoDocumento = 111 .or. nTipoDocumento = 101)
-cAdenda +="&lt;br&gt;"+cEspeciales(mensaje1Documento(nTipoDocumento))+"&lt;br&gt;"+cEspeciales(mensaje2Documento(nTipoDocumento))+"&lt;br&gt;"+cEspeciales(mensaje3Documento(nTipoDocumento))
+if nFormaPago = 2 
+	cAdenda += "&lt;br&gt;"+"Cliente Nro: "+str(oIdMov:getRow(1):fieldGet(7))
+	if (nTipoDocumento = 111 .or. nTipoDocumento = 101)
+		cAdenda +="&lt;br&gt;"+cEspeciales(mensaje1Documento(nTipoDocumento))+"&lt;br&gt;"+cEspeciales(mensaje2Documento(nTipoDocumento))+"&lt;br&gt;"+cEspeciales(mensaje3Documento(nTipoDocumento))
+	endIf
 endif
 cAdenda += "&lt;br&gt;"+"Ref: "+str(oIdMov:getRow(1):fieldGet(1))
-cAdenda += "&lt;br&gt;"+"Cliente: "+str(oIdMov:getRow(1):fieldGet(7))
+
 cLinea := "<nsAdenda:Adenda>"+cAdenda+"</nsAdenda:Adenda>"+chr(13)
 // "10|"+cAdenda//+chr(13)+chr(10)
 
@@ -569,7 +570,7 @@ function oDetalleGlobalDevolucion(nIdMov)
 local oQuery
 local cQuery
 
-cQuery := " select 1,'2', 1,r.importe_aplicado, 22,concat( 'Dto Global en ',t.descripcion, ' ', r.serieCFE, '-',r.numeroCFE) "
+cQuery := " select 1,'2', 1,r.importe_aplicado, 22,concat( 'Bonificacion en ',t.descripcion, ' ', r.serieCFE, '-',r.numeroCFE) "
 cQuery += " from  cfe_referencias_det r ,cfe_tipos t"
 cQuery += " where  r.id_factura = "+str(nIdMov)+" and r.tipoCFE= t.id_cfe "
 oQuery := oServer:Query(cQuery )

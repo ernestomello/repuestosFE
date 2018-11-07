@@ -774,6 +774,7 @@ local cQuery,oQuery
 cQuery := " SELECT ifnull(sum(saldo),0) FROM cfe_comprobante_cab "
 cQuery += " where id_cliente = "+str(nCliente)+" "
 cQuery += " and tipoCFE in (101,111) "
+cQuery += " and forma_pago = 2 "
 // cQuery += " and anulado = 'N' "
 cQuery += " and id_factura not in (Select id_factura_ref from cfe_referencias_det ) "
 cQuery += " and fecha <= '"+dtos(dFecha)+"' "

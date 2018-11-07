@@ -156,7 +156,7 @@ local nImportePagoreciboCliente :=  reciboCliente.text_6.value
 local nImporteNotaCredito := reciboCliente.text_5.value
 local nImporte, nNumeroR, nNumeroN := 0
 local cAdenda := ""
-
+local nTipoDocumento:=111
 
 if !msgYesNo("Graba el Recibo y la Bonificacion?","ATENCIÓN",.T.)
 	return .f.
@@ -179,7 +179,7 @@ endIf
 			msginfo("No se pudo actualizar el Número del Recibo")
 			return .f.
 		endIf
-		cAdenda += "Ref: "+str(nNumeroR)
+		// cAdenda := "Ref: "+str(nNumeroR)
 		// if !guardoCabezalreciboCliente(nNumeroR,cajaId(),reciboCliente.text_1.value,98,reciboCliente.text_6.value,reciboCliente.datePicker_1.value,"",0,1)
 		if !graboFactClienteCabezal(nNumeroR,cajaId(),reciboCliente.text_1.value,98,reciboCliente.text_6.value,reciboCliente.datePicker_1.value,"",0,1,cAdenda)
 				// (nNumero,nCaja,nCliente, nTipoDocumento,nImporte,dFechaFactura,cDescripcion,nVendedor,nFormaPago,cAdenda)
@@ -196,6 +196,7 @@ endIf
 		//guarda los detalles del recibo, controlando que la línea sea != 0
 		for i = 1 to reciboCliente.grid_1.itemcount
 			if reciboCliente.grid_1.cell(i,8) = 'SI' .and. reciboCliente.grid_1.cell(i,5)!= 0
+				nDocumento := reciboCliente.grid_1.cell(i,1)
 				// if !guardoDetallereciboCliente(nNumeroR, reciboCliente.grid_1.cell(i,1),reciboCliente.grid_1.cell(i,5))
 				if !guardoRelacion( reciboCliente.grid_1.cell(i,1),nNumeroR,reciboCliente.grid_1.cell(i,5),1)
 					// guardoRelacion(nFactura, nNumero)
@@ -223,8 +224,9 @@ endIf
 			msginfo("No se pudo actualizar el Número de la Nota de Crédito")
 			return .f.
 		endIf
-		cAdenda += "Ref: "+str(nNumeroN)
-		if !graboFactClienteCabezal(nNumeroN,cajaId(),reciboCliente.text_1.value,112,reciboCliente.text_5.value,reciboCliente.datePicker_1.value,"",0,2,cAdenda)
+		// cAdenda := "Ref: "+str(nNumeroN)
+		nTipoDocumento := iif(tipoDocumento(nDocumento)= 101 , 102 , 112)
+		if !graboFactClienteCabezal(nNumeroN,cajaId(),reciboCliente.text_1.value,nTipoDocumento,reciboCliente.text_5.value,reciboCliente.datePicker_1.value,"",0,2,cAdenda)
 		// if !guardoCabezalNotaCredito(nNumeroN, cajaId(),reciboCliente.text_1.value,'N',reciboCliente.datePicker_1.value,reciboCliente.text_5.value)
 			noTran()
 			WAIT CLEAR
@@ -265,7 +267,7 @@ if esFacturaElectronica
 	if ! facturaElectronica(nNumeroN,.f.,.t.)
 		noTran()
 		WAIT CLEAR
-		msgInfo("No se pudo guardar el documento en DGI, Reintente!!!")	
+		msgInfo("No se pudo guardar el documento en DGI, Reintente desde el Menú !!!")	
 		return .f.
 	endif
 endIf
@@ -274,7 +276,7 @@ finTransaccion()
 info_("Imprimiendo Documento ...")
 if !imprimoMovimiento(nNumeroN,0,'','','')
 	WAIT CLEAR
-	msgInfo("No se pudo imprimir el Documento, Reintente")
+	msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menú")
 	return .f.
 endif
 

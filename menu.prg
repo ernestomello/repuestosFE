@@ -113,7 +113,7 @@ Function main()
       				ITEM 'Resumen de Compras' ACTION resumencompra()
 
       				SEPARATOR
-      				ITEM 'Envio de Estados de Cuenta' ACTION envioEstados()
+      				//ITEM 'Envio de Estados de Cuenta' ACTION envioEstados()
       				ITEM 'Estados de Cuenta' ACTION imprimeEstadosCuenta()
       				ITEM 'Saldos Anteriores' ACTION listoSaldosAnteriores()
       			END POPUP

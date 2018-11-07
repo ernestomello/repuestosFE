@@ -58,7 +58,7 @@ notaCredito.text_3.value := nTotImporte
 
 procedure guardarDevolucion()
 local nCliente:= notaCredito.text_1.value 
-local cTipoDocumento := iif( tipoDocumento(notaCredito.text_6.value) = 101 , 102 , iif( tipoDocumento(notaCredito.text_6.value) = 111 , 112 , 0 ))
+local cTipoDocumento := iif( tipoDocumento(notaCredito.text_6.value) = 101 , 102 , 112 )
 local dFechaFactura:= notaCredito.datePicker_1.value
 local nTotalFactura:= notaCredito.text_3.value
 local cDescripcion:= notaCredito.text_4.value
