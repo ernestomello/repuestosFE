@@ -32,7 +32,7 @@ fwrite(parchivo,"<nsAd:eTck>"+chr(13)+chr(10))
 else
 fwrite(parchivo,"<nsAd:eFact>"+chr(13)+chr(10))
 endIf
-fwrite(parchivo," <nsAd:Encabezado>"+chr(13))
+fwrite(parchivo," <nsAd:Encabezado>"+chr(13)+chr(10))
 
 
 if !linea2(pArchivo,oIdMov)
@@ -42,8 +42,8 @@ endif
 if !linea3(pArchivo,oIdMov)
 	return .f.
 endif
-
-if len(alltrim(oIdMov:getRow(1):fieldget(11))) != 0 .or. oIdMov:getRow(1):fieldget(7) != 0
+// msgInfo (alltrim(aCliente)+ str(oIdMov:getRow(1):fieldget(7)))
+if len(alltrim(aCliente)) != 0 //.or. oIdMov:getRow(1):fieldget(7) != 0
 	if !linea4(pArchivo,aCliente)
 		return .f.
 	endif
@@ -52,13 +52,13 @@ endIf
 if !linea5(pArchivo,nIdMov,nTipoCFE)
 	return .f.
 endif
-fwrite(parchivo," </nsAd:Encabezado>"+chr(13))
-fwrite(parchivo,"<nsAd:Detalle>"+chr(13))
+fwrite(parchivo," </nsAd:Encabezado>"+chr(13)+chr(10))
+fwrite(parchivo,"<nsAd:Detalle>"+chr(13)+chr(10))
 
 if !linea6(pArchivo,nIdMov,nTipoCFE)
 	return .f.
 endif
-fwrite(parchivo,"</nsAd:Detalle>"+chr(13))
+fwrite(parchivo,"</nsAd:Detalle>"+chr(13)+chr(10))
 /*
 if !linea7(pArchivo)
 	return .f.
@@ -71,19 +71,19 @@ endif
 endif
 // fwrite(parchivo,"<nsAd:DscRcgGlobal>"+chr(13))
 // fwrite(parchivo,"</nsAd:DscRcgGlobal>"+chr(13))
-fwrite(parchivo,"<nsAd:CAEData>"+chr(13))
-fwrite(parchivo,"<nsAd:CAE_ID>1</nsAd:CAE_ID>"+chr(13))
-fwrite(parchivo,"<nsAd:DNro>1</nsAd:DNro>"+chr(13))
-fwrite(parchivo,"<nsAd:HNro>1</nsAd:HNro>"+chr(13))
-fwrite(parchivo,"<nsAd:FecVenc></nsAd:FecVenc>"+chr(13))
-fwrite(parchivo,"</nsAd:CAEData>"+chr(13))
+fwrite(parchivo,"<nsAd:CAEData>"+chr(13)+chr(10))
+fwrite(parchivo,"<nsAd:CAE_ID>1</nsAd:CAE_ID>"+chr(13)+chr(10))
+fwrite(parchivo,"<nsAd:DNro>1</nsAd:DNro>"+chr(13)+chr(10))
+fwrite(parchivo,"<nsAd:HNro>1</nsAd:HNro>"+chr(13)+chr(10))
+fwrite(parchivo,"<nsAd:FecVenc></nsAd:FecVenc>"+chr(13)+chr(10))
+fwrite(parchivo,"</nsAd:CAEData>"+chr(13)+chr(10))
 
 if nTipoCFE = 101 .or. nTipoCFE = 102 
-	fwrite(parchivo,"</nsAd:eTck>"+chr(13))
+	fwrite(parchivo,"</nsAd:eTck>"+chr(13)+chr(10))
 else
-	fwrite(parchivo,"</nsAd:eFact>"+chr(13))
+	fwrite(parchivo,"</nsAd:eFact>"+chr(13)+chr(10))
 endIf
-	fwrite(parchivo,"</nsAd:CFE>"+chr(13))
+	fwrite(parchivo,"</nsAd:CFE>"+chr(13)+chr(10))
 if !linea10(pArchivo,oIdMov)
 	return .f.
 endif
@@ -97,7 +97,7 @@ if !linea12(pArchivo)
 	return .f.
 endif
 */
-fwrite(parchivo,"</nsAdenda:CFE_Adenda>"+chr(13))
+fwrite(parchivo,"</nsAdenda:CFE_Adenda>"+chr(13)+chr(10))
 fclose(parchivo)
 
 if file(cArchivo)
@@ -135,11 +135,13 @@ hb_memowrit("aalgo.txt",cxml)
   // msgInfo(cRespuesta)
  
 	aLineasL:= cValTag(cRespuesta,"a:Descripcion")+"|"+cValTag(cRespuesta,"a:Serie")+"|"+cValTag(cRespuesta,"a:Numero")+"|"+cValTag(cRespuesta,"a:Hash")
-	
-	if val(cValTag(cRespuesta,"a:Codigo")) = 0
+	cCodigoRespuesta := val(cValTag(cRespuesta,"a:Codigo"))
+	//codigo = 0 sin errore, codigo 100009 que ya fue emitido, así que igual sirve para grabar los datos faltantes.
+	if cCodigoRespuesta = 0 .or. cCodigoRespuesta = 100009
 		
-		actualizaFE(nIdMov, aLineasL)
-		
+		if !actualizaFE(nIdMov, aLineasL)
+			return .f.
+		endif
 	else
 		msgInfo(" Devolucion de Errores"+chr(13)+hb_atokens(aLineasL,"|")[1])
 		return .f.
@@ -252,15 +254,15 @@ local cFechaVenc := dtos(oIdMov:getRow(1):fieldGet(6))
 local cSerie :=	oIdMov:getRow(1):fieldGet(2)
 local cNumero :=  oIdMov:getRow(1):fieldGet(3)
 //set( _SET_DATEFORMAT, "yyyy-mm-dd" ) 
-local cLinea := "<nsAd:IdDoc>"+chr(13)
-cLinea += "<nsAd:TipoCFE>"+str(cTipoCFE)+"</nsAd:TipoCFE>"+chr(13)
+local cLinea := "<nsAd:IdDoc>"+chr(13)+chr(10)
+cLinea += "<nsAd:TipoCFE>"+str(cTipoCFE)+"</nsAd:TipoCFE>"+chr(13)+chr(10)
 // cLinea += "<nsAd:TipoCFE>111</nsAd:TipoCFE>"+chr(13)
-cLinea += "<nsAd:Serie></nsAd:Serie>"+chr(13)
-cLinea += "<nsAd:Nro></nsAd:Nro>"+chr(13)
-cLinea += "<nsAd:FchEmis>"+substr(cFechaEmision,1,4)+"-"+substr(cFechaEmision,5,2)+"-"+substr(cFechaEmision,7,2)+"</nsAd:FchEmis>"+chr(13)
-cLinea += "<nsAd:MntBruto>1</nsAd:MntBruto>"+chr(13)
-cLinea += "<nsAd:FmaPago>"+str(cFormaPago)+"</nsAd:FmaPago>"+chr(13)
-cLinea += "</nsAd:IdDoc>"+chr(13)
+cLinea += "<nsAd:Serie></nsAd:Serie>"+chr(13)+chr(10)
+cLinea += "<nsAd:Nro></nsAd:Nro>"+chr(13)+chr(10)
+cLinea += "<nsAd:FchEmis>"+substr(cFechaEmision,1,4)+"-"+substr(cFechaEmision,5,2)+"-"+substr(cFechaEmision,7,2)+"</nsAd:FchEmis>"+chr(13)+chr(10)
+cLinea += "<nsAd:MntBruto>1</nsAd:MntBruto>"+chr(13)+chr(10)
+cLinea += "<nsAd:FmaPago>"+str(cFormaPago)+"</nsAd:FmaPago>"+chr(13)+chr(10)
+cLinea += "</nsAd:IdDoc>"+chr(13)+chr(10)
 // if cTipoCFE != 182+chr(13)
 // cLinea := "2|"+str(cTipoCFE)+"|"+cSerie+"|"+str(cNumero)+"|"+substr(cFechaEmision,1,4)+"-"+substr(cFechaEmision,5,2)+"-"+substr(cFechaEmision,7,2)+"|1|"+str(cFormaPago)+"|"+substr(cFechaVenc,1,4)+"-"+substr(cFechaVenc,5,2)+"-"+substr(cFechaVenc,7,2)+chr(13)+chr(10)
 // else
@@ -272,17 +274,17 @@ fwrite(parchivo,clinea)
 return .t.
 
 function linea3(pArchivo,oIdMov)
-local cLinea := "<nsAd:Emisor>"+chr(13)
+local cLinea := "<nsAd:Emisor>"+chr(13)+chr(10)
 
-cLinea += "<nsAd:RUCEmisor>"+cRutEmisior+"</nsAd:RUCEmisor>"+chr(13)
-cLinea +="<nsAd:RznSoc>"+cRazonEmisior+"</nsAd:RznSoc>"+chr(13)
-cLinea +="<nsAd:NomComercial>"+cNombreEmpresa+"</nsAd:NomComercial>"+chr(13)
-cLinea +="<nsAd:EmiSucursal>Sucursal principal</nsAd:EmiSucursal>"+chr(13)
-cLinea +="<nsAd:CdgDGISucur>"+cDGIEmisior+"</nsAd:CdgDGISucur>"+chr(13)
-cLinea +="<nsAd:DomFiscal>"+cDirEmisior+"</nsAd:DomFiscal>"+chr(13)
-cLinea +="<nsAd:Ciudad>"+cCiuEmisior+"</nsAd:Ciudad>"+chr(13)
-cLinea +="<nsAd:Departamento>"+cDepEmisior+"</nsAd:Departamento>"+chr(13)
-cLinea +="</nsAd:Emisor>"+chr(13)
+cLinea += "<nsAd:RUCEmisor>"+cRutEmisior+"</nsAd:RUCEmisor>"+chr(13)+chr(10)
+cLinea +="<nsAd:RznSoc>"+cEspeciales(cRazonEmisior)+"</nsAd:RznSoc>"+chr(13)+chr(10)
+cLinea +="<nsAd:NomComercial>"+cEspeciales(cNombreEmpresa)+"</nsAd:NomComercial>"+chr(13)+chr(10)
+cLinea +="<nsAd:EmiSucursal>Sucursal principal</nsAd:EmiSucursal>"+chr(13)+chr(10)
+cLinea +="<nsAd:CdgDGISucur>"+cDGIEmisior+"</nsAd:CdgDGISucur>"+chr(13)+chr(10)
+cLinea +="<nsAd:DomFiscal>"+cDirEmisior+"</nsAd:DomFiscal>"+chr(13)+chr(10)
+cLinea +="<nsAd:Ciudad>"+cCiuEmisior+"</nsAd:Ciudad>"+chr(13)+chr(10)
+cLinea +="<nsAd:Departamento>"+cDepEmisior+"</nsAd:Departamento>"+chr(13)+chr(10)
+cLinea +="</nsAd:Emisor>"+chr(13)+chr(10)
         
 
 fwrite(parchivo,clinea)
@@ -298,6 +300,7 @@ local cCiuR := alltrim(hb_atokens(aSocio,"|")[5])//"PAYSANDU"//oIdMov:getRow(1):
 local cDepR := "PAYSANDU"//oIdMov:getRow(1):fieldGet(1)
 local cCompraId := ""//oIdMov:getRow(1):fieldGet(1)
 local cPaisR := "URUGUAY"//oIdMov:getRow(1):fieldGet(1)
+local cCliente :=alltrim(hb_atokens(aSocio,"|")[6])
 local cLinea :=""
 // msgInfo(aSocio)
 if alltrim(cTipoDocR) == '3'
@@ -307,18 +310,18 @@ if alltrim(cTipoDocR) == '3'
 		// cDocR := '0'
 	// endif
 endif
-cLinea +="<nsAd:Receptor>"+chr(13)
-cLinea +="<nsAd:TipoDocRecep>"+cTipoDocR+"</nsAd:TipoDocRecep>"+chr(13)
+cLinea +="<nsAd:Receptor>"+chr(13)+chr(10)
+cLinea +="<nsAd:TipoDocRecep>"+cTipoDocR+"</nsAd:TipoDocRecep>"+chr(13)+chr(10)
 // cLinea +="<nsAd:TipoDocRecep>2</nsAd:TipoDocRecep>"+chr(13)
-cLinea +="<nsAd:CodPaisRecep>"+cCodPaisR+"</nsAd:CodPaisRecep>"+chr(13)
-cLinea +="<nsAd:DocRecep>"+cDocR+"</nsAd:DocRecep>"+chr(13)
+cLinea +="<nsAd:CodPaisRecep>"+cCodPaisR+"</nsAd:CodPaisRecep>"+chr(13)+chr(10)
+cLinea +="<nsAd:DocRecep>"+cDocR+"</nsAd:DocRecep>"+chr(13)+chr(10)
 // cLinea +="<nsAd:DocRecep>120130820017</nsAd:DocRecep>"+chr(13)
-cLinea +="<nsAd:RznSocRecep>"+cRazonR+"</nsAd:RznSocRecep>"+chr(13)
-cLinea +="<nsAd:DirRecep>"+cDirR+"</nsAd:DirRecep>"+chr(13)
-cLinea +="<nsAd:CiudadRecep>"+cCiuR+"</nsAd:CiudadRecep>"+chr(13)
-cLinea +="<nsAd:DeptoRecep>"+cDepR+"</nsAd:DeptoRecep>"+chr(13)
-cLinea +="<nsAd:PaisRecep>"+cPaisR+"</nsAd:PaisRecep>"+chr(13)
-cLinea +="</nsAd:Receptor>"+chr(13)
+cLinea +="<nsAd:RznSocRecep>"+cCliente+" - "+cEspeciales(cRazonR)+"</nsAd:RznSocRecep>"+chr(13)+chr(10)
+cLinea +="<nsAd:DirRecep>"+cEspeciales(cDirR)+"</nsAd:DirRecep>"+chr(13)+chr(10)
+cLinea +="<nsAd:CiudadRecep>"+cCiuR+"</nsAd:CiudadRecep>"+chr(13)+chr(10)
+cLinea +="<nsAd:DeptoRecep>"+cDepR+"</nsAd:DeptoRecep>"+chr(13)+chr(10)
+cLinea +="<nsAd:PaisRecep>"+cPaisR+"</nsAd:PaisRecep>"+chr(13)+chr(10)
+cLinea +="</nsAd:Receptor>"+chr(13)+chr(10)
 
 // cLinea := "4|"+cTipoDocR+"|"+cCodPaisR+"|"+cDocR+"|"+cRazonR+"|"+cDirR+"|"+cCiuR+"|"+cDepR+"|"+cCompraId+"|"+cPaisR+chr(13)+chr(10)
 
@@ -331,7 +334,7 @@ Local oDetalle //:= oDetalleFactura(nIdMov)//los detalles de cada factura Electr
 local cMoneda := "UYU"//(oIdMov:getRow(1):fieldGet(1)
 local nIvaBas :=PARAMETROini("FEIVABASE","N")
 local nIvaMin :=PARAMETROini("FEIVAMIN","N")
-local cLinea := "<nsAd:Totales>"+chr(13)
+local cLinea := "<nsAd:Totales>"+chr(13)+chr(10)
 local nMntNoGrv:=0.00
 local nMntIvaBasico:=0.00
 local nMntIvaMinimo:=0.00
@@ -343,6 +346,7 @@ local nMntTotalNoGrv:= 0.00
 local nMntTotal:= 0.00
 local nLineas := 0
 local nGlobal := refGlobal(nIdMov)
+// msgInfo("Referencia Global: "+nGlobal)
 
 if nTipoCFE = 102 .or. nTipoCFE = 112
 if nGlobal == "1" 
@@ -366,7 +370,7 @@ for i = 1 to oDetalle:lastRec()
 		case oDetalle:getRow(i):fieldGet(5) = 22
 			// nMntIvaBasico += round(oDetalle:getRow(i):fieldGet(4) * oDetalle:getRow(i):fieldGet(3),2)
 			// nIvaBasico +=  round(oDetalle:getRow(i):fieldGet(4)* (oDetalle:getRow(i):fieldGet(5) / 100),2) * oDetalle:getRow(i):fieldGet(3)
-			nMntTotalBasico += oDetalle:getRow(i):fieldGet(4) *  iif( nGlobal == "1",1, (1+(oDetalle:getRow(i):fieldGet(5) / 100))) * oDetalle:getRow(i):fieldGet(3)
+			nMntTotalBasico += round(oDetalle:getRow(i):fieldGet(4) *  iif( nGlobal == "1",1, (1+(oDetalle:getRow(i):fieldGet(5) / 100))) * oDetalle:getRow(i):fieldGet(3),0)
 	endcase
 	
 next
@@ -404,7 +408,7 @@ local cMontoItem := "0",cDescExt := "",cDescArt:= ""
 local nTotalLineas := 0
 local nGlobal := refGlobal(nIdMov)
 local j
-// msgInfo(str(oDetalle:lastRec()))
+// msgInfo("Referencia Global: "+nGlobal)
 	// " select d.item,d.codigo_barra, d.cantidad,d.precio_unitario,d.cfe_ind_fact,d.descripcion,ca.tipoCFE "
 if nTipoCFE = 102 .or. nTipoCFE = 112
 	if nGlobal == "1" 
@@ -417,8 +421,7 @@ else
 endif
 
 for j := 1 to oDetalle:lastRec()
-	
-		cDescArt :=alltrim(oDetalle:getRow(j):fieldGet(6))
+		cDescArt:= cEspeciales(alltrim(oDetalle:getRow(j):fieldGet(2))+"-"+alltrim(oDetalle:getRow(j):fieldGet(6)))
 		cCant := oDetalle:getRow(j):fieldGet(3)
 		cUnidad := "UN"
 		cIndica := cfeIndFacturacion(oDetalle:getRow(j):fieldGet(5))
@@ -466,13 +469,14 @@ local i
 		cRazon := oNotaCredDeb:getRow(i):fieldGet(8)
 		cFecha := dtos(oNotaCredDeb:getRow(i):fieldGet(7))
 		cIndGlobal := oNotaCredDeb:getRow(i):fieldGet(3)
+		nIdFacturaRef :=  oNotaCredDeb:getRow(i):fieldGet(9)
 		cLinea += "<nsAd:Referencia>"+chr(13)+chr(10)
 		cLinea += "<nsAd:NroLinRef>"+str(i)+"</nsAd:NroLinRef>"+chr(13)+chr(10)
 		iif(cIndGlobal == "1",cLinea += "<nsAd:IndGlobal>"+cIndGlobal+"</nsAd:IndGlobal>"+chr(13)+chr(10),)
 		cLinea += "<nsAd:TpoDocRef>"+str(cTipoCFE)+"</nsAd:TpoDocRef>"+chr(13)+chr(10)
 		cLinea += "<nsAd:Serie>"+cSerie+"</nsAd:Serie>"+chr(13)+chr(10)
 		cLinea += "<nsAd:NroCFERef>"+str(cNumero)+"</nsAd:NroCFERef>"+chr(13)+chr(10)
-		iif(cIndGlobal == "1",cLinea += "<nsAd:RazonRef>Dto Global</nsAd:RazonRef>"+chr(13)+chr(10),)
+		iif(cIndGlobal == "1",cLinea += "<nsAd:RazonRef>Bonificacion Ref: "+str(nIdFacturaRef)+"</nsAd:RazonRef>"+chr(13)+chr(10),)
 		cLinea += "<nsAd:FechaCFEref>"+substr(cFecha,1,4)+"-"+substr(cFecha,5,2)+"-"+substr(cFecha,7,2)+"</nsAd:FechaCFEref>"+chr(13)+chr(10)
 		cLinea += "</nsAd:Referencia>"+chr(13)+chr(10)
 	next
@@ -482,9 +486,19 @@ return .t.
 
 
 function linea10(pArchivo,oIdMov)
-local cAdenda := strtran(oIdMov:getRow(1):fieldGet(15),chr(13)," ")
-// local cLinea := "<nsAdenda:Adenda>"+cAdenda+"</nsAdenda:Adenda>"+chr(13)
-local cLinea := "<nsAdenda:Adenda>"+cAdenda+"</nsAdenda:Adenda>"+chr(13)
+local cAdenda := cEspeciales(oIdMov:getRow(1):fieldGet(15))
+local nFormaPago := oIdMov:getRow(1):fieldGet(13)
+local nTipoDocumento := oIdMov:getRow(1):fieldGet(4)
+local cLinea := ""
+if nFormaPago = 2 
+	cAdenda += "&lt;br&gt;"+"Cliente Nro: "+str(oIdMov:getRow(1):fieldGet(7))
+	if (nTipoDocumento = 111 .or. nTipoDocumento = 101)
+		cAdenda +="&lt;br&gt;"+cEspeciales(mensaje1Documento(nTipoDocumento))+"&lt;br&gt;"+cEspeciales(mensaje2Documento(nTipoDocumento))+"&lt;br&gt;"+cEspeciales(mensaje3Documento(nTipoDocumento))
+	endIf
+endif
+cAdenda += "&lt;br&gt;"+"Ref: "+str(oIdMov:getRow(1):fieldGet(1))
+
+cLinea := "<nsAdenda:Adenda>"+cAdenda+"</nsAdenda:Adenda>"+chr(13)
 // "10|"+cAdenda//+chr(13)+chr(10)
 
 fwrite(parchivo,cLinea)
@@ -499,6 +513,18 @@ function linea12(pArchivo)
 local cLinea := "12|||||"+chr(13)+chr(10)
 fwrite(parchivo,clinea)
 return .t.
+
+function cEspeciales(cCadena)
+
+
+		cCadena := strtran(cCadena,"&","&amp;")
+		cCadena := strtran(cCadena,"Ñ","Ã‘")
+		cCadena := strtran(cCadena,">","&gt;")
+		cCadena := strtran(cCadena,"<","&lt;")		
+		cCadena := strtran(cCadena,'"',"&quot;")
+		cCadena := strtran(cCadena,"'","&apos;")
+		 //"
+return cCadena
 
 function oDetalleFactura(nIdMov)
 local oQuery
@@ -544,7 +570,7 @@ function oDetalleGlobalDevolucion(nIdMov)
 local oQuery
 local cQuery
 
-cQuery := " select 1,2, 1,r.importe_aplicado, 22,concat( 'Dto Global en ',t.descripcion, ' ', r.serieCFE, '-',r.numeroCFE) "
+cQuery := " select 1,'2', 1,r.importe_aplicado, 22,concat( 'Bonificacion en ',t.descripcion, ' ', r.serieCFE, '-',r.numeroCFE) "
 cQuery += " from  cfe_referencias_det r ,cfe_tipos t"
 cQuery += " where  r.id_factura = "+str(nIdMov)+" and r.tipoCFE= t.id_cfe "
 oQuery := oServer:Query(cQuery )
@@ -981,7 +1007,7 @@ IF !EMPTY(_hcurl)
 	curl_easy_setopt(_hcurl, HB_CURLOPT_POST, 1)
 	curl_easy_setopt(_hcurl, HB_CURLOPT_POSTFIELDS, cxml)
 	curl_easy_setopt(_hcurl, HB_CURLOPT_CONNECTTIMEOUT, 8)
-	curl_easy_setopt(_hcurl, HB_CURLOPT_TIMEOUT,       60)
+	curl_easy_setopt(_hcurl, HB_CURLOPT_TIMEOUT,       40)
 	curl_easy_setopt(_hcurl, HB_CURLOPT_SSL_VERIFYPEER, IIF(_ssl,1,0))
 	curl_easy_setopt(_hcurl, HB_CURLOPT_SSL_VERIFYHOST, IIF(_ssl,1,0))
 

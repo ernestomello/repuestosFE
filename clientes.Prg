@@ -501,14 +501,28 @@ else
   return oQuery
 endIf
 
+function fechaUltMovCliente(nOrden)
+local cQuery, oQuery
+
+cQuery := " select t.* from (select c.id_cliente,c.nombre, ca.fecha "
+cQuery += "  from cliente c, cfe_comprobante_cab ca"
+cQuery += " where ca.id_cliente = c.id_cliente order by ca.fecha desc, c.id_cliente) as t group by 1 "
+oQuery := oServer:Query(cQuery)
+If oQuery:NetErr()												
+  MsgInfo("SQL SELECT error: "+cQuery+":" + oQuery:Error())
+else
+  return oQuery
+endIf
+
 function datoCliente(nIdCliente)
 local cQuery
 local oQuery
 
 
-cQuery := " select concat(if(c.consumo_final = 0,2,3),'|',c.rut,'|',c.razon_social,'|',c.direccion_particular,'|','PAYSANDU') "
+cQuery := " select concat(if(c.consumo_final = 1,2,3),'|',c.rut,'|',c.razon_social,'|',c.direccion_particular,'|','PAYSANDU','|',c.id_cliente) "
 cQuery += " from cliente c  "
 cQuery += " where c.id_cliente = "+str(nIdCliente)+" "
+cQuery += " and c.consumo_final = 1 "
 
 oQuery := oServer:Query(cQuery)
 if oQuery:NetErr()												
@@ -517,5 +531,5 @@ endif
 if oQuery:lastRec() > 0
 	return oQuery:GetRow(1):fieldget(1)
 else
-	return "3||||"
+	return ""
 endif

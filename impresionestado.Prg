@@ -21,19 +21,26 @@ return
 procedure listaEstados()
 //local oClientes := clientes(impresionEstado.spinner_1.value, impresionEstado.spinner_2.value)
 local oDocumentos, nSaldoAnterior, nSaldoActual
-local dFechaHasta := impresionEstado.datePicker_1.value - 1
+local dFechaDesde := impresionEstado.datePicker_1.value - 1
+local dFechaHasta := impresionEstado.datePicker_2.value
+local nPrevio := impresionEstado.radioGroup_1.value
 
+if nPrevio = 3
+	info_("Esta función no esta implementada, Consulte al Desarrollador",.t.)
+	WAIT CLEAR
+	return .f.
+endif
 
 	for i= impresionEstado.text_1.value to impresionEstado.text_2.value
+		 
 		if fechaUltimoMovimientoCliente(i) > impresionEstado.datePicker_3.value 
-			oDocumentos := documentosCliente(i,impresionEstado.datePicker_1.value,impresionEstado.datePicker_2.value )
-			nSaldoActual := saldoEntreFechasCliente(i,ctod("01/01/1980"),impresionEstado.datePicker_2.value)
-			if  nSaldoActual <= -20 .or. nSaldoActual >= 20 
-					nSaldoAnterior := saldoEntreFechasCliente(i,ctod("01/01/1980"),dFechaHasta)
-					imprimoEstadoCuenta(i,oDocumentos,nSaldoAnterior,dFechaHasta,nSaldoActual,impresionEstado.datePicker_2.value, impresionEstado.radioGroup_1.value)
-			endif
+			if nPrevio != 3
+				imprimeEstadoCuentaCliente(i,dFechaDesde,dFechaHasta,nPrevio)
+			endif 
 		endif
 	next
+	
+return .t.
 
 procedure imprimoEstadoCuenta(nCliente,oDocumentos,nSaldoAnterior,dFechaDesde,nSaldoActual,dFechaHasta, nPrevio)
 local cCliente := nombreCliente(nCliente)
@@ -50,8 +57,11 @@ fuente    := PARAMETROini("FuenteInforme","N")
 esp       := PARAMETROini("Espacio","N")
 
 for i = 1 to oDocumentos:lastrec()
+	nDebe :=  iif(oDocumentos:getrow(i):fieldget(5) = 101 .or. oDocumentos:getrow(i):fieldget(5) = 111 ,oDocumentos:getrow(i):fieldget(4),0 )
+	nHaber := iif(oDocumentos:getrow(i):fieldget(5) = 102 .or. oDocumentos:getrow(i):fieldget(5) = 112 .or. oDocumentos:getrow(i):fieldget(5) = 98,oDocumentos:getrow(i):fieldget(4),0 )
+	nSaldoAnterior := nSaldoAnterior + nDebe - nHaber
 	
-	nSaldoAnterior := nSaldoAnterior + oDocumentos:getrow(i):fieldget(4) -oDocumentos:getrow(i):fieldget(5)
+	// nSaldoAnterior := nSaldoAnterior + oDocumentos:getrow(i):fieldget(4) -oDocumentos:getrow(i):fieldget(5)
 	if oDocumentos:getrow(i):fieldget(6) != 0
 		cDescripcion := alltrim(oDocumentos:getrow(i):fieldget(3))+" - $ " + alltrim(str(oDocumentos:getrow(i):fieldget(6)))
 	else
@@ -61,9 +71,11 @@ for i = 1 to oDocumentos:lastrec()
 	aadd(aGrid,{	oDocumentos:getrow(i):fieldget(1), ;
 								dtoc(oDocumentos:getrow(i):fieldget(2)), ; 
 								cDescripcion, ;
-								oDocumentos:getrow(i):fieldget(4), ;
-								oDocumentos:getrow(i):fieldget(5), ;
+								nDebe, ;
+								nHaber, ;								
 								nSaldoAnterior })
+								// oDocumentos:getrow(i):fieldget(4), ;
+								// oDocumentos:getrow(i):fieldget(5), ;
 next
 
 nLargoArray := len(aGrid)
@@ -71,10 +83,10 @@ nPag := 1
 
 do case
 case nPrevio = 1
-	SELECT PRINTER  'Informes'
+	SELECT PRINTER  DEFAULT  PAPERSIZE PRINTER_PAPER_A4 ORIENTATION PRINTER_ORIENT_PORTRAIT 
 case nPrevio = 2
-	SELECT PRINTER  dialog  preview
-case nPrevio = 3
+	SELECT PRINTER  dialog  preview  
+// case nPrevio = 3
 	//SELECT PRINTER  'Informes' SAVEAS 'C:\estadoCuenta.PDF'
 endcase
 

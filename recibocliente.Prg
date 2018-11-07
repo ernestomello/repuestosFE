@@ -156,7 +156,7 @@ local nImportePagoreciboCliente :=  reciboCliente.text_6.value
 local nImporteNotaCredito := reciboCliente.text_5.value
 local nImporte, nNumeroR, nNumeroN := 0
 local cAdenda := ""
-
+local nTipoDocumento:=111
 
 if !msgYesNo("Graba el Recibo y la Bonificacion?","ATENCIÓN",.T.)
 	return .f.
@@ -174,14 +174,16 @@ endIf
 	if reciboCliente.text_6.value != 0
 		nNumeroR:= numeroDesde('CLIENTE')  
 		if !agregoNumeroDesde('CLIENTE')
+			noTran()
 			WAIT CLEAR
 			msginfo("No se pudo actualizar el Número del Recibo")
 			return .f.
 		endIf
-		cAdenda += "Ref: "+str(nNumeroR)
+		// cAdenda := "Ref: "+str(nNumeroR)
 		// if !guardoCabezalreciboCliente(nNumeroR,cajaId(),reciboCliente.text_1.value,98,reciboCliente.text_6.value,reciboCliente.datePicker_1.value,"",0,1)
 		if !graboFactClienteCabezal(nNumeroR,cajaId(),reciboCliente.text_1.value,98,reciboCliente.text_6.value,reciboCliente.datePicker_1.value,"",0,1,cAdenda)
 				// (nNumero,nCaja,nCliente, nTipoDocumento,nImporte,dFechaFactura,cDescripcion,nVendedor,nFormaPago,cAdenda)
+			noTran()
 			WAIT CLEAR
 			msgInfo("No se pudo Guardar el Recibo. Reintente!!!")
 			return .f.
@@ -194,14 +196,17 @@ endIf
 		//guarda los detalles del recibo, controlando que la línea sea != 0
 		for i = 1 to reciboCliente.grid_1.itemcount
 			if reciboCliente.grid_1.cell(i,8) = 'SI' .and. reciboCliente.grid_1.cell(i,5)!= 0
+				nDocumento := reciboCliente.grid_1.cell(i,1)
 				// if !guardoDetallereciboCliente(nNumeroR, reciboCliente.grid_1.cell(i,1),reciboCliente.grid_1.cell(i,5))
 				if !guardoRelacion( reciboCliente.grid_1.cell(i,1),nNumeroR,reciboCliente.grid_1.cell(i,5),1)
 					// guardoRelacion(nFactura, nNumero)
+					noTran()
 					WAIT CLEAR
 					msgInfo("No se pudieron Guardar el detalle del Recibo. Reintente!!!")
 					return .f.
 				endIf					
 				if !modificoSaldoFacturaCliente(reciboCliente.grid_1.cell(i,1),reciboCliente.grid_1.cell(i,5))
+					noTran()
 					WAIT CLEAR
 					msgInfo("No se pudo Modificar la Factura. Reintente!!!")
 					return .f.
@@ -214,13 +219,16 @@ endIf
 	if reciboCliente.text_5.value != 0
 		nNumeroN:= numeroDesde('CLIENTE')
 		if !agregoNumeroDesde('CLIENTE')
+			noTran()
 			WAIT CLEAR
 			msginfo("No se pudo actualizar el Número de la Nota de Crédito")
 			return .f.
 		endIf
-		cAdenda += "Ref: "+str(nNumeroN)
-		if !graboFactClienteCabezal(nNumeroN,cajaId(),reciboCliente.text_1.value,112,reciboCliente.text_5.value,reciboCliente.datePicker_1.value,"",0,2,cAdenda)
+		// cAdenda := "Ref: "+str(nNumeroN)
+		nTipoDocumento := iif(tipoDocumento(nDocumento)= 101 , 102 , 112)
+		if !graboFactClienteCabezal(nNumeroN,cajaId(),reciboCliente.text_1.value,nTipoDocumento,reciboCliente.text_5.value,reciboCliente.datePicker_1.value,"",0,2,cAdenda)
 		// if !guardoCabezalNotaCredito(nNumeroN, cajaId(),reciboCliente.text_1.value,'N',reciboCliente.datePicker_1.value,reciboCliente.text_5.value)
+			noTran()
 			WAIT CLEAR
 			msgInfo("No se pudo Guardar la Nota de Crédito. Reintente!!!")
 			return .f.
@@ -235,11 +243,13 @@ endIf
 			if reciboCliente.grid_1.cell(i,8) = 'SI' .and. reciboCliente.grid_1.cell(i,6)!= 0
 				// if !guardoDetalleNotaCredito(nNumeroN,reciboCliente.grid_1.cell(i,1),reciboCliente.grid_1.cell(i,6))
 				if !guardoRelacion( reciboCliente.grid_1.cell(i,1),nNumeroN,reciboCliente.grid_1.cell(i,6),1)	
+					noTran()
 					WAIT CLEAR
 					msgInfo("No se pudo Guardar el detalle de NC. Reintente!!!")
 					return .f.
 				endIf					
 				if !modificoSaldoFacturaCliente(reciboCliente.grid_1.cell(i,1),reciboCliente.grid_1.cell(i,6))
+					noTran()
 					WAIT CLEAR
 					msgInfo("No se pudo Modificar la Factura. Reintente!!!")
 					return .f.
@@ -248,22 +258,25 @@ endIf
 		next
 	endIf
 finTransaccion()	
-	
+
+vacioDatosReciboCliente()
+reciboCliente.text_1.setfocus
 if esFacturaElectronica
 	info_("Registrando Documeto en DGI...")
-
+	comienzoTransaccion()
 	if ! facturaElectronica(nNumeroN,.f.,.t.)
+		noTran()
 		WAIT CLEAR
-		msgInfo("No se pudo guardar el documento en DGI, Reintente!!!")	
+		msgInfo("No se pudo guardar el documento en DGI, Reintente desde el Menú !!!")	
 		return .f.
 	endif
 endIf
-
+finTransaccion()	
 
 info_("Imprimiendo Documento ...")
 if !imprimoMovimiento(nNumeroN,0,'','','')
 	WAIT CLEAR
-	msgInfo("No se pudo imprimir el Documento, Reintente")
+	msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menú")
 	return .f.
 endif
 
@@ -271,8 +284,7 @@ iif(nNumeroR != 0,imprimoMovimiento(nNumeroR,0,'','',''),)
 //iif(nNumeroN != 0, imprimoMovimiento(nNumeroN,0,'','',''),)
 
 WAIT CLEAR
-vacioDatosReciboCliente()
-reciboCliente.text_1.setfocus
+
 
 return .t.
 
@@ -479,7 +491,7 @@ function reciboClienteDetalle(nRecibo)
 local cQuery, oQuery
 
 cQuery := " select d.id_factura_ref,0, '-',d.id_factura_ref , 0, "
-cQuery += " 0,1 , 0, 0, d.importe_aplicado "
+cQuery += " 0,c.serieCFE , c.numeroCFE, 0, d.importe_aplicado "
 cQuery += " from cfe_comprobante_cab c, cfe_referencias_det d "
 cQuery += " where c.id_factura = d.id_factura_ref"
 cQuery += " and d.id_factura = "+str(nRecibo)+" "
@@ -504,11 +516,9 @@ If oQuery:NetErr()
   return .f.
 EndIf
 
-cQuery := " update recibo_cliente_cab "
-cQuery += " set anulado = 'S', "
-cQuery += " usuario_anula = "+str(nCajero)+", "
-cQuery += " fecha_anula = current_timestamp "
-cQuery +=	" where id_recibo = "+str(nRecibo)+" "
+cQuery := " update cfe_comprobante_cab "
+cQuery += " set importe = 0, "
+cQuery += " saldo = 0 where id_recibo = "+str(nRecibo)+" "
 oQuery:= oServer:Query( cQuery ) 
 If oQuery:NetErr() 
   MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
@@ -516,10 +526,10 @@ If oQuery:NetErr()
   return .f.
 EndIf
 
-cQuery := " update factura_cliente_cab f,recibo_cliente_det r "
-cQuery += " set saldo = saldo + r.importe "
-cQuery += " where r.numero_factura = f.numero_factura "
-cQuery += " and r.id_recibo = "+str(nRecibo)+" "
+cQuery := " update cfe_comprobante_cab f,cfe_referencias_det r "
+cQuery += " set saldo = saldo + r.importe_aplicado"
+cQuery += " where r.id_factura_ref = f.id_factura "
+cQuery += " and r.id_factura = "+str(nRecibo)+" "
 
 oQuery:= oServer:Query( cQuery ) 
 If oQuery:NetErr() 

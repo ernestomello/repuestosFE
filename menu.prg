@@ -56,12 +56,12 @@ Function main()
 
               ITEM 'Reimprimir Movimientos '	ACTION reImprimoMOvimientos()
 
-              SEPARATOR
+				SEPARATOR
 
               ITEM 'Anulación Movimientos'    ACTION anuloMovimientos()
-              
-              SEPARATOR
-              
+				SEPARATOR
+              ITEM 'Pendientes de Facturacion Electrónica'    ACTION emiteFacturaElectronica()
+				SEPARATOR
               ITEM 'Buscar documentos' ACTION buscaDocumentos()
               
     				END POPUP 
@@ -83,7 +83,7 @@ Function main()
       				ITEM 'Registro Contado'	ACTION factCliente(91,0,1)
       				ITEM 'Búsqueda Contados' ACTION busquedaGeneral("pc","","Presupuestos Contado",1)  
       				SEPARATOR
-      				ITEM 'Registro Crédito' ACTION factCliente(81,0,1)
+      				ITEM 'Registro Crédito' ACTION factCliente(81,0,2)
       				ITEM 'Estado de Cuenta' ACTION presupuestos()
       				
       			END POPUP
@@ -113,7 +113,7 @@ Function main()
       				ITEM 'Resumen de Compras' ACTION resumencompra()
 
       				SEPARATOR
-      				ITEM 'Envio de Estados de Cuenta' ACTION envioEstados()
+      				//ITEM 'Envio de Estados de Cuenta' ACTION envioEstados()
       				ITEM 'Estados de Cuenta' ACTION imprimeEstadosCuenta()
       				ITEM 'Saldos Anteriores' ACTION listoSaldosAnteriores()
       			END POPUP

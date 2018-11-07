@@ -103,18 +103,14 @@ for i= nLargoArray to 1 step -1
 next
 
 procedure imprimeEstadoCuentaCliente(nCliente,dFechaDesde,dFechaHasta,nPrevio)
-local oDocumentos, nSaldoAnterior, nSaldoActual
+local oDocumentos, nSaldoAnterior
 local dFechaSaldoAnt := dFechaDesde - 1
+local nSaldoActual := saldoEntreFechasCliente(nCliente,ctod("01/01/1980"),dFechaHasta)
 
-oDocumentos := documentosCliente(nCliente,dFechaDesde,dFechaHasta )
-
-if oDocumentos:lastRec() >	0 
-	
-	nSaldoActual := saldoEntreFechasCliente(nCliente,ctod("01/01/1980"),dFechaHasta)
-	
-		nSaldoAnterior := saldoEntreFechasCliente(nCliente,ctod("01/01/1980"),dFechaSaldoAnt)
-		imprimoEstadoCuenta(nCliente,oDocumentos,nSaldoAnterior,dFechaSaldoAnt,nSaldoActual,dFechaHasta,nPrevio)
-	
+if nSaldoActual > 0
+	oDocumentos := documentosCliente(nCliente,dFechaDesde,dFechaHasta )
+	nSaldoAnterior := saldoEntreFechasCliente(nCliente,ctod("01/01/1980"),dFechaSaldoAnt)
+	imprimoEstadoCuenta(nCliente,oDocumentos,nSaldoAnterior,dFechaSaldoAnt,nSaldoActual,dFechaHasta,nPrevio)
 endif
 
 

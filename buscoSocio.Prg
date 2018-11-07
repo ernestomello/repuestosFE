@@ -44,12 +44,20 @@ local cFechaAnular:= 	PARAMETROini("FECHANULAR","C")
           cQuery += " where f.tipoCFE = d.id_cfe "         
           cQuery += " and date(f.fecha) = "+cFechaAnular+" "        
           cQuery += " order by 1 desc  "
+		  
+		case vpc == 'fe'
+          conveniopagocobrador.frame_1.caption := 'Documentos sin FE'
+          cQuery := " select f.id_factura,concat(d.descripcion,' ',f.serieCFE,'-',f.numeroCFE),concat(f.importe),date_format(f.fecha,'%d/%m/%Y') "
+          cQuery += " from cfe_comprobante_cab f,cfe_tipos d"
+          cQuery += " where f.tipoCFE = d.id_cfe  and f.tipoCFE in (101,102,111,112) "         
+          cQuery += " and date(f.fecha) >= '20181101'  and isnull(cfe_codigo_seguridad)"        
+          cQuery += " order by 1 desc  "
 		 case vpc == 'n'
           conveniopagocobrador.frame_1.caption := 'Facturas'
           cQuery := " select f.id_factura,concat(d.descripcion,' ',f.serieCFE,'-',f.numeroCFE),concat(f.importe),date_format(f.fecha,'%d/%m/%Y') "
           cQuery += " from cfe_comprobante_cab f,cfe_tipos d"
           cQuery += " where f.tipoCFE = d.id_cfe "         
-          cQuery += " order by 1 desc  limit 200" 
+          cQuery += " order by 1 desc  limit 100" 
 		 
         case vpc == 'm'
           conveniopagocobrador.frame_1.caption := 'Marcas'
@@ -122,7 +130,7 @@ cNombre := iif(len(alltrim(conveniopagocobrador.text_1.value)) = 0, '"%"',' "'+A
 		  cQuery := " select f.id_factura,concat(d.descripcion,' ',f.serieCFE,'-',f.numeroCFE),concat(f.importe),date_format(f.fecha,'%d/%m/%Y') "
           cQuery += " from cfe_comprobante_cab f,cfe_tipos d"
           cQuery += " where f.tipoCFE = d.id_cfe "         
-          cQuery += " and date(f.fecha) = "+cFechaAnular+" "        
+          // cQuery += " and date(f.fecha) = "+cFechaAnular+" "        
 			do case 
 				case filtro = 1
 				cQuery += " and  f.id_factura LIKE "+cNombre+" "
@@ -134,7 +142,13 @@ cNombre := iif(len(alltrim(conveniopagocobrador.text_1.value)) = 0, '"%"',' "'+A
           
 		  cQuery += " order by "+str(orden)+" desc  limit 100"
 		  
-		  
+		  case vpc == 'fe'
+          conveniopagocobrador.frame_1.caption := 'Documentos sin FE'
+          cQuery := " select f.id_factura,concat(d.descripcion,' ',f.serieCFE,'-',f.numeroCFE),concat(f.importe),date_format(f.fecha,'%d/%m/%Y') "
+          cQuery += " from cfe_comprobante_cab f,cfe_tipos d"
+          cQuery += " where f.tipoCFE = d.id_cfe  and f.tipoCFE in (101,102,111,112)"         
+          cQuery += " and date(f.fecha) >= '20181101' and isnull(cfe_codigo_seguridad) "        
+          cQuery += " order by 1 desc  "
 		  case vpc == 'n'
           conveniopagocobrador.frame_1.caption := 'Facturas'
 		  cQuery := " select f.id_factura,concat(d.descripcion,' ',f.serieCFE,'-',f.numeroCFE),concat(f.importe),date_format(f.fecha,'%d/%m/%Y') "
