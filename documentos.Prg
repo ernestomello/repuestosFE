@@ -253,13 +253,16 @@ WAIT CLEAR
 function imprimoMovimiento(nFactura,copia,cRut,cNombre,cDireccion)
 local nTipoDocumento := tipoDocumento(nFactura)
 if esFacturaElectronica
-	if nTipoDocumento = 81 .or. nTipoDocumento = 91 .or. nTipoDocumento = 98
-		if msgYesNo("Imprime el documento?",,.t.)
+	do case
+		case nTipoDocumento = 98
 			imprimoEnLaser(nFactura,copia,cRut,cNombre,cDireccion)
-		endif
-	else
-		imprimoPDF(nFactura)
-	endif
+		case nTipoDocumento = 81 .or. nTipoDocumento = 91 
+			if msgYesNo("Imprime el documento?",,.t.)
+				imprimoEnLaser(nFactura,copia,cRut,cNombre,cDireccion)
+			endif
+		case nTipoDocumento = 101 .or. nTipoDocumento = 111 .or. nTipoDocumento = 102 .or. nTipoDocumento = 112
+			imprimoPDF(nFactura)
+	end case
 else
 	if nTipoDocumento = 81 .or. nTipoDocumento = 91 
 		if msgYesNo("Imprime el documento?",,.t.)
@@ -275,7 +278,13 @@ return .t.
 
 function imprimoPDF(nFactura)
 local oCabezal :=facturaClienteCabezal(nFactura)
-local nCantCopias := iif(oCabezal:getRow(1):fieldGet(8) = 1,1,2)
+local nCantCopias := 1
+
+if (oCabezal:getRow(1):fieldGet(8) = 2 )
+	if (oCabezal:getRow(1):fieldGet(4) = 101 .or. oCabezal:getRow(1):fieldGet(4) = 111 )
+		nCantCopias := 2
+	endif
+endif
 
 xml:='<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/" xmlns:sic="http://schemas.datacontract.org/2004/07/SICFEContract">'+chr(13)
 xml+="   <soapenv:Header/>"+chr(13)
@@ -461,6 +470,7 @@ local cNombreImpreso, cRutImpreso,cDescripcion
 local nLineaComienzoDetalle := PARAMETROini("LineaInicioDetalle","N")
 local nIvaBasico := PARAMETROini("IVA","N")
 local cTipoPapel := PARAMETROini("FEHOJAWS","C")
+local cTipoPapelRec := PARAMETROini("FEHOJARE","C")
 local nLineaA5 := 0
 local nTipoDocumento :=tipoDocumento(nFactura)
 local nCantidaCopias := cantidadCopias(nTipoDocumento)
@@ -496,7 +506,7 @@ endif
 	cDescripcion := alltrim(oCabezal:GetRow(1):fieldGet(5))
 
 // puerto := alltrim(puertoDocumento(oCabezal:GetRow(1):fieldGet(4)))
-if cTipoPapel == "A5"
+if cTipoPapelRec == "A5"
 	SELECT PRINTER  DEFAULT  PAPERSIZE PRINTER_PAPER_A5 ORIENTATION PRINTER_ORIENT_LANDSCAPE 
 else
 	SELECT PRINTER  DEFAULT  PAPERSIZE PRINTER_PAPER_A4 ORIENTATION PRINTER_ORIENT_PORTRAIT 

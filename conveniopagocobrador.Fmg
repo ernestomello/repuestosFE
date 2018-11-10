@@ -41,8 +41,8 @@ DEFINE WINDOW TEMPLATE AT 146 , 363 WIDTH 531 HEIGHT 453 VIRTUAL WIDTH Nil VIRTU
         HEIGHT 290
         ITEMS nil
         VALUE Nil
-        WIDTHS { 80, 120,100,120}
-        HEADERS {'id', 'Documento','Importe','Fecha'}
+        WIDTHS { 80, 150,100,120}
+        HEADERS {'Nro.Referencia', 'Nro.Documento','Importe','Fecha Emisión'}
         FONTNAME "Arial"
         FONTSIZE 9
         TOOLTIP ""
@@ -159,7 +159,7 @@ DEFINE WINDOW TEMPLATE AT 146 , 363 WIDTH 531 HEIGHT 453 VIRTUAL WIDTH Nil VIRTU
         COL    80
         WIDTH  375
         HEIGHT 28
-        OPTIONS { 'Columna 1','Columna 2', 'Columna 3'}
+        OPTIONS { 'Nro. Referencia.','Nro Documento', 'Fecha Emision'}
         VALUE 1
         FONTNAME "Arial"
         FONTSIZE 9

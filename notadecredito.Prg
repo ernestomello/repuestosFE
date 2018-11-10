@@ -5,23 +5,30 @@ local nTipoDoc:= tipoDocumento(nFactura)
 local cTipoDocumento := descripcionDocumento(nTipoDoc)
 if cajaAbierta()
 if !IsWindowActive(notaCredito)
-	if ( nTipoDoc = 101 .or. nTipoDoc = 111) 
+	do case
+	case  ( nTipoDoc = 101 .or. nTipoDoc = 111) 
 		if !facturaSinDevolucion(nFactura)
 			msginfo(cTipoDocumento+" con Devolucion")
-			return
+			return .f.
 		endif
 		if !facturaSinRecibos(nFactura)
 			msginfo(cTipoDocumento+" Con Recibos")
-			return
+			return .f.
 		endif
-		load window notaCredito
-		notaCredito.text_6.value := nFactura
-		rellenoFacturaDevolucion(nFactura)
-		notaCredito.center
-		notaCredito.activate
-	else
-		msgInfo("No es una eFactura o eTicket")
-	endif
+		
+	case ( nTipoDoc = 102 .or. nTipoDoc = 112)
+		
+	otherwise
+		msgInfo("No es posible Hacer la Devolucion")
+		return .f.
+	end case
+	
+	load window notaCredito
+	notaCredito.text_6.value := nFactura
+	rellenoFacturaDevolucion(nFactura)
+	notaCredito.center
+	notaCredito.activate
+	
 endif
 else
 	msgInfo("Caja Cerrada !!!")
@@ -58,7 +65,7 @@ notaCredito.text_3.value := nTotImporte
 
 procedure guardarDevolucion()
 local nCliente:= notaCredito.text_1.value 
-local cTipoDocumento := iif( tipoDocumento(notaCredito.text_6.value) = 101 , 102 , 112 )
+local nTipoDoc := tipoDocumento(notaCredito.text_6.value)
 local dFechaFactura:= notaCredito.datePicker_1.value
 local nTotalFactura:= notaCredito.text_3.value
 local cDescripcion:= notaCredito.text_4.value
@@ -67,6 +74,17 @@ local nformaPago := notaCredito.text_8.value
 local nVendedor := notacredito.text_7.value
 local nCaja := cajaId()
 local cAdenda := ""
+
+do case 
+case nTipoDoc = 101
+	cTipoDocumento := 102
+case nTipoDoc = 111
+	cTipoDocumento := 112
+case nTipoDoc = 102
+	cTipoDocumento := 103
+case nTipoDoc = 112
+	cTipoDocumento := 113
+end case 
 
 if !controloDevolucion()
 	return .f.

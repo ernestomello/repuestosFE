@@ -47,6 +47,9 @@ if nSocioGlobal != 0
 					endIf
 				case nTipoDoc =101 .or.nTipoDoc = 111 
 					notaCreditoCliente(nSocioGlobal,nCajero)  
+				
+				case nTipoDoc =102 .or.nTipoDoc = 112 
+					notaCreditoCliente(nSocioGlobal,nCajero)  
 				// else
 					// anularDevolucion(documentogen.text_6.value,nCajero)
 				// endIf
