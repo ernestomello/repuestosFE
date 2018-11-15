@@ -45,14 +45,8 @@ if nSocioGlobal != 0
 					else
 						msgInfo('Documento No.'+str(nSocioGlobal)+' Anulado')
 					endIf
-				case nTipoDoc =101 .or.nTipoDoc = 111 
-					notaCreditoCliente(nSocioGlobal,nCajero)  
-				
-				case nTipoDoc =102 .or.nTipoDoc = 112 
-					notaCreditoCliente(nSocioGlobal,nCajero)  
-				// else
-					// anularDevolucion(documentogen.text_6.value,nCajero)
-				// endIf
+				case nTipoDoc =101 .or.nTipoDoc = 111 .or.  nTipoDoc =102 .or.nTipoDoc = 112 
+					notaCreditoCliente(nSocioGlobal,nCajero)  				
 			end case
 		else
 					msginfo("Usuario no autorizado")

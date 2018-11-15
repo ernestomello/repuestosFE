@@ -27,7 +27,7 @@ pArchivo := fcreate(cArchivo,0)
 if !linea1(pArchivo,oIdMov)
 	return .f.
 endif
-if nTipoCFE = 101 .or. nTipoCFE = 102 
+if nTipoCFE = 101 .or. nTipoCFE = 102 .or. nTipoCFE = 103
 fwrite(parchivo,"<nsAd:eTck>"+chr(13)+chr(10))
 else
 fwrite(parchivo,"<nsAd:eFact>"+chr(13)+chr(10))
@@ -78,7 +78,7 @@ fwrite(parchivo,"<nsAd:HNro>1</nsAd:HNro>"+chr(13)+chr(10))
 fwrite(parchivo,"<nsAd:FecVenc></nsAd:FecVenc>"+chr(13)+chr(10))
 fwrite(parchivo,"</nsAd:CAEData>"+chr(13)+chr(10))
 
-if nTipoCFE = 101 .or. nTipoCFE = 102 
+if nTipoCFE = 101 .or. nTipoCFE = 102 .or. nTipoCFE = 103
 	fwrite(parchivo,"</nsAd:eTck>"+chr(13)+chr(10))
 else
 	fwrite(parchivo,"</nsAd:eFact>"+chr(13)+chr(10))
@@ -100,7 +100,9 @@ endif
 fwrite(parchivo,"</nsAdenda:CFE_Adenda>"+chr(13)+chr(10))
 fclose(parchivo)
 
-if file(cArchivo)
+if !file(cArchivo)
+	return .f.
+endif
 xArchivo := hb_memoRead(cArchivo)
 
 cxml :='<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:cxml="http://tempuri.org/">'+chr(13)+chr(10)
@@ -127,8 +129,11 @@ cxml +="</soapenv:Envelope>"+chr(13)+chr(10)
 
 
 hb_memowrit("aalgo.txt",cxml)
- cRespuesta := fHttpExecute(nSOAPSW,'SOAPAction:"http://tempuri.org/ISICFEEmisor/EnvioCFE"',cxml,.f.)
+cRespuesta := fHttpExecute(nSOAPSW,'SOAPAction:"http://tempuri.org/ISICFEEmisor/EnvioCFE"',cxml,.f.)
 
+if empty(cRespuesta)
+	return .f.
+endIf	
  // msgInfo (cValTag(cRespuesta,"a:Codigo"))
  hb_memowrit("soapanswer.xml",cRespuesta)
 
@@ -137,8 +142,7 @@ hb_memowrit("aalgo.txt",cxml)
 	aLineasL:= cValTag(cRespuesta,"a:Descripcion")+"|"+cValTag(cRespuesta,"a:Serie")+"|"+cValTag(cRespuesta,"a:Numero")+"|"+cValTag(cRespuesta,"a:Hash")
 	cCodigoRespuesta := val(cValTag(cRespuesta,"a:Codigo"))
 	//codigo = 0 sin errore, codigo 100009 que ya fue emitido, así que igual sirve para grabar los datos faltantes.
-	if cCodigoRespuesta = 0 .or. cCodigoRespuesta = 100009
-		
+	if cCodigoRespuesta = 0 .or. cCodigoRespuesta = 100009		
 		if !actualizaFE(nIdMov, aLineasL)
 			return .f.
 		endif
@@ -146,11 +150,7 @@ hb_memowrit("aalgo.txt",cxml)
 		msgInfo(" Devolucion de Errores"+chr(13)+hb_atokens(aLineasL,"|")[1])
 		return .f.
 	endif
-else
-	return .f.
-//run(cExeFile+" -print-to-default -exit-on-print "+cArchivo+".pdf")
 
-endif
 
 return .t.
 
@@ -348,9 +348,9 @@ local nLineas := 0
 local nGlobal := refGlobal(nIdMov)
 // msgInfo("Referencia Global: "+nGlobal)
 
-if nTipoCFE = 102 .or. nTipoCFE = 112
-if nGlobal == "1" 
-		oDetalle := oDetalleGlobalDevolucion(nIdMov)
+if nTipoCFE = 102 .or. nTipoCFE = 112 .or.  nTipoCFE = 103 .or. nTipoCFE = 113
+	if nGlobal == "1" 
+		oDetalle := oDetalleGlobalDevolucion(nIdMov,nTipoCFE)
 	else
 		oDetalle := oDetalleFacturaDevolucion(nIdMov)
 	endif
@@ -410,9 +410,9 @@ local nGlobal := refGlobal(nIdMov)
 local j
 // msgInfo("Referencia Global: "+nGlobal)
 	// " select d.item,d.codigo_barra, d.cantidad,d.precio_unitario,d.cfe_ind_fact,d.descripcion,ca.tipoCFE "
-if nTipoCFE = 102 .or. nTipoCFE = 112
+if nTipoCFE = 102 .or. nTipoCFE = 112 .or.  nTipoCFE = 103 .or. nTipoCFE = 113
 	if nGlobal == "1" 
-		oDetalle := oDetalleGlobalDevolucion(nIdMov)
+		oDetalle := oDetalleGlobalDevolucion(nIdMov,nTipoCFE)
 	else
 		oDetalle := oDetalleFacturaDevolucion(nIdMov)
 	endif
@@ -559,10 +559,14 @@ cQuery := " select r.ind_global "
 cQuery += " from   cfe_referencias_det r"
 cQuery += " where  r.id_factura = "+str(nIdMov)+"  "
 oQuery := oServer:Query(cQuery )
-    If oQuery:NetErr()												
-      MsgInfo("SQL SELECT error: "+cQuery+"=" + oQuery:Error())
-    Endif
-return oQuery:getRow(1):fieldGet(1)
+If oQuery:NetErr()												
+  MsgInfo("SQL SELECT error: "+cQuery+"=" + oQuery:Error())
+Endif
+if oQuery:lastRec() > 0
+	return oQuery:getRow(1):fieldGet(1)
+else
+	return "0"
+endIf
 
 function oDetalleFacturaDevolucion(nIdMov)
 local oQuery
@@ -578,13 +582,16 @@ oQuery := oServer:Query(cQuery )
     Endif
 return oQuery
 
-function oDetalleGlobalDevolucion(nIdMov)
+function oDetalleGlobalDevolucion(nIdMov,nTipoDoc)
 local oQuery
 local cQuery
-
-cQuery := " select 1,'2', 1,r.importe_aplicado, 22,concat( 'Bonificacion en ',t.descripcion, ' ', r.serieCFE, '-',r.numeroCFE) "
-cQuery += " from  cfe_referencias_det r ,cfe_tipos t"
+local cDesc := iif(nTipoDoc = 112 .or. nTipoDoc = 102 , "Bonificacion en ","Afecta : ")
+// el cfe_ind_fact que se trae es aleatorio y no necesariamente es el indicado para la N/C - N/D que se quiere hacer...pues pueden haber
+// mas de un tipo de indice de facturación (IVA)
+cQuery := " select r.id_factura_ref,'2', 1,r.importe_aplicado, 22,concat( '"+cDesc+"',t.descripcion, ' ', r.serieCFE, '-',r.numeroCFE) "
+cQuery += " from  cfe_referencias_det r ,cfe_tipos t  "
 cQuery += " where  r.id_factura = "+str(nIdMov)+" and r.tipoCFE= t.id_cfe "
+// cQuery += " and c.id_factura = r.id_factura_ref"
 oQuery := oServer:Query(cQuery )
     If oQuery:NetErr()												
       MsgInfo("SQL SELECT error: "+cQuery+"=" + oQuery:Error())

@@ -9,7 +9,7 @@ local cTipoDoc := tipoDocumento(nDocumento)
 do case
 
 	// case cTipoDoc == 'F' .or. cTipoDoc == 'D' .or. cTipoDoc == 'C' .or. cTipoDoc == 'P' .or. cTipoDoc == 'Q'
-	case cTipoDoc == 101 .or. cTipoDoc == 111 .or. cTipoDoc == 91 .or. cTipoDoc == 81 .or. cTipoDoc == 102 .or. cTipoDoc == 112 
+	case cTipoDoc == 101 .or. cTipoDoc == 111 .or. cTipoDoc == 91 .or. cTipoDoc == 81 .or. cTipoDoc == 102 .or. cTipoDoc == 112 .or. cTipoDoc == 103 .or. cTipoDoc == 113
 		aLargos := {120,200,45,80,30,40,80 }
 		aTitulos := {'Codigo','Articulo','Cant.','Precio Unit.','Iva','Dto.','PrecioFinal'}
 		aControls := {{'TEXTBOX','CHARACTER'},{'TEXTBOX','CHARACTER'},{'TEXTBOX','NUMERIC','999.99'},{'TEXTBOX','NUMERIC','999,999.99'},{'TEXTBOX','NUMERIC','99'},{'TEXTBOX','NUMERIC','999'},{'TEXTBOX','NUMERIC','999,999,999.99'}}
@@ -48,6 +48,12 @@ do case
 	case cTipoDoc == 112
 		documentogen.title := "eFactura Nota de Crédito"
 		cargarFacturaCreditoCliente(nDocumento)
+	case cTipoDoc == 103
+		documentogen.title := "eTicket Nota de Débito"
+		cargarFacturaCreditoCliente(nDocumento)
+	case cTipoDoc == 113
+		documentogen.title := "eFactura Nota de Débito"
+		cargarFacturaCreditoCliente(nDocumento)
 	case cTipoDoc == 101
 		documentogen.title := "eTicket"
 		cargarFacturaCreditoCliente(nDocumento)
@@ -75,8 +81,8 @@ documentogen.label_1.value := ""
 for i = 1 to oDetalleFactura:lastrec()
 	oRow := oDetalleFactura:getRow(i)
 	
-	documentogen.grid_1.additem({ oRow:fieldGet(7),oRow:fieldGet(1),oRow:fieldGet(2),oRow:fieldGet(3),oRow:fieldGet(4),oRow:fieldGet(5),oRow:fieldGet(6)  })
-	nTotFactura += round(oRow:fieldGet(6) * (1 + oRow:fieldGet(4)/100),0)
+	documentogen.grid_1.additem({ oRow:fieldGet(2),oRow:fieldGet(6),oRow:fieldGet(3),oRow:fieldGet(4),oRow:fieldGet(5),oRow:fieldGet(7),oRow:fieldGet(8)  })
+	nTotFactura += round(oRow:fieldGet(8) * (1 + oRow:fieldGet(5)/100),0)
 next
 	documentogen.text_5.value := nTotFactura
 

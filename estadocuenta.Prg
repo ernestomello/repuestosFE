@@ -75,7 +75,7 @@ estadoCuenta.text_3.value := "Saldo al "+dtoc(estadoCuenta.datePicker_2.value)+"
 
 
 for i = 1 to oDocumentos:lastrec()
-	nDebe :=  iif(oDocumentos:getrow(i):fieldget(5) = 101 .or. oDocumentos:getrow(i):fieldget(5) = 111 ,oDocumentos:getrow(i):fieldget(4),0 )
+	nDebe :=  iif(oDocumentos:getrow(i):fieldget(5) = 101 .or. oDocumentos:getrow(i):fieldget(5) = 111 .or. oDocumentos:getrow(i):fieldget(5) = 113 .or. oDocumentos:getrow(i):fieldget(5) = 103  ,oDocumentos:getrow(i):fieldget(4),0 )
 	nHaber := iif(oDocumentos:getrow(i):fieldget(5) = 102 .or. oDocumentos:getrow(i):fieldget(5) = 112 .or. oDocumentos:getrow(i):fieldget(5) = 98,oDocumentos:getrow(i):fieldget(4),0 )
 	nSaldoAnterior := nSaldoAnterior + nDebe - nHaber
 	if oDocumentos:getrow(i):fieldget(6) != 0

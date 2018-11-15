@@ -198,7 +198,7 @@ endIf
 			if reciboCliente.grid_1.cell(i,8) = 'SI' .and. reciboCliente.grid_1.cell(i,5)!= 0
 				nDocumento := reciboCliente.grid_1.cell(i,1)
 				// if !guardoDetallereciboCliente(nNumeroR, reciboCliente.grid_1.cell(i,1),reciboCliente.grid_1.cell(i,5))
-				if !guardoRelacion( reciboCliente.grid_1.cell(i,1),nNumeroR,reciboCliente.grid_1.cell(i,5),1)
+				if !guardoRelacion( reciboCliente.grid_1.cell(i,1),nNumeroR,reciboCliente.grid_1.cell(i,5),"1")
 					// guardoRelacion(nFactura, nNumero)
 					noTran()
 					WAIT CLEAR
@@ -242,7 +242,7 @@ endIf
 		for i = 1 to reciboCliente.grid_1.itemcount
 			if reciboCliente.grid_1.cell(i,8) = 'SI' .and. reciboCliente.grid_1.cell(i,6)!= 0
 				// if !guardoDetalleNotaCredito(nNumeroN,reciboCliente.grid_1.cell(i,1),reciboCliente.grid_1.cell(i,6))
-				if !guardoRelacion( reciboCliente.grid_1.cell(i,1),nNumeroN,reciboCliente.grid_1.cell(i,6),1)	
+				if !guardoRelacion( reciboCliente.grid_1.cell(i,1),nNumeroN,reciboCliente.grid_1.cell(i,6),"1")	
 					noTran()
 					WAIT CLEAR
 					msgInfo("No se pudo Guardar el detalle de NC. Reintente!!!")

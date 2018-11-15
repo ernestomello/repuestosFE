@@ -42,7 +42,7 @@ local cFechaAnular:= 	PARAMETROini("FECHANULAR","C")
           cQuery := " select f.id_factura,concat(d.descripcion,' ',f.serieCFE,'-',f.numeroCFE),concat(f.importe),date_format(f.fecha,'%d/%m/%Y') "
           cQuery += " from cfe_comprobante_cab f,cfe_tipos d"
           cQuery += " where f.tipoCFE = d.id_cfe "         
-          cQuery += " and f.tipoCFE in (101,102,111,112,98)"         
+          cQuery += " and f.tipoCFE in (101,102,103,111,112,113,98)"         
           cQuery += " and date(f.fecha) = "+cFechaAnular+" "        
           cQuery += " order by 1 desc  "
 		  

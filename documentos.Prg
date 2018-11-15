@@ -101,8 +101,8 @@ documento.label_1.value := str(nDocumento)+" - "+alltrim(nombreCliente(clienteFa
 
 for i = 1 to oDetalleFactura:lastrec()
 	oRow := oDetalleFactura:getRow(i)
-	documento.grid_1.additem({ oRow:fieldGet(7),oRow:fieldGet(1),oRow:fieldGet(2),oRow:fieldGet(3),oRow:fieldGet(4),oRow:fieldGet(5),oRow:fieldGet(6)  })
-	nTotFactura += round(oRow:fieldGet(6) * (1 + oRow:fieldGet(4)/100),0)
+	documento.grid_1.additem({ oRow:fieldGet(2),oRow:fieldGet(2),oRow:fieldGet(3),oRow:fieldGet(4),oRow:fieldGet(5),oRow:fieldGet(7),oRow:fieldGet(8)  })
+	nTotFactura += round(oRow:fieldGet(8) * (1 + oRow:fieldGet(5)/100),0)
 next
 	documento.text_1.value := nTotFactura
 for i = 1 to oRecibos:lastrec()
@@ -220,7 +220,7 @@ if nSocioGlobal != 0
 	if esFacturaElectronica .and. cTipoDocumento != 81 .and. cTipoDocumento != 91
 	info_("Registrando Documento en DGI...")
 	comienzoTransaccion()
-	if cTipoDocumento = 102 .or. cTipoDocumento = 112
+	if cTipoDocumento = 102 .or. cTipoDocumento = 112 .or. cTipoDocumento = 103 .or. cTipoDocumento = 113
 		lAnula := .t.
 	else
 		lAnula := .f.
@@ -260,7 +260,7 @@ if esFacturaElectronica
 			if msgYesNo("Imprime el documento?",,.t.)
 				imprimoEnLaser(nFactura,copia,cRut,cNombre,cDireccion)
 			endif
-		case nTipoDocumento = 101 .or. nTipoDocumento = 111 .or. nTipoDocumento = 102 .or. nTipoDocumento = 112
+		case nTipoDocumento = 101 .or. nTipoDocumento = 111 .or. nTipoDocumento = 102 .or. nTipoDocumento = 112 .or. nTipoDocumento = 103 .or. nTipoDocumento = 113
 			imprimoPDF(nFactura)
 	end case
 else

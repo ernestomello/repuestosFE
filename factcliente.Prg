@@ -493,11 +493,10 @@ endif
 *************************************************
 
 function graboFactClienteCabezal(nNumero,nCaja,nCliente, nTipoDocumento,nImporte,dFechaFactura,cDescripcion,nVendedor,nFormaPago,cAdenda)
-local cQuery, oQuery,nSaldo
-if nTipoDocumento = 102 .or. nTipoDocumento = 112 .or. nTipoDocumento = 98
-	nSaldo := 0
-else
-	iif (nFormaPago = 2, nSaldo := nImporte, nSaldo := 0)
+local cQuery, oQuery,nSaldo:= 0
+
+if nTipoDocumento = 101 .or. nTipoDocumento = 111 
+	nSaldo := nImporte
 endIf
 	
 	  
@@ -630,7 +629,7 @@ function detalleFacturaCliente(nFactura)
 local cQuery
 local oQuery
 
-cQuery := "select  a.descripcion,d.cantidad,d.precio_unitario,d.cfe_ind_fact,cast(d.descripcion as unsigned),d.importe,d.codigo_barra "
+cQuery := "select  d.id_factura,d.codigo_barra,d.cantidad,d.precio_unitario,d.cfe_ind_fact,a.descripcion,cast(d.descripcion as unsigned),d.importe "
 cQuery += " from  cfe_comprobante_det d, articulo a "
 cQuery += " where a.codigo_barra = d.codigo_barra "
 cQuery += " and d.id_factura = "+str(nFactura)+" "
@@ -647,6 +646,20 @@ local cQuery, oQuery
 
 cQuery := " update cfe_comprobante_cab set saldo = saldo - "+str(nImporte)+" "
 cQuery += " where id_factura = "+str(nFactura)+" "
+
+oQuery:= oServer:Query(cQuery)
+If oQuery:NetErr() 
+  MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
+  oQuery:=oServer:Query('ROLLBACK') 
+  return .f.
+else
+	return .t.
+endif
+function modificoSaldoNCCliente(nFactura,nImporte)
+local cQuery, oQuery
+
+cQuery := " update cfe_comprobante_cab set saldo = saldo + "+str(nImporte)+" "
+cQuery += " where id_factura = (select id_factura_ref from cfe_referencias_det where id_factura = "+str(nFactura)+" ) "
 
 oQuery:= oServer:Query(cQuery)
 If oQuery:NetErr() 
@@ -748,7 +761,7 @@ local cQuery,oQuery
 cQuery := " select "
 cQuery += " (SELECT ifnull(sum(importe),0) FROM cfe_comprobante_cab "
 cQuery += " where id_cliente = "+str(nCliente)+" "
-cQuery += " and tipoCFE in (101,111) "
+cQuery += " and tipoCFE in (101,111,103,113) "
 cQuery += " and forma_pago = 2 "
 cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' )"
 // cQuery += " and id_factura not in (Select id_factura_ref from cfe_referencias_det ) ) "
@@ -874,6 +887,26 @@ cQuery += " from cfe_referencias_det d, cfe_comprobante_cab c "
 cQuery += " where d.id_factura_ref = "+str(nFactura)+" "
 cQuery += " and c.id_factura = d.id_factura "
 cQuery += " and c.tipoCFE in (102,112)  "
+
+oQuery:= oServer:Query(cQuery)
+If oQuery:NetErr() 
+  MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
+endif
+
+if oQuery:lastrec() > 0
+	return .f.
+else
+	return .t.
+endIf
+
+function nCreditoSinDevolucion(nFactura)
+local oQuery, cQuery
+
+cQuery := " select c.id_factura "
+cQuery += " from cfe_referencias_det d, cfe_comprobante_cab c "
+cQuery += " where d.id_factura_ref = "+str(nFactura)+" "
+cQuery += " and c.id_factura = d.id_factura "
+cQuery += " and c.tipoCFE in (103,113)  "
 
 oQuery:= oServer:Query(cQuery)
 If oQuery:NetErr() 
