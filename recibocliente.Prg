@@ -288,6 +288,20 @@ WAIT CLEAR
 
 return .t.
 
+function verificaPorcentaje()
+
+if reciboCliente.text_4.value > 20
+	for i = 1 to reciboCliente.grid_1.itemcount      
+		//msgInfo(reciboCliente.grid_1.cell(i,2))
+		if ctod(reciboCliente.grid_1.cell(i,2)) >= ctod("01/11/2018") .and. reciboCliente.grid_1.cell(i,8) = 'SI'
+			msgInfo("El descuento es mayor al Autorizado")
+			reciboCliente.text_4.value := 0
+			reciboCliente.text_4.setfocus 
+		endIf
+	next
+endif
+
+
 function controloReciboCliente()
 
 for i = 1 to reciboCliente.grid_1.itemcount           

@@ -361,16 +361,16 @@ nLineas := oDetalle:lastRec()
 for i = 1 to oDetalle:lastRec()
 	do case
 		case oDetalle:getRow(i):fieldGet(5) = 0
-			nMntNoGrv += round(oDetalle:getRow(i):fieldGet(4),0) * oDetalle:getRow(i):fieldGet(3)
-			nMntTotalNoGrv += round(oDetalle:getRow(i):fieldGet(4),0) * oDetalle:getRow(i):fieldGet(3)
+			nMntNoGrv += round(oDetalle:getRow(i):fieldGet(4) * oDetalle:getRow(i):fieldGet(3),0)
+			nMntTotalNoGrv += round(oDetalle:getRow(i):fieldGet(4) * oDetalle:getRow(i):fieldGet(3),0)
 		case oDetalle:getRow(i):fieldGet(5) = 10
 			// nMntIvaMinimo += round(oDetalle:getRow(i):fieldGet(4),0) * oDetalle:getRow(i):fieldGet(3)
 			// nIvaMinimo += round(oDetalle:getRow(i):fieldGet(4) * (oDetalle:getRow(i):fieldGet(5) / 100),0) * oDetalle:getRow(i):fieldGet(3)
-			nMntTotalMinimo += round(oDetalle:getRow(i):fieldGet(4) * iif( nGlobal == "1",1, (1+(oDetalle:getRow(i):fieldGet(5) / 100))),0) * oDetalle:getRow(i):fieldGet(3)
+			nMntTotalMinimo += round(oDetalle:getRow(i):fieldGet(4) * iif( nGlobal == "1",1, (1+(oDetalle:getRow(i):fieldGet(5) / 100))) * oDetalle:getRow(i):fieldGet(3),0)
 		case oDetalle:getRow(i):fieldGet(5) = 22
 			// nMntIvaBasico += round(oDetalle:getRow(i):fieldGet(4) * oDetalle:getRow(i):fieldGet(3),2)
 			// nIvaBasico +=  round(oDetalle:getRow(i):fieldGet(4)* (oDetalle:getRow(i):fieldGet(5) / 100),2) * oDetalle:getRow(i):fieldGet(3)
-			nMntTotalBasico += round(oDetalle:getRow(i):fieldGet(4) *  iif( nGlobal == "1",1, (1+(oDetalle:getRow(i):fieldGet(5) / 100))) * oDetalle:getRow(i):fieldGet(3),0)
+			nMntTotalBasico += round(oDetalle:getRow(i):fieldGet(4) * iif( nGlobal == "1",1, (1+(oDetalle:getRow(i):fieldGet(5) / 100))) * oDetalle:getRow(i):fieldGet(3),0)
 	endcase
 	
 next
@@ -476,7 +476,7 @@ local i
 		cLinea += "<nsAd:TpoDocRef>"+str(cTipoCFE)+"</nsAd:TpoDocRef>"+chr(13)+chr(10)
 		cLinea += "<nsAd:Serie>"+cSerie+"</nsAd:Serie>"+chr(13)+chr(10)
 		cLinea += "<nsAd:NroCFERef>"+str(cNumero)+"</nsAd:NroCFERef>"+chr(13)+chr(10)
-		iif(cIndGlobal == "1",cLinea += "<nsAd:RazonRef>Bonificacion Ref: "+str(nIdFacturaRef)+"</nsAd:RazonRef>"+chr(13)+chr(10),)
+		iif(cIndGlobal == "1",cLinea += "<nsAd:RazonRef>Afecta Ref: "+str(nIdFacturaRef)+"</nsAd:RazonRef>"+chr(13)+chr(10),)
 		cLinea += "<nsAd:FechaCFEref>"+substr(cFecha,1,4)+"-"+substr(cFecha,5,2)+"-"+substr(cFecha,7,2)+"</nsAd:FechaCFEref>"+chr(13)+chr(10)
 		cLinea += "</nsAd:Referencia>"+chr(13)+chr(10)
 	next

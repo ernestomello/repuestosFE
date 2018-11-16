@@ -101,7 +101,15 @@ return
 
 procedure cereoFormulario()
 
-cTipoDocumento := iif(factCliente.text_22.value = 91 .or. factCliente.text_22.value = 81 ,factCliente.text_22.value, factCliente.text_14.value)//ver el original para cambiarlo o no dependiendo si no es 81 o 91 
+do case 
+	case factCliente.text_22.value = 91 .or. factCliente.text_22.value = 81
+		cTipoDocumento := factCliente.text_22.value
+	case factCliente.text_22.value = 101 .or. factCliente.text_22.value = 111
+		iif(factCliente.text_21.value = 1,factCliente.text_14.value := 101 ,factCliente.text_14.value := 111) 
+		cTipoDocumento := factCliente.text_14.value
+end case
+
+// cTipoDocumento := iif(factCliente.text_22.value = 91 .or. factCliente.text_22.value = 81 ,factCliente.text_22.value, factCliente.text_14.value)//ver el original para cambiarlo o no dependiendo si no es 81 o 91 
 factCliente.text_1.value:= 0
 factCliente.text_2.value:= ''
 factCliente.text_3.value:=''
@@ -307,6 +315,11 @@ if len(factCliente.text_13.value)  < 4 .and. factCliente.text_21.value = 2
 	factCliente.text_13.SetFocus
 	return .f.
 endIf
+if factCliente.text_14.value = 111	.and. len(factCliente.text_4.value)= 0 .and. len(factCliente.text_4.value)= 0
+	msgBox("eFactura debe tener Nombre y Dirección")
+	factCliente.text_3.SetFocus
+	return .f.
+endif
 
 return .t.
 procedure buscoClientes(nCliente)
