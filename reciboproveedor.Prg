@@ -11,7 +11,7 @@ reciboProveedor.label_1.value := ""
 reciboProveedor.frame_6.caption := "Nro."+alltrim(reciboProveedor.title)
 reciboProveedor.frame_5.caption := "Importe "+alltrim(reciboProveedor.title)
 reciboProveedor.datePicker_2.value := date() - 60
-if cTipoDocumento != 'R'
+if cTipoDocumento != 98
 	reciboProveedor.text_9.visible := .f.
 	reciboProveedor.text_10.visible := .f.
 	reciboProveedor.text_11.visible := .f.
@@ -133,7 +133,7 @@ if !comienzoTransaccion()
 	return .f.
 endIf
 
-if reciboProveedor.text_6.value = 'R'
+if reciboProveedor.text_6.value = 98
 	guardarReciboProveedor(reciboProveedor.text_7.value,reciboProveedor.text_5.value,reciboProveedor.text_4.value,'R')
 	if reciboProveedor.text_11.value != 0
 		guardarReciboProveedor(reciboProveedor.text_9.value,reciboProveedor.text_10.value,reciboProveedor.text_11.value,'N')

@@ -9,13 +9,12 @@ procedure mantenimientoclientes(nCliente)
 //public socioNuevo
 
   Load Window clientes
-  if nCliente != 0
+	if nCliente != 0
 		rellenoDatosClientes(nCliente)
 	endIf
-
-  clientes.Center
-  clientes.Activate
- 
+	cambiarControl()
+	clientes.Center
+	clientes.Activate
 return
 
 procedure buscoCliente(nCliente)
@@ -65,6 +64,14 @@ clientes.text_7.value :=  ''
 clientes.text_13.value := 0
 clientes.check_1.value := .t.
 return
+
+function cambiarControl()
+
+if clientes.radioGroup_1.value = 2
+	clientes.label_10.value := "R.U.T: "
+else
+	clientes.label_10.value := "C.I: "
+endif
 
 
 procedure guardarCliente()
@@ -141,8 +148,17 @@ endIf
 
 if clientes.radioGroup_1.value = 1
 	If len(clientes.text_2.value) = 0
-	  msgInfo('Falta ingresar Nombre')
+	  msgInfo("Falta ingresar Nombre")
 	  return .f.
+	endIf
+	If len(clientes.text_9.value) = 0
+  	msgInfo("Falta ingresar Cédula ")
+  	return .f.
+	else
+		if !formatoCedula(clientes.text_9.value)
+			msgInfo("Número Cédula Incorrecto!!!")
+			return .f.
+		endif		
 	endIf
 endif
 
@@ -172,6 +188,37 @@ if ctaCteCliente(nCliente) = 0
 	return .f.
 else
 	return .t.
+endIf
+
+function formatoCedula(nCedula)
+local cControl := '2987634'
+local cCedula := alltrim(nCedula)
+local nCuenta := 0
+local nModulo, cCompara
+
+if at("AR",nCedula) != 0
+	return .t.
+endif
+
+if len(cCedula) == 7
+	cCedula := "0"+cCedula
+endif
+for i= 1 to len(cCedula)-1
+	nCuenta += val(substr(cCedula,i,1))* val(substr(cControl,i,1))
+next
+nModulo :=(nCuenta % 10)
+//msgInfo(str(10 - (nCuenta%10),1,0)+'--'+substr(cCedula,len(cCedula),1))
+
+if  nModulo != 0
+	cCompara := str(10 - nModulo,1,0)
+else
+	cCompara := str(0,1,0)
+endIf
+
+if  cCompara== substr(cCedula,len(cCedula),1)
+	return .t.
+else
+	return .f.
 endIf
 
 function formatoRut(nRut)

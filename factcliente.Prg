@@ -1,12 +1,14 @@
 #include <hmg.ch>
 
-procedure factCliente(cTipoDocumento,nNumero,nFormaPago)
+procedure factCliente(cTipoDocumento,cNumero,nFormaPago)
 if cajaAbierta()
 if !IsWindowActive(factCliente)
 	Load Window factCliente
 	
-	if nNumero != 0
-		rellenoFacturaCliente(nNumero)
+	if at(",",cNumero) = 0
+		rellenoFacturaCliente(val(cNumero))
+	else
+		rellenoFacturasVarias(cNumero)
 	endif
 	factCliente.label_14.fontcolor := {0,128,0}
 	factCliente.label_1.fontcolor := {0,128,0}
@@ -223,7 +225,7 @@ endif
 
 
 if !graboFactClienteCabezal(nNumero ,nCaja,nCliente, cTipoDocumento,;
-														nTotalFactura,dFechaFactura,cDescripcion,nVendedor,nFormaPago,cAdenda)
+					nTotalFactura,dFechaFactura,cDescripcion,nVendedor,nFormaPago,cAdenda)
 	noTran()
 	WAIT CLEAR
 	msgInfo('No se pudieron grabar los datos, REINTENTE!!!')
@@ -471,16 +473,41 @@ factCliente.text_13.value := descripcionFacturaCliente(nFactura)
 
 for i= 1 to oDetalle:lastRec()
 	factCliente.grid_1.addItem({oDetalle:getrow(i):fieldGet(3), ;
-															oDetalle:getrow(i):fieldGet(4), ; 
-															oDetalle:getrow(i):fieldGet(5), ; 
-															oDetalle:getrow(i):fieldGet(6), ; 
-															oDetalle:getrow(i):fieldGet(7), ;
-															oDetalle:getrow(i):fieldGet(8), ; 
-															oDetalle:getrow(i):fieldGet(9), ; 
-															oDetalle:getrow(i):fieldGet(10)})
+						oDetalle:getrow(i):fieldGet(4), ; 
+						oDetalle:getrow(i):fieldGet(5), ; 
+						oDetalle:getrow(i):fieldGet(6), ; 
+						oDetalle:getrow(i):fieldGet(7), ;
+						oDetalle:getrow(i):fieldGet(8), ; 
+						oDetalle:getrow(i):fieldGet(9), ; 
+						oDetalle:getrow(i):fieldGet(10)})
 	
 	//nTotalFactura += oDetalle:getrow(i):fieldGet(10)														
-									nTotalFactura += round(oDetalle:getrow(i):fieldGet(10) * (1 + oDetalle:getrow(i):fieldGet(8)/100),0)
+	nTotalFactura += round(oDetalle:getrow(i):fieldGet(10) * (1 + oDetalle:getrow(i):fieldGet(8)/100),0)
+next
+factCliente.text_5.value := nTotalFactura
+
+function rellenoFacturasVarias(aFacturas)
+// local oCabezal := facturaClienteCabezal(nFactura)
+local oDetalle := facturaClienteDetalleVarias(aFacturas)
+local nTotalFactura := 0
+
+factCliente.text_1.value := 0// oCabezal:getrow(1):fieldget(3)
+factCliente.datePicker_1.value := date() //oCabezal:getrow(1):fieldget(2)
+// rellenoDatosfactCliente(factCliente.text_1.value)
+// factCliente.text_13.value := descripcionFacturaCliente(nFactura)
+
+for i= 1 to oDetalle:lastRec()
+	factCliente.grid_1.addItem({oDetalle:getrow(i):fieldGet(3), ;
+							oDetalle:getrow(i):fieldGet(4), ; 
+							oDetalle:getrow(i):fieldGet(5), ; 
+							oDetalle:getrow(i):fieldGet(6), ; 
+							oDetalle:getrow(i):fieldGet(7), ;
+							oDetalle:getrow(i):fieldGet(8), ; 
+							oDetalle:getrow(i):fieldGet(9), ; 
+							oDetalle:getrow(i):fieldGet(10)})
+
+	//nTotalFactura += oDetalle:getrow(i):fieldGet(10)														
+	nTotalFactura += round(oDetalle:getrow(i):fieldGet(10) * (1 + oDetalle:getrow(i):fieldGet(8)/100),0)
 next
 factCliente.text_5.value := nTotalFactura
 
@@ -508,7 +535,7 @@ endif
 function graboFactClienteCabezal(nNumero,nCaja,nCliente, nTipoDocumento,nImporte,dFechaFactura,cDescripcion,nVendedor,nFormaPago,cAdenda)
 local cQuery, oQuery,nSaldo:= 0
 
-if nTipoDocumento = 101 .or. nTipoDocumento = 111 
+if nTipoDocumento = 101 .or. nTipoDocumento = 111 .or. nTipoDocumento = 81 .or. nTipoDocumento = 91
 	nSaldo := nImporte
 endIf
 	
@@ -580,6 +607,21 @@ If oQuery:NetErr()
 endif
 return oQuery
 
+function facturaClienteDetalleVarias(cFacturas)
+local cQuery, oQuery
+
+cQuery := " select d.id_factura,d.item, d.codigo_barra,a.descripcion, d.cantidad, "
+cQuery += " d.precio_unitario,a.fecha_precio, d.cfe_ind_fact, d.descripcion, d.importe "
+cQuery += " from cfe_comprobante_det d, articulo a "
+cQuery += " where d.id_factura in ("+cFacturas+") "
+cQuery += " and a.codigo_barra = d.codigo_barra "
+cQuery += " order by 2"
+oQuery:= oServer:Query(cQuery)
+
+If oQuery:NetErr() 
+  MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
+endif
+return oQuery
 
 
 *****************************************************
@@ -827,14 +869,14 @@ If oQuery:NetErr()
 endif
 return oQuery:getRow(1):fieldGet(1)
 
-function presupuestosCliente(nCliente,dFechaDesde,dFechaHasta)
+function presupuestosCliente(nCliente,dFechaDesde,dFechaHasta,nTipoCFE)
 local cQuery, oQuery
 
 cQuery := " select id_factura, fecha,'Presupuesto',importe,0,saldo "
 cQuery += " from cfe_comprobante_cab "
 cQuery += " where id_cliente = "+str(nCliente)+" "
 cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
-cQuery += " and tipoCFE = '81' "
+cQuery += " and tipoCFE = "+str(nTipoCFE)+" "
 cQuery += " order by 2  "
 
 oQuery:= oServer:Query(cQuery)

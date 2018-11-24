@@ -69,9 +69,9 @@ Function main()
       			POPUP 'Proveedores' 
                 
                ITEM 'Compras Crédito'  ACTION factProveedor()
-               ITEM 'Recibos '         ACTION reciboProveedor('R')
-               ITEM 'Bonificaciones '  ACTION reciboProveedor('N')
-               ITEM 'Devoluciones '    ACTION reciboProveedor('D')
+               ITEM 'Recibos '         ACTION reciboProveedor(98)
+               ITEM 'Bonificaciones '  ACTION reciboProveedor(112)
+               ITEM 'Devoluciones '    ACTION reciboProveedor(112)
                SEPARATOR
 
                ITEM 'Estado de Cuenta' ACTION estadoCuentaProveedores()
@@ -81,10 +81,10 @@ Function main()
       			
       			POPUP 'Presupuestos'
       				ITEM 'Registro Contado'	ACTION factCliente(91,0,1)
-      				ITEM 'Búsqueda Contados' ACTION busquedaGeneral("pc","","Presupuestos Contado",1)  
+      				ITEM 'Búsqueda Contados' ACTION presupuestos("Contado")//busquedaGeneral("pc","","Presupuestos Contado",1)  
       				SEPARATOR
       				ITEM 'Registro Crédito' ACTION factCliente(81,0,2)
-      				ITEM 'Estado de Cuenta' ACTION presupuestos()
+      				ITEM 'Estado de Cuenta' ACTION presupuestos("Credito")
       				
       			END POPUP
       			

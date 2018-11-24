@@ -76,9 +76,9 @@ local cFechaAnular:= 	PARAMETROini("FECHANULAR","C")
 		
 		case vpc =='pc'
 		  conveniopagocobrador.frame_1.caption := titulo
-		  cQuery := " select f.id_factura,f.descripcion,date_format(f.fecha,'%d/%m/%Y'),'.' "
+		  cQuery := " select f.id_factura,concat(d.descripcion,' ',f.serieCFE,'-',f.numeroCFE),date_format(f.fecha,'%d/%m/%Y'),'.' "
 		  cQuery += " from cfe_comprobante_cab f,cfe_tipos d "
-		  cQuery += " where  where f.tipoCFE = d.id_cfe "
+		  cQuery += " where f.tipoCFE = d.id_cfe "
 		  cQuery += " and f.tipoCFE = 91 "
 	end case
   
@@ -109,7 +109,7 @@ local cFechaAnular:= PARAMETROini("FECHANULAR","C")
 //MsgInfo(str(nOrden))
 do case
 	case filtro = 1
-		If len(conveniopagocobrador.text_1.value) < 3
+		If len(conveniopagocobrador.text_1.value) < 2
 			return .f.
 		endif		
 	case filtro = 2
@@ -123,7 +123,7 @@ do case
 end case
 
 conveniopagocobrador.grid_1.deleteAllItems
-cNombre := iif(len(alltrim(conveniopagocobrador.text_1.value)) = 0, '"%"',' "'+AllTrim(conveniopagocobrador.text_1.value)+'%"' )
+cNombre := iif(len(alltrim(conveniopagocobrador.text_1.value)) = 0, '"%"','"'+AllTrim(conveniopagocobrador.text_1.value)+'%"' )
  do case 
         case vpc == 'cc'
           conveniopagocobrador.frame_1.caption := 'Clientes'
@@ -203,7 +203,7 @@ cNombre := iif(len(alltrim(conveniopagocobrador.text_1.value)) = 0, '"%"',' "'+A
           cQuery += " order by "+str(orden)+" limit 100"
 		 case vpc =='pc'
 		  conveniopagocobrador.frame_1.caption := "Presupuestos Contado"
-		  cQuery := " select f.id_factura,f.descripcion,date_format(f.fecha,'%d/%m/%Y') ,'.'"
+		  cQuery := " select f.id_factura,concat(d.descripcion,' ',f.serieCFE,'-',f.numeroCFE),date_format(f.fecha,'%d/%m/%Y') ,'.'"
 		    cQuery += " from cfe_comprobante_cab f,cfe_tipos d"
           cQuery += " where f.tipoCFE = d.id_cfe "         
 		  cQuery += " and  f.descripcion LIKE "+cNombre+" "
