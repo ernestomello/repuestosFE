@@ -900,7 +900,7 @@ DEFINE WINDOW TEMPLATE AT 150 , 310 WIDTH 924 HEIGHT 560 VIRTUAL WIDTH Nil VIRTU
         FONTITALIC .F.
         FONTUNDERLINE .F.
         FONTSTRIKEOUT .F.
-        ONENTER Nil
+        ONENTER factCliente.button_2.setFocus
         HELPID Nil
         TABSTOP .T.
         VISIBLE .T.

@@ -3,6 +3,7 @@
         
 		
 Function main() 
+	Local aDoc := {}
 	Public	cNroVersionAplicacion	:=	"3." + __DATE__ +"."+SUBST(__TIME__,1,2)+SUBST(__TIME__,4,2)
 	Public	cNombreTerminal		:=	GetEnv( "COMPUTERNAME" ) 
 	Public	cDirInicioAplicacion	:=	"C:\dm\nuevo" //PARAMETROini("DIR_APLICACION","C") //
@@ -27,7 +28,7 @@ Function main()
 	Public  cDepEmisior := PARAMETROini("FEDEPEMISOR","C")
 	Public  cHojaWSFE := PARAMETROini("FEHOJAWS","C")
 	Public  nSOAPSw := PARAMETROini("FESOAPWS","C")
-	 
+	
 	
 	SeteoAmbiente() 
 	  
@@ -45,7 +46,7 @@ Function main()
     		ON RELEASE MySQL_Disconnect()
     		DEFINE MAIN MENU 
     				POPUP 'Contado'
-    					ITEM 'Ventas Contado'  	ACTION factCliente(101,0,1)
+    					ITEM 'Ventas Contado'  	ACTION factCliente(101,aDoc,1)
     					
     					SEPARATOR
     					
@@ -80,10 +81,10 @@ Function main()
       			END POPUP
       			
       			POPUP 'Presupuestos'
-      				ITEM 'Registro Contado'	ACTION factCliente(91,0,1)
+      				ITEM 'Registro Contado'	ACTION factCliente(91,aDoc,1)
       				ITEM 'Búsqueda Contados' ACTION presupuestos("Contado")//busquedaGeneral("pc","","Presupuestos Contado",1)  
       				SEPARATOR
-      				ITEM 'Registro Crédito' ACTION factCliente(81,0,2)
+      				ITEM 'Registro Crédito' ACTION factCliente(81,aDoc,2)
       				ITEM 'Estado de Cuenta' ACTION presupuestos("Credito")
       				
       			END POPUP
@@ -126,7 +127,7 @@ Function main()
 //      				ITEM 'Migrar Presupuestos' ACTION  migraPresupuesto()
 					POPUP 'Cta. Cte' 
                 
-               	ITEM 'Ventas Credito'  	ACTION factCliente(101,0,2)
+               	ITEM 'Ventas Credito'  	ACTION factCliente(101,aDoc,2)
 
                 SEPARATOR
                 

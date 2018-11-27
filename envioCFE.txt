@@ -7,7 +7,7 @@
 <nsAd:TipoCFE>101</nsAd:TipoCFE>
 <nsAd:Serie></nsAd:Serie>
 <nsAd:Nro></nsAd:Nro>
-<nsAd:FchEmis>2018-11-24</nsAd:FchEmis>
+<nsAd:FchEmis>2018-11-27</nsAd:FchEmis>
 <nsAd:MntBruto>1</nsAd:MntBruto>
 <nsAd:FmaPago>1</nsAd:FmaPago>
 </nsAd:IdDoc>
@@ -63,4 +63,4 @@
 </nsAd:CAEData>
 </nsAd:eTck>
 </nsAd:CFE>
-<nsAdenda:Adenda>                                                                                                                                                                                                                                                               &lt;br&gt;Ref: 326435</nsAdenda:Adenda></nsAdenda:CFE_Adenda>
+<nsAdenda:Adenda>                                                                                                                                                                                                                                                               &lt;br&gt;Ref: 326437</nsAdenda:Adenda></nsAdenda:CFE_Adenda>

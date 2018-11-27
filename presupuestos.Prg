@@ -161,31 +161,32 @@ next
 
 
 procedure facturodocumento(xFactura,cTipo)
-local nImporte 
-local cFactura :=""
+local aImporte := {}
+local aFactura := {}
 
 for i = 1 to len(xFactura)
-	cFactura += str(presupuestos.grid_1.cell(xFactura[i],1))
-	if i != len(xFactura)
-		cFactura += ","
-	endIf
+	aadd(aFactura,presupuestos.grid_1.cell(xFactura[i],1))
+	aadd(aImporte,presupuestos.grid_1.cell(xFactura[i],4))
+	// if i != len(xFactura)
+		// cFactura += ","
+	// endIf
 next
-msgInfo(cFactura)
+msgInfo(aFactura)
 // if presupuestos.grid_1.cell(presupuestos.grid_1.value,5) != 0
 	if msgYesNo("Quiere Facturar el Presupuesto","ATENCIÓN",.t.)
 		if ctipo == 101
-			factCliente(101 ,cFactura, 1)
+			factCliente(101 ,aFactura, 1)
 		else
-			factCliente(111 ,cFactura, 1)
+			factCliente(111 ,aFactura, 1)
 		endif
 		if msgYesNo("Marca como Cancelado el Presupuesto","ATENCIÓN",.T.)
-			if at(",",cFactura) = 0
-				modificoSaldoFacturaCliente(val(cFactura),nImporte)
-			else
+			for i = 1 to len(aFactura)
+				modificoSaldoFacturaCliente(aFactura[i],aImporte[i])
+			// else
 				//##ver como saber cuantos números de factura vienen en la cadena de texto
-				rellenoFacturasVarias(cNumero)
-			endif
-			
+				// rellenoFacturasVarias(cNumero)
+			// endif
+			next
 		endIf
 	endIf
 // else

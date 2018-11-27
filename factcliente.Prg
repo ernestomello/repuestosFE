@@ -1,15 +1,23 @@
 #include <hmg.ch>
 
-procedure factCliente(cTipoDocumento,cNumero,nFormaPago)
+procedure factCliente(cTipoDocumento,aNumero,nFormaPago)
+local cFacturas :=""
 if cajaAbierta()
 if !IsWindowActive(factCliente)
 	Load Window factCliente
 	
-	if at(",",cNumero) = 0
-		rellenoFacturaCliente(val(cNumero))
-	else
-		rellenoFacturasVarias(cNumero)
-	endif
+	do case
+		case len(aNumero) = 1
+		rellenoFacturaCliente(aNumero[1])
+		case len(aNumero) > 1
+		for i = 1 to len(aNumero)
+			cFacturas += str(aNumero[i])
+			if i != len(aNumero)
+				cFacturas += ","
+			endIf
+		next
+		rellenoFacturasVarias(cFacturas)
+	end case 
 	factCliente.label_14.fontcolor := {0,128,0}
 	factCliente.label_1.fontcolor := {0,128,0}
 	factCliente.text_8.value:= 1
@@ -55,7 +63,7 @@ local nPrecioUnitario := 0
   	msginfo('Supera las '+str(nLinea)+' líneas '+chr(13)+'Guarde el Documento')
   	Return
   endif
-	if msgYesNo("Ingresa la Línea?","ATENCIÓN",.t.)
+	if msgYesNo("Ingresa la Línea?","ATENCIÓN",.f.)
 	nPrecioUnitario:= round(factCliente.text_9.value - (factCliente.text_9.value * factCliente.text_11.value /100),2)
     factCliente.grid_1.addItem({factCliente.text_6.value,factCliente.text_7.value,factCliente.text_8.value,nPrecioUnitario,factCliente.text_10.value,factCliente.text_16.value,factCliente.text_11.value,round(factCliente.text_8.value * nPrecioUnitario ,2) })
     factCliente.text_6.value:= ""
