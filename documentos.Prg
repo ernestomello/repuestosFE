@@ -252,6 +252,7 @@ WAIT CLEAR
 * ***********************************************
 function imprimoMovimiento(nFactura,copia,cRut,cNombre,cDireccion)
 local nTipoDocumento := tipoDocumento(nFactura)
+local nFormaPago := formaPago(nFactura)
 if esFacturaElectronica
 	do case
 		case nTipoDocumento = 98
@@ -261,7 +262,13 @@ if esFacturaElectronica
 				imprimoEnLaser(nFactura,copia,cRut,cNombre,cDireccion)
 			endif
 		case nTipoDocumento = 101 .or. nTipoDocumento = 111 .or. nTipoDocumento = 102 .or. nTipoDocumento = 112 .or. nTipoDocumento = 103 .or. nTipoDocumento = 113
-			imprimoPDF(nFactura)
+			if nFormaPago = 1 
+				if msgYesNo("Imprime el documento?",,.t.)
+					imprimoPDF(nFactura)
+				endif
+			else
+				imprimoPDF(nFactura)
+			endif
 	end case
 else
 	if nTipoDocumento = 81 .or. nTipoDocumento = 91 

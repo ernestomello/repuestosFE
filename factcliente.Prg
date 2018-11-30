@@ -140,6 +140,7 @@ factCliente.text_17.value := 0
 factCliente.text_18.value := 0
 factCliente.text_19.value := ''
 factCliente.text_20.value := ''
+factCliente.frame_4.caption := "RUT"
 
 
 factCliente.grid_1.deleteAllItems
@@ -176,8 +177,10 @@ factCliente.text_9.value := busco_cotizacion(monedaArticulo(factCliente.text_6.v
 factcliente.text_9.setfocus
 
 function grabaFactura()
-local nCliente, cTipoDocumento,dFechaFactura,nTotalFactura,cDescripcion,nCaja,nNumero
+local nCliente, cTipoDocumento,dFechaFactura,nTotalFactura,nCaja,nNumero
 local nCantidad := factCliente.grid_1.itemcount
+local cDescripcion :=""
+local cDocumento
 
 nCliente:= factCliente.text_1.value  
 cTipoDocumento := factCliente.text_14.value
@@ -187,13 +190,20 @@ cAdenda :=factCliente.text_13.value
 nCaja := cajaId()
 nVendedor := factCliente.text_18.value
 nFormaPago := factCliente.text_21.value
+cDocumento := len(alltrim(factCliente.text_2.value))
 
+do case 
+	
+	case nCliente = 0 .and. (cTipoDocumento = 111 .or. cTipoDocumento = 112)
+		cDescripcion := "2|"+factCliente.text_2.value+"|"+factCliente.text_3.value+"|"+factCliente.text_4.value+"|PAYSANDU|"+str(nCliente)
+	case nCliente = 0 .and.  cDocumento != 0
+		cDescripcion :="3|"+factCliente.text_2.value+"|"+factCliente.text_3.value+"|"+factCliente.text_4.value+"|PAYSANDU|"
+	case nCliente = 0 .and.  len(factCliente.text_3.value) != 0
+		cDescripcion :="1|"+factCliente.text_2.value+"|"+factCliente.text_3.value+"|"+factCliente.text_4.value+"|PAYSANDU|"
+	case nCliente != 0 .and.  cDocumento < 12 .and. cDocumento > 0
+		cDescripcion :="3|"+factCliente.text_2.value+"|"+factCliente.text_3.value+"|"+factCliente.text_4.value+"|PAYSANDU|"
 
-if nCliente = 0 .and. (cTipoDocumento = 111 .or. cTipoDocumento = 112)
-	cDescripcion := "2|"+factCliente.text_2.value+"|"+factCliente.text_3.value+"|"+factCliente.text_4.value+"|PAYSANDU|"+str(nCliente)
-else
-	cDescripcion :=""
-endif
+end case
 
 	
 
@@ -265,7 +275,7 @@ if facturaClienteConDetalle()
 endIf
 finTransaccion()
 cereoFormulario()
-factCliente.text_1.SetFocus
+
 
 if esFacturaElectronica .and. cTipoDocumento != 81 .and. cTipoDocumento != 91
 	info_("Registrando Documento en DGI...")
@@ -287,7 +297,7 @@ if !imprimoMovimiento(nNumero,0,'','','')
 	return .f.
 endif
 WAIT CLEAR
-
+factCliente.text_1.SetFocus
 return .t.
 
 
@@ -416,16 +426,22 @@ return
 function cambiaTipoCFE()
 
 if factCliente.text_14.value != 81 .and. factCliente.text_14.value != 91
-if formatoRut(factCliente.text_2.value) 
-	factCliente.text_14.value := 111	
-else
-	if len(factCliente.text_2.value)!= 0
-		msgInfo("Formato RUT Incorrecto")
+	if formatoRut(factCliente.text_2.value) 
+		factCliente.text_14.value := 111	
+		factCliente.frame_4.caption := "RUT"
+	else
+		if !formatoCedula(factCliente.text_2.value)
+			if len(factCliente.text_2.value)!= 0
+				msgInfo("Formato RUT o Cédula Incorrecto")
+			endif
+			factCliente.text_2.value := ""
+			factCliente.text_14.value := 101
+		else
+			factCliente.text_14.value := 101
+			factCliente.frame_4.caption := "C.I"
+		endif
 	endif
-	factCliente.text_2.value := ""
-	factCliente.text_14.value := 101
-endif
-factCliente.label_14.value := alltrim(descripcionDocumento(factCliente.text_14.value))
+	factCliente.label_14.value := alltrim(descripcionDocumento(factCliente.text_14.value))
 endif
 
 

@@ -43,7 +43,7 @@ if !linea3(pArchivo,oIdMov)
 	return .f.
 endif
 // msgInfo (alltrim(aCliente)+ str(oIdMov:getRow(1):fieldget(7)))
-if len(alltrim(aCliente)) != 0 //.or. oIdMov:getRow(1):fieldget(7) != 0
+if len(alltrim(aCliente)) != 0 .and.  hb_atokens(aCliente,"|")[1] != "1"
 	if !linea4(pArchivo,aCliente)
 		return .f.
 	endif
@@ -84,7 +84,7 @@ else
 	fwrite(parchivo,"</nsAd:eFact>"+chr(13)+chr(10))
 endIf
 	fwrite(parchivo,"</nsAd:CFE>"+chr(13)+chr(10))
-if !linea10(pArchivo,oIdMov)
+if !linea10(pArchivo,oIdMov,aCliente)
 	return .f.
 endif
 /*
@@ -485,15 +485,20 @@ local i
 return .t.
 
 
-function linea10(pArchivo,oIdMov)
-local cAdenda := cEspeciales(oIdMov:getRow(1):fieldGet(15))
+function linea10(pArchivo,oIdMov,aSocio)
+local cAdenda := "Obs: "+cEspeciales(oIdMov:getRow(1):fieldGet(15))
 local nFormaPago := oIdMov:getRow(1):fieldGet(13)
 local nTipoDocumento := oIdMov:getRow(1):fieldGet(4)
+local cRazonR :=if( len(alltrim(aSocio)) != 0, hb_atokens(aSocio,"|")[3],"")
 local cLinea := ""
 if nFormaPago = 2 
-	cAdenda += "&lt;br&gt;"+"Cliente Nro: "+str(oIdMov:getRow(1):fieldGet(7))
+	cAdenda += "&lt;br&gt;"+"Cliente Nro: "+str(oIdMov:getRow(1):fieldGet(7))+" - "+cEspeciales(cRazonR)
 	if (nTipoDocumento = 111 .or. nTipoDocumento = 101)
 		cAdenda +="&lt;br&gt;"+cEspeciales(mensaje1Documento(nTipoDocumento))+"&lt;br&gt;"+cEspeciales(mensaje2Documento(nTipoDocumento))+"&lt;br&gt;"+cEspeciales(mensaje3Documento(nTipoDocumento))
+	endIf
+else
+	if len(alltrim(aSocio)) != 0		
+		cAdenda += "&lt;br&gt;"+"Doc : "+cEspeciales(hb_atokens(aSocio,"|")[2])+"&lt;br&gt; Nombre: "+cEspeciales(hb_atokens(aSocio,"|")[3])+"&lt;br&gt; Direccion: "+cEspeciales(hb_atokens(aSocio,"|")[4])
 	endIf
 endif
 cAdenda += "&lt;br&gt;"+"Ref: "+str(oIdMov:getRow(1):fieldGet(1))
