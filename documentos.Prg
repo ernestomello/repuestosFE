@@ -101,7 +101,7 @@ documento.label_1.value := str(nDocumento)+" - "+alltrim(nombreCliente(clienteFa
 
 for i = 1 to oDetalleFactura:lastrec()
 	oRow := oDetalleFactura:getRow(i)
-	documento.grid_1.additem({ oRow:fieldGet(2),oRow:fieldGet(2),oRow:fieldGet(3),oRow:fieldGet(4),oRow:fieldGet(5),oRow:fieldGet(7),oRow:fieldGet(8)  })
+	documento.grid_1.additem({ oRow:fieldGet(2),oRow:fieldGet(6),oRow:fieldGet(3),oRow:fieldGet(4),oRow:fieldGet(5),oRow:fieldGet(7),oRow:fieldGet(8)  })
 	nTotFactura += round(oRow:fieldGet(8) * (1 + oRow:fieldGet(5)/100),0)
 next
 	documento.text_1.value := nTotFactura
@@ -206,7 +206,7 @@ procedure reImprimoMovimientos()
 busquedaGeneral("l","","Documentos para Imprimir",1)   
 
 if nSocioGlobal != 0
-	cargoDocumentoGen(nSocioGlobal,"IMPRIMIR")
+	verFacturaPDF(nSocioGlobal)
   //imprimoMovimiento(nSocioGlobal,1,'','','') //mando imprimir ese movimiento con el idMov
 	nSocioGlobal := 0
 endIf     
@@ -320,6 +320,46 @@ hb_MEMOWRIT("factura.pdf",hb_base64decode(cValTag(cRespuesta,"a:Buffer")))
 	if val(cValTag(cRespuesta,"a:Codigo")) = 0
 		
 		EXECUTE FILE '"' + exePdf + '"' PARAMETERS  '-print-to-default -print-settings "'+str(nCantCopias)+'x"  factura.pdf '
+		
+	else
+		msgInfo(" Devolucion de Errores"+chr(13)+cValTag(cRespuesta,"a:Descripcion"))
+		return .f.
+	endif
+
+return .t.
+
+function verFacturaPDF(nFactura)
+local oCabezal :=facturaClienteCabezal(nFactura)
+local nCantCopias := 1
+
+
+xml:='<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/" xmlns:sic="http://schemas.datacontract.org/2004/07/SICFEContract">'+chr(13)
+xml+="   <soapenv:Header/>"+chr(13)
+xml+="   <soapenv:Body>"+chr(13)
+xml+="      <tem:ObtenerPDF>"+chr(13)
+xml+="         <tem:nomusuario>erp2</tem:nomusuario>"+chr(13)
+xml+="         <tem:clave>erp2</tem:clave>"+chr(13)
+xml+="         <tem:p_idCFE>"+chr(13)
+xml+="            <sic:Numero>"+str(oCabezal:getRow(1):fieldGet(7))+"</sic:Numero>"+chr(13)
+xml+="            <sic:Serie>"+oCabezal:getRow(1):fieldGet(6)+"</sic:Serie>"+chr(13)
+xml+="            <sic:Tipo>"+str(oCabezal:getRow(1):fieldGet(4))+"</sic:Tipo>"+chr(13)
+xml+="            <sic:observado>0</sic:observado>"+chr(13)
+xml+="            <sic:rucemisor>120132110017</sic:rucemisor>"+chr(13)
+xml+="         </tem:p_idCFE>"+chr(13)
+xml+="         <tem:p_tenant>morale</tem:p_tenant>"+chr(13)
+xml+="         <tem:template>"+cHojaWSFE+"</tem:template>"+chr(13)
+xml+="      </tem:ObtenerPDF>"+chr(13)
+xml+="   </soapenv:Body>"+chr(13)
+xml+="</soapenv:Envelope>"+chr(13)
+hb_memowrit("vapdf.xml",xml)
+cRespuesta := fHttpExecute(nSOAPSW,'SOAPAction:"http://tempuri.org/ISICFEEmisor/ObtenerPDF"',xml,.f.)
+hb_memowrit("soapanswerpdf.xml",cRespuesta)
+hb_MEMOWRIT("factura.pdf",hb_base64decode(cValTag(cRespuesta,"a:Buffer")))
+	
+
+	if val(cValTag(cRespuesta,"a:Codigo")) = 0
+		
+		EXECUTE FILE '"' + exePdf + '"' PARAMETERS  'factura.pdf '
 		
 	else
 		msgInfo(" Devolucion de Errores"+chr(13)+cValTag(cRespuesta,"a:Descripcion"))
