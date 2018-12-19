@@ -38,21 +38,21 @@ local nTotImporte := 0
 vacioCalculoProveedor()
 for i= 1 to nCantidad
 		do case
-			case reciboProveedor.text_6.value == 'R'
+			case reciboProveedor.text_6.value == 98
 				if alltrim(reciboProveedor.grid_1.item(reciboProveedor.grid_1.value[i])[5]) = 'No Tiene' 
 					nTotImporte := nTotImporte+ reciboProveedor.grid_1.item(reciboProveedor.grid_1.value[i])[4]    
     			reciboProveedor.grid_1.cell(reciboProveedor.grid_1.value[i],8) := 'SI'
     		else
     			msgInfo('Esta factura ya tiene un ' +alltrim(reciboProveedor.title))
     		endif
-			case reciboProveedor.text_6.value == 'N'
+			case reciboProveedor.text_6.value == 112
 			  if alltrim(reciboProveedor.grid_1.item(reciboProveedor.grid_1.value[i])[6])  = 'No Tiene' 
 					nTotImporte := nTotImporte+ reciboProveedor.grid_1.item(reciboProveedor.grid_1.value[i])[4]    
     			reciboProveedor.grid_1.cell(reciboProveedor.grid_1.value[i],8) := 'SI'
     		else
     			msgInfo('Esta factura ya tiene un '+alltrim(reciboProveedor.title))
     		endif
-    	case reciboProveedor.text_6.value == 'D'
+    	case reciboProveedor.text_6.value == 112
 					nTotImporte := nTotImporte+ reciboProveedor.grid_1.item(reciboProveedor.grid_1.value[i])[4]    
     			reciboProveedor.grid_1.cell(reciboProveedor.grid_1.value[i],8) := 'SI'
     end do
@@ -134,9 +134,9 @@ if !comienzoTransaccion()
 endIf
 
 if reciboProveedor.text_6.value = 98
-	guardarReciboProveedor(reciboProveedor.text_7.value,reciboProveedor.text_5.value,reciboProveedor.text_4.value,'R')
+	guardarReciboProveedor(reciboProveedor.text_7.value,reciboProveedor.text_5.value,reciboProveedor.text_4.value,98)
 	if reciboProveedor.text_11.value != 0
-		guardarReciboProveedor(reciboProveedor.text_9.value,reciboProveedor.text_10.value,reciboProveedor.text_11.value,'N')
+		guardarReciboProveedor(reciboProveedor.text_9.value,reciboProveedor.text_10.value,reciboProveedor.text_11.value,112)
 	endif
 else
 	guardarReciboProveedor(reciboProveedor.text_7.value,reciboProveedor.text_5.value,reciboProveedor.text_4.value,reciboProveedor.text_6.value)
@@ -260,7 +260,7 @@ local cQuery, oQuery
 
 
 cQuery := "insert into recibo_proveedor_cab values("+str(nNumero)+",'"+nDocumento+"',"+str(nProveedor)+", "
-cQuery += " '"+dtos(dFecha)+"','"+cTipoDocumento+"',"+str(nImporte)+" , current_timestamp )"
+cQuery += " '"+dtos(dFecha)+"',"+str(cTipoDocumento)+","+str(nImporte)+" , current_timestamp )"
 
 oQuery:= oServer:Query(cQuery) 
 If oQuery:NetErr() 

@@ -26,7 +26,7 @@ local cFechaAnular:= 	PARAMETROini("FECHANULAR","C")
           conveniopagocobrador.frame_1.caption := 'Clientes'
           cQuery := "select id_cliente, nombre,direccion_particular,'.' "
           cQuery += " from cliente "
-          cQuery += " order by "+str(orden)+" LIMIT 200"
+          cQuery += " order by "+str(orden)+"  "
 		case vpc == 'cf'
           conveniopagocobrador.frame_1.caption := 'Clientes'
           cQuery := "select id_cliente, nombre,direccion_particular,'.' "
@@ -145,20 +145,18 @@ cNombre := iif(len(alltrim(conveniopagocobrador.text_1.value)) = 0, '"%"','"'+Al
           cQuery += " from cfe_comprobante_cab f,cfe_tipos d"
           cQuery += " where f.tipoCFE = d.id_cfe "         
           // cQuery += " and date(f.fecha) = "+cFechaAnular+" "        
-			do case 
-				case filtro = 1
-				cQuery += " and  f.id_factura LIKE "+cNombre+" "
-				cQuery += " order by "+str(orden)+" desc  limit 30"
-				case filtro = 2
-				cQuery += " and  f.numeroCFE LIKE "+cNombre+" "
-				cQuery += " order by "+str(orden)+" desc  limit 30"
-				case filtro = 3
-				cQuery += " and date_format(f.fecha,'%d/%m/%Y')LIKE "+cNombre+" "
-				cQuery += " order by "+str(orden)+" desc  limit 200"
-			end case
-          
-		 
-		  
+		do case 
+			case filtro = 1
+			cQuery += " and  f.id_factura LIKE "+cNombre+" "
+			cQuery += " order by "+str(orden)+" desc  limit 30"
+			case filtro = 2
+			cQuery += " and  f.numeroCFE LIKE "+cNombre+" "
+			cQuery += " order by "+str(orden)+" desc  limit 30"
+			case filtro = 3
+			cQuery += " and date_format(f.fecha,'%d/%m/%Y')LIKE "+cNombre+" "
+			cQuery += " order by "+str(orden)+" desc  limit 200"
+		end case
+          		  
 		  case vpc == 'fe'
           conveniopagocobrador.frame_1.caption := 'Documentos sin FE'
           cQuery := " select f.id_factura,concat(d.descripcion,' ',f.serieCFE,'-',f.numeroCFE),concat(f.importe),date_format(f.fecha,'%d/%m/%Y') "
