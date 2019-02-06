@@ -234,6 +234,9 @@ local nueveDiez := val(substr(cRut,9,2))
 // if cRut == "0"
 	// return .t.
 // endif
+if len(cRut) < 10
+	return .f.
+endif
 
 if dosPrim < 1 .and. dosPrim > 21
 	return .f.

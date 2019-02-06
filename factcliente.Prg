@@ -64,8 +64,8 @@ local nPrecioUnitario := 0
   	Return
   endif
 	if msgYesNo("Ingresa la Línea?","ATENCIÓN",.f.)
-	nPrecioUnitario:= round(factCliente.text_9.value - (factCliente.text_9.value * factCliente.text_11.value /100),2)
-    factCliente.grid_1.addItem({factCliente.text_6.value,factCliente.text_7.value,factCliente.text_8.value,nPrecioUnitario,factCliente.text_10.value,factCliente.text_16.value,factCliente.text_11.value,round(factCliente.text_8.value * nPrecioUnitario ,2) })
+	nPrecioUnitario:= round(factCliente.text_9.value - (factCliente.text_9.value * factCliente.text_11.value /100),0)
+    factCliente.grid_1.addItem({factCliente.text_6.value,factCliente.text_7.value,factCliente.text_8.value,nPrecioUnitario,factCliente.text_10.value,factCliente.text_16.value,factCliente.text_11.value,round(factCliente.text_8.value * nPrecioUnitario ,0) })
     factCliente.text_6.value:= ""
     factCliente.text_7.value:=""
     factCliente.text_8.value:= 1
@@ -160,19 +160,20 @@ procedure verificoPrecio()
 factCliente.text_9.fontcolor := {0,0,0}
 if monedaArticulo(factCliente.text_6.value)!= 2
 	if precioVenta(factCliente.text_6.value) != factCliente.text_9.value
-		modificoPrecioVenta(factCliente.text_6.value, factCliente.text_9.value)
+		modificoPrecioVenta(factCliente.text_6.value, round(factCliente.text_9.value,0))
 		factCliente.text_10.value := fechaPrecio(factCliente.text_6.value)
 	endif
 else
 	
 endif
+factCliente.text_9.value := round(factCliente.text_9.value,0)
 
 factCliente.text_16.SetFocus
 
 function cambio_Moneda()
 
 
-factCliente.text_9.value := busco_cotizacion(monedaArticulo(factCliente.text_6.value)) * precioVenta(factCliente.text_6.value)
+factCliente.text_9.value := round(busco_cotizacion(monedaArticulo(factCliente.text_6.value)) * precioVenta(factCliente.text_6.value),0)
  
 factcliente.text_9.setfocus
 
@@ -200,8 +201,8 @@ do case
 		cDescripcion :="3|"+factCliente.text_2.value+"|"+factCliente.text_3.value+"|"+factCliente.text_4.value+"|PAYSANDU|"
 	case nCliente = 0 .and.  len(factCliente.text_3.value) != 0
 		cDescripcion :="1|"+factCliente.text_2.value+"|"+factCliente.text_3.value+"|"+factCliente.text_4.value+"|PAYSANDU|"
-	case nCliente != 0 .and.  cDocumento < 12 .and. cDocumento > 0
-		cDescripcion :="3|"+factCliente.text_2.value+"|"+factCliente.text_3.value+"|"+factCliente.text_4.value+"|PAYSANDU|"
+	// case nCliente != 0 .and.  cDocumento < 12 .and. cDocumento > 0
+		// cDescripcion :="3|"+factCliente.text_2.value+"|"+factCliente.text_3.value+"|"+factCliente.text_4.value+"|PAYSANDU|"
 
 end case
 
