@@ -157,6 +157,7 @@ local nImporteNotaCredito := reciboCliente.text_5.value
 local nImporte, nNumeroR, nNumeroN := 0
 local cAdenda := ""
 local nTipoDocumento:=111
+local nGlobal 
 
 if !msgYesNo("Graba el Recibo y la Bonificacion?","ATENCIÓN",.T.)
 	return .f.
@@ -197,8 +198,9 @@ endIf
 		for i = 1 to reciboCliente.grid_1.itemcount
 			if reciboCliente.grid_1.cell(i,8) = 'SI' .and. reciboCliente.grid_1.cell(i,5)!= 0
 				nDocumento := reciboCliente.grid_1.cell(i,1)
+				nGlobal := refGlobal(nDocumento)
 				// if !guardoDetallereciboCliente(nNumeroR, reciboCliente.grid_1.cell(i,1),reciboCliente.grid_1.cell(i,5))
-				if !guardoRelacion( reciboCliente.grid_1.cell(i,1),nNumeroR,reciboCliente.grid_1.cell(i,5),"1")
+				if !guardoRelacion( reciboCliente.grid_1.cell(i,1),nNumeroR,reciboCliente.grid_1.cell(i,5),nGlobal)
 					// guardoRelacion(nFactura, nNumero)
 					noTran()
 					WAIT CLEAR
@@ -242,7 +244,9 @@ endIf
 		for i = 1 to reciboCliente.grid_1.itemcount
 			if reciboCliente.grid_1.cell(i,8) = 'SI' .and. reciboCliente.grid_1.cell(i,6)!= 0
 				// if !guardoDetalleNotaCredito(nNumeroN,reciboCliente.grid_1.cell(i,1),reciboCliente.grid_1.cell(i,6))
-				if !guardoRelacion( reciboCliente.grid_1.cell(i,1),nNumeroN,reciboCliente.grid_1.cell(i,6),"1")	
+				nDocumento := reciboCliente.grid_1.cell(i,1)
+				nGlobal := refGlobal(nDocumento)
+				if !guardoRelacion( reciboCliente.grid_1.cell(i,1),nNumeroN,reciboCliente.grid_1.cell(i,6),nGlobal)	
 					noTran()
 					WAIT CLEAR
 					msgInfo("No se pudo Guardar el detalle de NC. Reintente!!!")

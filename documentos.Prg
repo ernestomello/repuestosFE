@@ -206,8 +206,12 @@ procedure reImprimoMovimientos()
 busquedaGeneral("l","","Documentos para Imprimir",1)   
 
 if nSocioGlobal != 0
-	verFacturaPDF(nSocioGlobal)
-  //imprimoMovimiento(nSocioGlobal,1,'','','') //mando imprimir ese movimiento con el idMov
+	cTipoDocumento := tipoDocumento(nSocioGlobal)
+	if cTipoDocumento != 81 .and. cTipoDocumento != 91 .and. cTipoDocumento != 98
+		verFacturaPDF(nSocioGlobal)
+	else
+		imprimoMovimiento(nSocioGlobal,1,'','','') //mando imprimir ese movimiento con el idMov
+	endif
 	nSocioGlobal := 0
 endIf     
 
@@ -254,18 +258,21 @@ function imprimoMovimiento(nFactura,copia,cRut,cNombre,cDireccion)
 local nTipoDocumento := tipoDocumento(nFactura)
 local nFormaPago := formaPago(nFactura)
 if esFacturaElectronica
+	if !msgYesNo("Imprime el documento? "+descripcionDocumento(nTipoDocumento),,.t.)
+		return .t.
+	endif
 	do case
 		case nTipoDocumento = 98
 			imprimoEnLaser(nFactura,copia,cRut,cNombre,cDireccion)
 		case nTipoDocumento = 81 .or. nTipoDocumento = 91 
-			if msgYesNo("Imprime el documento?",,.t.)
+			
 				imprimoEnLaser(nFactura,copia,cRut,cNombre,cDireccion)
-			endif
+			// endif
 		case nTipoDocumento = 101 .or. nTipoDocumento = 111 .or. nTipoDocumento = 102 .or. nTipoDocumento = 112 .or. nTipoDocumento = 103 .or. nTipoDocumento = 113
 			if nFormaPago = 1 
-				if msgYesNo("Imprime el documento?",,.t.)
+				// if msgYesNo("Imprime el documento?",,.t.)
 					imprimoPDF(nFactura)
-				endif
+				// endif
 			else
 				imprimoPDF(nFactura)
 			endif

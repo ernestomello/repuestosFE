@@ -472,11 +472,14 @@ local i
 		nIdFacturaRef :=  oNotaCredDeb:getRow(i):fieldGet(9)
 		cLinea += "<nsAd:Referencia>"+chr(13)+chr(10)
 		cLinea += "<nsAd:NroLinRef>"+str(i)+"</nsAd:NroLinRef>"+chr(13)+chr(10)
-		iif(cIndGlobal == "1",cLinea += "<nsAd:IndGlobal>"+cIndGlobal+"</nsAd:IndGlobal>"+chr(13)+chr(10),)
-		cLinea += "<nsAd:TpoDocRef>"+str(cTipoCFE)+"</nsAd:TpoDocRef>"+chr(13)+chr(10)
-		cLinea += "<nsAd:Serie>"+cSerie+"</nsAd:Serie>"+chr(13)+chr(10)
-		cLinea += "<nsAd:NroCFERef>"+str(cNumero)+"</nsAd:NroCFERef>"+chr(13)+chr(10)
-		iif(cIndGlobal == "1",cLinea += "<nsAd:RazonRef>Afecta Ref: "+str(nIdFacturaRef)+"</nsAd:RazonRef>"+chr(13)+chr(10),)
+		if cIndGlobal == "1"
+			cLinea += "<nsAd:IndGlobal>"+cIndGlobal+"</nsAd:IndGlobal>"+chr(13)+chr(10)
+			cLinea += "<nsAd:RazonRef>Afecta Ref: "+str(nIdFacturaRef)+"</nsAd:RazonRef>"+chr(13)+chr(10)
+		else
+			cLinea += "<nsAd:TpoDocRef>"+str(cTipoCFE)+"</nsAd:TpoDocRef>"+chr(13)+chr(10)
+			cLinea += "<nsAd:Serie>"+cSerie+"</nsAd:Serie>"+chr(13)+chr(10)
+			cLinea += "<nsAd:NroCFERef>"+str(cNumero)+"</nsAd:NroCFERef>"+chr(13)+chr(10)			
+		endif
 		cLinea += "<nsAd:FechaCFEref>"+substr(cFecha,1,4)+"-"+substr(cFecha,5,2)+"-"+substr(cFecha,7,2)+"</nsAd:FechaCFEref>"+chr(13)+chr(10)
 		cLinea += "</nsAd:Referencia>"+chr(13)+chr(10)
 	next
@@ -560,17 +563,23 @@ function refGlobal(nIdMov)
 local oQuery
 local cQuery
 
-cQuery := " select r.ind_global "
-cQuery += " from   cfe_referencias_det r"
-cQuery += " where  r.id_factura = "+str(nIdMov)+"  "
+// cQuery := " select r.ind_global "
+// cQuery += " from   cfe_referencias_det r"
+// cQuery += " where  r.id_factura = "+str(nIdMov)+"  "
+
+cQuery := " select * from cfe_comprobante_cab "
+cQuery += " where serieCFE != '' and numeroCFE != 0 "
+cQuery += " and id_factura = "+str(nIdMov)+" "
+cQuery += ""
 oQuery := oServer:Query(cQuery )
 If oQuery:NetErr()												
   MsgInfo("SQL SELECT error: "+cQuery+"=" + oQuery:Error())
 Endif
 if oQuery:lastRec() > 0
-	return oQuery:getRow(1):fieldGet(1)
-else
 	return "0"
+	// return oQuery:getRow(1):fieldGet(1)
+else
+	return "1"
 endIf
 
 function oDetalleFacturaDevolucion(nIdMov)

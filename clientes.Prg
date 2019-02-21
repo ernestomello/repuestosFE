@@ -572,7 +572,7 @@ local oQuery
 cQuery := " select concat(if(c.consumo_final = 1,2,3),'|',c.rut,'|',c.razon_social,'|',c.direccion_particular,'|','PAYSANDU','|',c.id_cliente) "
 cQuery += " from cliente c  "
 cQuery += " where c.id_cliente = "+str(nIdCliente)+" "
-cQuery += " and c.consumo_final = 1 "
+// cQuery += " and c.consumo_final = 1 "
 
 oQuery := oServer:Query(cQuery)
 if oQuery:NetErr()												
