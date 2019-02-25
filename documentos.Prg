@@ -803,7 +803,7 @@ endIf
 function documentosCliente(nCliente,dFechaDesde,dFechaHasta)
 local cQuery, oQuery
 
-cQuery := " select c.id_factura, c.fecha,d.descripcion,c.importe, c.tipoCFE, c.saldo "
+cQuery := " select c.id_factura, c.fecha,d.descripcion,c.importe, c.tipoCFE, c.saldo ,c.serieCFE, c.numeroCFE "
 cQuery += " from cfe_comprobante_cab c, cfe_tipos d "
 cQuery += " where id_cliente = "+str(nCliente)+" "
 cQuery += " and d.id_cfe = c.tipoCFE"
@@ -812,7 +812,7 @@ cQuery += " and c.forma_pago = 2"
 //cQuery += " and c.id_factura not in (select id_factura_ref from cfe_referencias_det) "
 
 cQuery += " union all "
-cQuery += " select c.id_factura, c.fecha,d.descripcion,c.importe, c.tipoCFE, c.saldo "
+cQuery += " select c.id_factura, c.fecha,d.descripcion,c.importe, c.tipoCFE, c.saldo,c.serieCFE, c.numeroCFE "
 cQuery += " from cfe_comprobante_cab c, cfe_tipos d "
 cQuery += " where id_cliente = "+str(nCliente)+" "
 cQuery += " and c.tipoCFE = 98 "

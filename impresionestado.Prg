@@ -62,10 +62,12 @@ for i = 1 to oDocumentos:lastrec()
 	nSaldoAnterior := nSaldoAnterior + nDebe - nHaber
 	
 	// nSaldoAnterior := nSaldoAnterior + oDocumentos:getrow(i):fieldget(4) -oDocumentos:getrow(i):fieldget(5)
+	cDescripcion := alltrim(oDocumentos:getrow(i):fieldget(3))+" "+alltrim(oDocumentos:getrow(i):fieldget(7))+"-"+str(oDocumentos:getrow(i):fieldget(8))
+	
 	if oDocumentos:getrow(i):fieldget(6) != 0
-		cDescripcion := alltrim(oDocumentos:getrow(i):fieldget(3))+" - $ " + alltrim(str(oDocumentos:getrow(i):fieldget(6)))
-	else
-		cDescripcion := alltrim(oDocumentos:getrow(i):fieldget(3))
+		cDescripcion :=cDescripcion +" - $ " + alltrim(str(oDocumentos:getrow(i):fieldget(6)))
+	// else
+		// cDescripcion := alltrim(oDocumentos:getrow(i):fieldget(3))
 	endIf
 	
 	aadd(aGrid,{	oDocumentos:getrow(i):fieldget(1), ;
