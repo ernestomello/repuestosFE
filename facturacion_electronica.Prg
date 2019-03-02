@@ -43,7 +43,7 @@ if !linea3(pArchivo,oIdMov)
 	return .f.
 endif
 // msgInfo (alltrim(aCliente)+ str(oIdMov:getRow(1):fieldget(7)))
-if len(alltrim(aCliente)) != 0 .and.  hb_atokens(aCliente,"|")[1] != "1"
+if len(alltrim(aCliente)) != 0 .and.  len(alltrim(hb_atokens(aCliente,"|")[2])) != 0
 	if !linea4(pArchivo,aCliente)
 		return .f.
 	endif
@@ -345,7 +345,7 @@ local nMntTotalBasico:= 0.00
 local nMntTotalNoGrv:= 0.00
 local nMntTotal:= 0.00
 local nLineas := 0
-local nGlobal := refGlobal(nIdMov)
+local nGlobal := refSinDetalle(nIdMov)
 // msgInfo("Referencia Global: "+nGlobal)
 
 if nTipoCFE = 102 .or. nTipoCFE = 112 .or.  nTipoCFE = 103 .or. nTipoCFE = 113
@@ -406,7 +406,7 @@ local cLinea := "",cCuota := "", cCant := "", cUnidad := "", cPrecUnit := 0.00
 local cIndica := "", cDescPor :="",cDescMon := "",cRecPor := "", cRecMon := ""
 local cMontoItem := "0",cDescExt := "",cDescArt:= ""
 local nTotalLineas := 0
-local nGlobal := refGlobal(nIdMov)
+local nGlobal := refSinDetalle(nIdMov)
 local j
 // msgInfo("Referencia Global: "+nGlobal)
 	// " select d.item,d.codigo_barra, d.cantidad,d.precio_unitario,d.cfe_ind_fact,d.descripcion,ca.tipoCFE "
@@ -563,9 +563,6 @@ function refGlobal(nIdMov)
 local oQuery
 local cQuery
 
-// cQuery := " select r.ind_global "
-// cQuery += " from   cfe_referencias_det r"
-// cQuery += " where  r.id_factura = "+str(nIdMov)+"  "
 
 cQuery := " select * from cfe_comprobante_cab "
 cQuery += " where serieCFE != '' and numeroCFE != 0 "
@@ -581,6 +578,50 @@ if oQuery:lastRec() > 0
 else
 	return "1"
 endIf
+
+function refGlobalDev(nIdMov)
+local oQuery
+local cQuery
+
+cQuery := " select r.ind_global "
+cQuery += " from   cfe_referencias_det r"
+cQuery += " where  r.id_factura = "+str(nIdMov)+"  "
+
+// cQuery := " select * from cfe_comprobante_cab "
+// cQuery += " where serieCFE != '' and numeroCFE != 0 "
+// cQuery += " and id_factura = "+str(nIdMov)+" "
+// cQuery += ""
+oQuery := oServer:Query(cQuery )
+If oQuery:NetErr()												
+  MsgInfo("SQL SELECT error: "+cQuery+"=" + oQuery:Error())
+Endif
+if oQuery:lastRec() > 0
+	// return "0"
+	return oQuery:getRow(1):fieldGet(1)
+else
+	return "0"
+endIf
+
+
+function  refSinDetalle(nIdMov)
+local oQuery
+local cQuery
+
+cQuery := " select d.id_factura "
+cQuery += " from   cfe_comprobante_det d"
+cQuery += " where  d.id_factura = "+str(nIdMov)+"  "
+oQuery := oServer:Query(cQuery )
+If oQuery:NetErr()												
+  MsgInfo("SQL SELECT error: "+cQuery+"=" + oQuery:Error())
+Endif
+if oQuery:lastRec() > 0
+	return "0"
+else
+	return "1"
+endIf
+
+
+
 
 function oDetalleFacturaDevolucion(nIdMov)
 local oQuery

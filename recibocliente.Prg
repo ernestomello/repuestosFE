@@ -154,7 +154,7 @@ function guardaReciboCliente()
 local nCantidad := len(reciboCliente.grid_1.value)
 local nImportePagoreciboCliente :=  reciboCliente.text_6.value
 local nImporteNotaCredito := reciboCliente.text_5.value
-local nImporte, nNumeroR, nNumeroN := 0
+local nImporte, nNumeroR := 0 , nNumeroN := 0
 local cAdenda := ""
 local nTipoDocumento:=111
 local nGlobal 
@@ -227,7 +227,7 @@ endIf
 			return .f.
 		endIf
 		// cAdenda := "Ref: "+str(nNumeroN)
-		nTipoDocumento := iif(tipoDocumento(nDocumento)= 101 , 102 , 112)
+		nTipoDocumento := iif(tipoDocumento(reciboCliente.grid_1.cell(1,1))= 101 , 102 , 112)//que pasa si el tipoDocumento de las lineas es distinto????
 		if !graboFactClienteCabezal(nNumeroN,cajaId(),reciboCliente.text_1.value,nTipoDocumento,reciboCliente.text_5.value,reciboCliente.datePicker_1.value,"",0,2,cAdenda)
 		// if !guardoCabezalNotaCredito(nNumeroN, cajaId(),reciboCliente.text_1.value,'N',reciboCliente.datePicker_1.value,reciboCliente.text_5.value)
 			noTran()
@@ -265,23 +265,26 @@ finTransaccion()
 
 vacioDatosReciboCliente()
 reciboCliente.text_1.setfocus
-if esFacturaElectronica
-	info_("Registrando Documeto en DGI...")
-	comienzoTransaccion()
-	if ! facturaElectronica(nNumeroN,.f.,.t.)
-		noTran()
+
+if  nNumeroN != 0
+	if esFacturaElectronica 
+		info_("Registrando Documeto en DGI...")
+		comienzoTransaccion()
+		if ! facturaElectronica(nNumeroN,.f.,.t.)
+			noTran()
+			WAIT CLEAR
+			msgInfo("No se pudo guardar el documento en DGI, Reintente desde el Menú !!!")	
+			return .f.
+		endif
+	endIf
+	finTransaccion()	
+
+	info_("Imprimiendo Documento ...")
+	if !imprimoMovimiento(nNumeroN,0,'','','')
 		WAIT CLEAR
-		msgInfo("No se pudo guardar el documento en DGI, Reintente desde el Menú !!!")	
+		msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menú")
 		return .f.
 	endif
-endIf
-finTransaccion()	
-
-info_("Imprimiendo Documento ...")
-if !imprimoMovimiento(nNumeroN,0,'','','')
-	WAIT CLEAR
-	msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menú")
-	return .f.
 endif
 
 iif(nNumeroR != 0,imprimoMovimiento(nNumeroR,0,'','',''),)
@@ -294,7 +297,7 @@ return .t.
 
 function verificaPorcentaje()
 
-if reciboCliente.text_4.value > 20
+if reciboCliente.text_4.value > 20 .and. reciboCliente.text_4.value != 99.99
 	for i = 1 to reciboCliente.grid_1.itemcount      
 		//msgInfo(reciboCliente.grid_1.cell(i,2))
 		if ctod(reciboCliente.grid_1.cell(i,2)) >= ctod("01/11/2018") .and. reciboCliente.grid_1.cell(i,8) = 'SI'
@@ -309,7 +312,7 @@ endif
 function controloReciboCliente()
 
 for i = 1 to reciboCliente.grid_1.itemcount           
-	if reciboCliente.grid_1.cell(i,5) != 0
+	if reciboCliente.grid_1.cell(i,8) == "SI"
 		return .t.
 	endIf
 next

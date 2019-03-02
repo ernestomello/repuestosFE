@@ -152,8 +152,11 @@ if clientes.radioGroup_1.value = 1
 	  return .f.
 	endIf
 	If len(clientes.text_9.value) = 0
-  	msgInfo("Falta ingresar Cédula ")
-  	return .f.
+		if msgYesNO("Falta ingresar Cédula...Continúa? ",,.t.)
+			return .t.
+		else
+			return .f.
+		endIf
 	else
 		if !formatoCedula(clientes.text_9.value)
 			msgInfo("Número Cédula Incorrecto!!!")
