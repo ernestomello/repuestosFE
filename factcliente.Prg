@@ -59,10 +59,10 @@ local nPrecioUnitario := 0
     factCliente.text_8.SetFocus
 		Return
   endif
-  if factCliente.grid_1.itemCount >= nLinea
-  	msginfo('Supera las '+str(nLinea)+' líneas '+chr(13)+'Guarde el Documento')
-  	Return
-  endif
+  // if factCliente.grid_1.itemCount >= nLinea
+  	// msginfo('Supera las '+str(nLinea)+' líneas '+chr(13)+'Guarde el Documento')
+  	// Return
+  // endif
 	if msgYesNo("Ingresa la Línea?","ATENCIÓN",.f.)
 	nPrecioUnitario:= round(factCliente.text_9.value - (factCliente.text_9.value * factCliente.text_11.value /100),0)
     factCliente.grid_1.addItem({factCliente.text_6.value,factCliente.text_7.value,factCliente.text_8.value,nPrecioUnitario,factCliente.text_10.value,factCliente.text_16.value,factCliente.text_11.value,round(factCliente.text_8.value * nPrecioUnitario ,0) })
