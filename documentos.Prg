@@ -258,7 +258,7 @@ function imprimoMovimiento(nFactura,copia,cRut,cNombre,cDireccion)
 local nTipoDocumento := tipoDocumento(nFactura)
 local nFormaPago := formaPago(nFactura)
 if esFacturaElectronica
-	if !msgYesNo("Imprime el documento? "+descripcionDocumento(nTipoDocumento),,.t.)
+	if !msgYesNo("Imprime el documento? "+alltrim(descripcionDocumento(nTipoDocumento))+"No: "+str(nFactura),,.t.)
 		return .t.
 	endif
 	do case
