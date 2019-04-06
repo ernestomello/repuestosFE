@@ -21,7 +21,8 @@ DEFINE CONTROL CONTEXTMENU grid_1 of presupuestos
 	// MENUITEM "Cancelar" ONCLICK cancelarPresupuesto(presupuestos.grid_1.cell(presupuestos.grid_1.value,1),presupuestos.grid_1.cell(presupuestos.grid_1.value,4))
 	MENUITEM "Ver Documento" ONCLICK muestroDocumentoCliente(presupuestos.grid_1.cell(presupuestos.grid_1.value,1))
 	// MENUITEM "Crédito" ONCLICK facturoDocumento(presupuestos.grid_1.cell(presupuestos.grid_1.value,1),presupuestos.grid_1.cell(presupuestos.grid_1.value,4), 111)
-	MENUITEM "Contado" ONCLICK facturoDocumento(presupuestos.grid_1.value, 101)
+	MENUITEM "Contado" ONCLICK facturoDocumento(presupuestos.grid_1.value, 1)
+	MENUITEM "Credito" ONCLICK facturoDocumento(presupuestos.grid_1.value, 2)
 END MENU
 formularioContado()
 
@@ -30,9 +31,9 @@ DEFINE CONTROL CONTEXTMENU grid_1 of presupuestos
 	MENUITEM "Cancelar" ONCLICK cancelarPresupuesto(presupuestos.grid_1.cell(presupuestos.grid_1.value,1),presupuestos.grid_1.cell(presupuestos.grid_1.value,4))
 	MENUITEM "Ver Documento" ONCLICK muestroDocumentoCliente(presupuestos.grid_1.cell(presupuestos.grid_1.value,1))
 	// MENUITEM "Crédito" ONCLICK facturoDocumento(presupuestos.grid_1.cell(presupuestos.grid_1.value,1),presupuestos.grid_1.cell(presupuestos.grid_1.value,4), 111)
-	MENUITEM "Crédito" ONCLICK facturoDocumento(presupuestos.grid_1.value, 111)
+	MENUITEM "Crédito" ONCLICK facturoDocumento(presupuestos.grid_1.value, 2)
 	// MENUITEM "Contado" ONCLICK facturoDocumento(presupuestos.grid_1.cell(presupuestos.grid_1.value,1),presupuestos.grid_1.cell(presupuestos.grid_1.value,4), 101)
-	MENUITEM "Contado" ONCLICK facturoDocumento(presupuestos.grid_1.value, 101)
+	MENUITEM "Contado" ONCLICK facturoDocumento(presupuestos.grid_1.value, 1)
 END MENU
 endIf
 
@@ -171,14 +172,14 @@ for i = 1 to len(xFactura)
 		// cFactura += ","
 	// endIf
 next
-msgInfo(aFactura)
+//msgInfo(aFactura)
 // if presupuestos.grid_1.cell(presupuestos.grid_1.value,5) != 0
 	if msgYesNo("Quiere Facturar el Presupuesto","ATENCIÓN",.t.)
-		if ctipo == 101
-			factCliente(101 ,aFactura, 1)
-		else
-			factCliente(111 ,aFactura, 1)
-		endif
+		// if ctipo == 1
+			factCliente(101 ,aFactura, ctipo)
+		// else
+			// factCliente(101 ,aFactura, 2)
+		// endif
 		if msgYesNo("Marca como Cancelado el Presupuesto","ATENCIÓN",.T.)
 			for i = 1 to len(aFactura)
 				modificoSaldoFacturaCliente(aFactura[i],aImporte[i])

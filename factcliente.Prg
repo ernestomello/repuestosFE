@@ -152,7 +152,7 @@ factCliente.text_2.value := ''
 factCliente.text_3.value := ''
 factCliente.text_4.value := ''
 factCliente.text_13.value := ''
-factCliente.text_5.value := 0
+// factCliente.text_5.value := 0
 factCliente.text_17.value := 0
 
 procedure verificoPrecio()

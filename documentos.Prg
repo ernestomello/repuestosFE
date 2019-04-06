@@ -255,10 +255,14 @@ WAIT CLEAR
 * si es copia o no(1 o 0)
 * ***********************************************
 function imprimoMovimiento(nFactura,copia,cRut,cNombre,cDireccion)
-local nTipoDocumento := tipoDocumento(nFactura)
-local nFormaPago := formaPago(nFactura)
+local oDocumento := oDocumento(nFactura)
+// local nTipoDocumento := tipoDocumento(nFactura)
+local nTipoDocumento := oDocumento:GetRow(1):fieldGet(4)
+// local nFormaPago := formaPago(nFactura)
+local nFormaPago := oDocumento:GetRow(1):fieldGet(13)
+local nImporte := oDocumento:GetRow(1):fieldGet(9)
 if esFacturaElectronica
-	if !msgYesNo("Imprime el documento? "+alltrim(descripcionDocumento(nTipoDocumento))+"No: "+str(nFactura),,.t.)
+	if !msgYesNo("Imprime el documento? "+alltrim(descripcionDocumento(nTipoDocumento))+chr(13)+" No: "+str(nFactura)+" Importe: $ "+str(nImporte),,.t.)
 		return .t.
 	endif
 	do case
@@ -687,6 +691,32 @@ If oQuery:NetErr()
   MsgInfo("SQL SELECT error: " + oQuery:Error())
 else
   return oQuery:GetRow(1):fieldGet(1)
+endIf
+
+function oDocumento(nDocumento)
+local cQuery, oQuery
+
+cQuery := " select * "
+cQuery += " from cfe_comprobante_cab "
+cQuery += " where id_factura = "+str(nDocumento)+""
+oQuery := oServer:Query(cQuery)
+If oQuery:NetErr()												
+  MsgInfo("SQL SELECT error: " + oQuery:Error())
+else
+  return oQuery
+endIf
+
+function oDocumentoDetalle(nDocumento)
+local cQuery, oQuery
+
+cQuery := " select * "
+cQuery += " from cfe_comprobante_det "
+cQuery += " where id_factura = "+str(nDocumento)+""
+oQuery := oServer:Query(cQuery)
+If oQuery:NetErr()												
+  MsgInfo("SQL SELECT error: " + oQuery:Error())
+else
+  return oQuery
 endIf
 
 function formaPago(nDocumento)
