@@ -796,7 +796,7 @@ function descripcionFacturaCliente(nFactura)
 local cQuery
 local oQuery
 
-cQuery := " select descripcion "
+cQuery := " select adenda "
 cQuery += " from cfe_comprobante_cab  "
 cQuery += " where id_factura = "+str(nFactura)+" "
 
@@ -804,7 +804,7 @@ oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
   MsgInfo("SQL SELECT error: " + oQuery:Error())
 else
-  return oQuery:getRow(1):fieldGet(1)
+  return alltrim(oQuery:getRow(1):fieldGet(1))
 endIf
 
 function clienteFactura(nFactura)
