@@ -899,10 +899,10 @@ local cQuery, oQuery
 
 cQuery := " select id_factura, fecha,'Presupuesto',importe,0,saldo "
 cQuery += " from cfe_comprobante_cab "
-cQuery += " where id_cliente = "+str(nCliente)+" "
-cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
+cQuery += " where fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
+iif (nCliente = 0 , cQuery += "" , cQuery += " and id_cliente = "+str(nCliente)+" " ) 
 cQuery += " and tipoCFE = "+str(nTipoCFE)+" "
-cQuery += " order by 2  "
+cQuery += " order by 2, 1  "
 
 oQuery:= oServer:Query(cQuery)
 If oQuery:NetErr() 
