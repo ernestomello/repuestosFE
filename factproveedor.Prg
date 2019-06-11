@@ -56,7 +56,7 @@ procedure grabaFacturaProveedor()
 local nProveedor, cTipoDocumento
 
 nProveedor:= factProveedor.text_1.value
-cTipoDocumento := 'F'
+cTipoDocumento := 111
 
 nNumero:= numeroDesde('PROVEEDOR')  	
 
@@ -102,7 +102,7 @@ return .t.
 ******Implementaciones del modelo ***************
 *************************************************
 *************************************************
-function graboFactProveedor(nNumeroF,nProveedor, cTipoDocumento,nNumero,nImporte,dFechaFactura)
+function graboFactProveedor(nNumeroF,nProveedor, nTipoDocumento,nNumero,nImporte,dFechaFactura)
 // hay que modificar esta función porque está muy entreverada hay dominios cruzados :(
 local idMov,nCajero,nLinea, cSerie, nCaja
 
@@ -122,8 +122,8 @@ endIf
 	  
 cQuery := "Insert into factura_proveedor_cab values "
 cQuery += " ( "+str(nNumeroF)+","+str(nCaja)+" ,"+str(nNumero)+", '"+dtos(dFechaFactura)+"', " 
-cQuery += " "+str(nProveedor)+",'"+cTipoDocumento+"', "+str(nImporte)+", "
-iif(cTipoDocumento = 'F', cQuery += " "+str(nImporte)+",  ", cQuery += " 0, ")
+cQuery += " "+str(nProveedor)+","+str(nTipoDocumento)+", "+str(nImporte)+", "
+iif(nTipoDocumento = 111, cQuery += " "+str(nImporte)+",  ", cQuery += " 0, ")
 cQuery += " null, current_timestamp ) "
 oQuery:= oServer:Query(  cQuery )
 If oQuery:NetErr() 
@@ -279,32 +279,32 @@ function documentosProveedor(nProveedor,dFechaDesde,dFechaHasta)
 local cQuery, oQuery
 
 cQuery := " select r.id_mov, r.numero_factura, r.fecha,d.descripcion,r.importe, 0,r.saldo "
-cQuery += " from factura_proveedor_cab r,documento d"
+cQuery += " from factura_proveedor_cab r,cfe_tipos d"
 cQuery += " where id_proveedor = "+str(nProveedor)+" "
-cQuery += " and d.id_documento = r.tipo_documento "
+cQuery += " and d.id_cfe = r.tipo_documento "
 cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
-cQuery += " and tipo_documento = 'F' "
+cQuery += " and tipo_documento = 111 "
 cQuery += " union all "
 cQuery += " select r.id_recibo, r.numero_recibo, r.fecha,d.descripcion,0,r.importe,0 "
-cQuery += " from recibo_proveedor_cab r, documento d"
+cQuery += " from recibo_proveedor_cab r, cfe_tipos d"
 cQuery += " where id_proveedor = "+str(nProveedor)+" "    
-cQuery += " and d.id_documento = r.tipo_documento "
+cQuery += " and d.id_cfe = r.tipo_documento "
 cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
-cQuery += " and tipo_documento = 'R' "
+cQuery += " and tipo_documento = 98 "
 cQuery += " union all "
 cQuery += " select r.id_recibo, r.numero_recibo, r.fecha,d.descripcion,0,r.importe,0 "
-cQuery += " from recibo_proveedor_cab r,documento d"
+cQuery += " from recibo_proveedor_cab r,cfe_tipos d"
 cQuery += " where id_proveedor = "+str(nProveedor)+" "
-cQuery += " and d.id_documento = r.tipo_documento "
+cQuery += " and d.id_cfe = r.tipo_documento "
 cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
-cQuery += " and tipo_documento = 'N' "
-cQuery += " union all "
-cQuery += " select r.id_recibo, r.numero_recibo, r.fecha,d.descripcion,0,r.importe,0 "
-cQuery += " from recibo_proveedor_cab r,documento d "
-cQuery += " where id_proveedor = "+str(nProveedor)+" "
-cQuery += " and d.id_documento = r.tipo_documento "
-cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
-cQuery += " and tipo_documento = 'D' "
+cQuery += " and tipo_documento = 112 "
+// cQuery += " union all "
+// cQuery += " select r.id_recibo, r.numero_recibo, r.fecha,d.descripcion,0,r.importe,0 "
+// cQuery += " from recibo_proveedor_cab r,cfe_tipos d "
+// cQuery += " where id_proveedor = "+str(nProveedor)+" "
+// cQuery += " and d.id_cfe = r.tipo_documento "
+// cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
+// cQuery += " and tipo_documento = 112 "
 cQuery += " order by 3 "
         
         

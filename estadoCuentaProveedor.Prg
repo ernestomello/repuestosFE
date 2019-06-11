@@ -91,9 +91,9 @@ estadoCuentaProveedor.text_3.value := "Saldo al "+dtoc(estadoCuentaProveedor.dat
 for i = 1 to oDocumentos:lastrec()
 	nSaldoAnterior := nSaldoAnterior + oDocumentos:getrow(i):fieldget(5) -oDocumentos:getrow(i):fieldget(6)
 	if oDocumentos:getrow(i):fieldget(7) != 0
-		cDescripcion := oDocumentos:getrow(i):fieldget(4)+" - $ " + str(oDocumentos:getrow(i):fieldget(7))
+		cDescripcion := alltrim(oDocumentos:getrow(i):fieldget(4))+" - $ " + str(oDocumentos:getrow(i):fieldget(7))
 	else
-		cDescripcion := oDocumentos:getrow(i):fieldget(4)
+		cDescripcion := alltrim(oDocumentos:getrow(i):fieldget(4))
 	endIf
 	estadoCuentaProveedor.text_5.value := estadoCuentaProveedor.text_5.value + oDocumentos:getrow(i):fieldget(7)
 	aadd(aGrid,{	oDocumentos:getrow(i):fieldget(1), ;

@@ -269,8 +269,7 @@ if esFacturaElectronica
 		case nTipoDocumento = 98
 			imprimoEnLaser(nFactura,copia,cRut,cNombre,cDireccion)
 		case nTipoDocumento = 81 .or. nTipoDocumento = 91 
-			
-				imprimoEnLaser(nFactura,copia,cRut,cNombre,cDireccion)
+			imprimoEnLaser(nFactura,copia,cRut,cNombre,cDireccion)
 			// endif
 		case nTipoDocumento = 101 .or. nTipoDocumento = 111 .or. nTipoDocumento = 102 .or. nTipoDocumento = 112 .or. nTipoDocumento = 103 .or. nTipoDocumento = 113
 			if nFormaPago = 1 
@@ -296,13 +295,13 @@ return .t.
 
 function imprimoPDF(nFactura)
 local oCabezal :=facturaClienteCabezal(nFactura)
-local nCantCopias := 1
+local nCantCopias := oCabezal:getRow(1):fieldGet(9)
 
-if (oCabezal:getRow(1):fieldGet(8) = 2 )
-	if (oCabezal:getRow(1):fieldGet(4) = 101 .or. oCabezal:getRow(1):fieldGet(4) = 111 )
-		nCantCopias := 2
-	endif
-endif
+// if (oCabezal:getRow(1):fieldGet(8) = 2 )
+	// if (oCabezal:getRow(1):fieldGet(4) = 101 .or. oCabezal:getRow(1):fieldGet(4) = 111 )
+		// nCantCopias := 2
+	// endif
+// endif
 
 xml:='<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/" xmlns:sic="http://schemas.datacontract.org/2004/07/SICFEContract">'+chr(13)
 xml+="   <soapenv:Header/>"+chr(13)

@@ -150,13 +150,14 @@ function guardarReciboProveedor(fRecibo,nRecibo,iRecibo,cTipoDocumento)
 local nNumero
 local Id_Recibo
 local nCantidad := len(reciboProveedor.grid_1.value)
+local cDescripcionDocumento := descripcionDocumento(cTipoDocumento)
 
 
-if !msgYesNo("Graba "+alltrim(reciboProveedor.title),"ATENCIÓN",.T.)
+if !msgYesNo("Graba "+alltrim(cDescripcionDocumento),"ATENCIÓN",.T.)
 	return .f.
 endif
 
-if !controloReciboProveedor(cTipoDocumento)
+if !controloReciboProveedor(cDescripcionDocumento)
 	return .f.
 endIf
 
@@ -180,7 +181,7 @@ endIf
 
 for i = 1 to reciboProveedor.grid_1.itemcount
 	if reciboProveedor.grid_1.cell(i,8) = 'SI'
-		if !guardoDetallereciboProveedor(nRecibo, reciboProveedor.grid_1.cell(i,1),0)
+		if !guardoDetallereciboProveedor(Id_Recibo, reciboProveedor.grid_1.cell(i,1),0)
 			msgInfo("No se pudieron Guardar el detalle de "+alltrim(reciboProveedor.title)+". Reintente!!!")
 			return .f.
 		endIf		
@@ -211,8 +212,8 @@ for i= 1 to nCantidad
 next
 
 
-function controloReciboProveedor(cTipoDocumento)
-local cDescripcionDocumento :=descripcionDocumento(cTipoDocumento)
+function controloReciboProveedor(cDescripcionDocumento)
+// local cDescripcionDocumento :=descripcionDocumento(cTipoDocumento)
 
 if reciboProveedor.text_1.value = 0
 	msgInfo("Debe Indicar un Proveedor")
@@ -276,8 +277,8 @@ endif
 function guardoDetallereciboProveedor(nIdRecibo,nFactura,nImporte)
 local cQuery, oQuery
 
-cQuery := "insert into recibo_proveedor_det values("+str(nIdRecibo)+","+str(nFactura)+", "
-cQuery += " "+str(nImporte)+" )"
+cQuery := "insert into recibo_proveedor_det values("+str(nIdRecibo)+", "
+cQuery += ""+str(nFactura)+" , "+str(nImporte)+" )"
 
 oQuery:= oServer:Query(cQuery)
 If oQuery:NetErr() 
