@@ -32,6 +32,18 @@ do case
 		else
 			msgInfo("La ventana ya está en uso")
 		endif
+	case cTipoDoc = 103
+		if !IsWindowActive(recibo)
+			cargoDocumentoGen(nDocumento, "MOSTRAR")
+		else
+			msgInfo("La ventana ya está en uso")
+		endif
+	case cTipoDoc = 113
+		if !IsWindowActive(recibo)
+				cargoDocumentoGen(nDocumento, "MOSTRAR")
+		else
+			msgInfo("La ventana ya está en uso")
+		endif
 	case cTipoDoc == 91
 		if !IsWindowActive(recibo)
 				cargoDocumentoGen(nDocumento, "MOSTRAR")
@@ -272,13 +284,13 @@ if esFacturaElectronica
 			imprimoEnLaser(nFactura,copia,cRut,cNombre,cDireccion)
 			// endif
 		case nTipoDocumento = 101 .or. nTipoDocumento = 111 .or. nTipoDocumento = 102 .or. nTipoDocumento = 112 .or. nTipoDocumento = 103 .or. nTipoDocumento = 113
-			if nFormaPago = 1 
+			// if nFormaPago = 1 
 				// if msgYesNo("Imprime el documento?",,.t.)
 					imprimoPDF(nFactura)
 				// endif
-			else
-				imprimoPDF(nFactura)
-			endif
+			// else
+				// imprimoPDF(nFactura)
+			// endif
 	end case
 else
 	if nTipoDocumento = 81 .or. nTipoDocumento = 91 
@@ -295,7 +307,7 @@ return .t.
 
 function imprimoPDF(nFactura)
 local oCabezal :=facturaClienteCabezal(nFactura)
-local nCantCopias := oCabezal:getRow(1):fieldGet(9)
+local nCantCopias := iif( oCabezal:getRow(1):fieldGet(8)= 1 , oCabezal:getRow(1):fieldGet(9), oCabezal:getRow(1):fieldGet(11) )
 
 // if (oCabezal:getRow(1):fieldGet(8) = 2 )
 	// if (oCabezal:getRow(1):fieldGet(4) = 101 .or. oCabezal:getRow(1):fieldGet(4) = 111 )

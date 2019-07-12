@@ -311,6 +311,12 @@ endif
 
 function controloReciboCliente()
 
+if reciboCliente.text_1.value = 0
+	msgInfo("Numero de Cliente no puede ser cero")
+	reciboCliente.text_1.setfocus
+	return .f.
+endif
+
 for i = 1 to reciboCliente.grid_1.itemcount           
 	if reciboCliente.grid_1.cell(i,8) == "SI"
 		return .t.
@@ -318,6 +324,8 @@ for i = 1 to reciboCliente.grid_1.itemcount
 next
 msgInfo("Se debe marcar una línea al menos")
 return .f.
+
+
 
 procedure cambiaEntrega()
 iif(reciboCliente.radioGroup_1.value = 1, reciboCliente.text_7.enabled := .f., reciboCliente.text_7.enabled:= .t.)
@@ -407,7 +415,7 @@ cQuery += " where c.id_factura = r.id_factura "
 cQuery += " and d.id_cfe = c.tipoCFE "
 cQuery += " and r.id_factura_ref = "+str(nFactura)+" "
 cQuery += " and c.tipoCFE = 98 "
-// cQuery += " and c.anulado = 'N' "
+cQuery += " and c.importe != 0 "
 
 
 oQuery:= oServer:Query(cQuery)
@@ -539,7 +547,7 @@ EndIf
 
 cQuery := " update cfe_comprobante_cab "
 cQuery += " set importe = 0, "
-cQuery += " saldo = 0 where id_recibo = "+str(nRecibo)+" "
+cQuery += " saldo = 0 where id_factura = "+str(nRecibo)+" "
 oQuery:= oServer:Query( cQuery ) 
 If oQuery:NetErr() 
   MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )

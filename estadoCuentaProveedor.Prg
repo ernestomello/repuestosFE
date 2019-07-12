@@ -47,7 +47,7 @@ local cTipoDocumento := tipoDocumentoProveedor(nDocumento)
 //msginfo(cTipoDocumento)
 
 if msgyesno("Borra el  Documento "+str(nDocumento))
-	if cTipoDocumento = 'F'
+	if cTipoDocumento = '111'
 		if borrafacturaProveedor(nDocumento)
 			msginfo("Documento Borrado")
 		else

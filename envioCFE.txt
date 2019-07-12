@@ -4,10 +4,10 @@
 <nsAd:eTck>
  <nsAd:Encabezado>
 <nsAd:IdDoc>
-<nsAd:TipoCFE>101</nsAd:TipoCFE>
+<nsAd:TipoCFE>103</nsAd:TipoCFE>
 <nsAd:Serie></nsAd:Serie>
 <nsAd:Nro></nsAd:Nro>
-<nsAd:FchEmis>2019-06-11</nsAd:FchEmis>
+<nsAd:FchEmis>2019-06-26</nsAd:FchEmis>
 <nsAd:MntBruto>1</nsAd:MntBruto>
 <nsAd:FmaPago>2</nsAd:FmaPago>
 </nsAd:IdDoc>
@@ -24,28 +24,37 @@
 <nsAd:Totales>
 <nsAd:TpoMoneda>UYU</nsAd:TpoMoneda><nsAd:MntNoGrv>0.00</nsAd:MntNoGrv>
 <nsAd:MntNetoIvaTasaMin>0.00</nsAd:MntNetoIvaTasaMin>
-<nsAd:MntNetoIVATasaBasica>22.13</nsAd:MntNetoIVATasaBasica>
+<nsAd:MntNetoIVATasaBasica>1941.80</nsAd:MntNetoIVATasaBasica>
 <nsAd:IVATasaMin>10</nsAd:IVATasaMin>
 <nsAd:IVATasaBasica>22</nsAd:IVATasaBasica>
 <nsAd:MntIVATasaMin>0.00</nsAd:MntIVATasaMin>
-<nsAd:MntIVATasaBasica>4.87</nsAd:MntIVATasaBasica>
-<nsAd:MntTotal>27</nsAd:MntTotal>
+<nsAd:MntIVATasaBasica>427.20</nsAd:MntIVATasaBasica>
+<nsAd:MntTotal>2369</nsAd:MntTotal>
 <nsAd:CantLinDet>1</nsAd:CantLinDet>
 <nsAd:MontoNF>0.0</nsAd:MontoNF>
-<nsAd:MntPagar>27</nsAd:MntPagar>
+<nsAd:MntPagar>2369</nsAd:MntPagar>
 </nsAd:Totales>
  </nsAd:Encabezado>
 <nsAd:Detalle>
 <nsAd:Item>
 <nsAd:NroLinDet>1</nsAd:NroLinDet>
 <nsAd:IndFact>3</nsAd:IndFact>
-<nsAd:NomItem>1000/1-ABRAZADERA</nsAd:NomItem>
-<nsAd:Cantidad>1.00</nsAd:Cantidad>
+<nsAd:NomItem>2-Afecta : eTicket NC A-920</nsAd:NomItem>
+<nsAd:Cantidad>1</nsAd:Cantidad>
 <nsAd:UniMed>UN</nsAd:UniMed>
-<nsAd:PrecioUnitario>27.00</nsAd:PrecioUnitario>
-<nsAd:MontoItem>27</nsAd:MontoItem>
+<nsAd:PrecioUnitario>2369.00</nsAd:PrecioUnitario>
+<nsAd:MontoItem>2369.00</nsAd:MontoItem>
 </nsAd:Item>
 </nsAd:Detalle>
+<nsAd:Referencia>
+<nsAd:Referencia>
+<nsAd:NroLinRef>         1</nsAd:NroLinRef>
+<nsAd:TpoDocRef>102</nsAd:TpoDocRef>
+<nsAd:Serie>A </nsAd:Serie>
+<nsAd:NroCFERef>920</nsAd:NroCFERef>
+<nsAd:FechaCFEref>2019-05-31</nsAd:FechaCFEref>
+</nsAd:Referencia>
+</nsAd:Referencia>
 <nsAd:CAEData>
 <nsAd:CAE_ID>1</nsAd:CAE_ID>
 <nsAd:DNro>1</nsAd:DNro>
@@ -54,4 +63,4 @@
 </nsAd:CAEData>
 </nsAd:eTck>
 </nsAd:CFE>
-<nsAdenda:Adenda>Obs: JOKDKD                                                                                                                                                                                                                                                         &lt;br&gt;Cliente Nro: 450 - ROMERO JUAN MARIA&lt;br&gt;PAGANDO ANTES DEL 10 DEL MES                 &lt;br&gt;20 % DESCUENTO                               &lt;br&gt;                                             &lt;br&gt;Ref: 343035</nsAdenda:Adenda></nsAdenda:CFE_Adenda>
+<nsAdenda:Adenda>Obs:                                                                                                                                                                                                                                                                &lt;br&gt;Cliente Nro: 205 - DALMAS GUSTAVO&lt;br&gt;Ref: 347717</nsAdenda:Adenda></nsAdenda:CFE_Adenda>

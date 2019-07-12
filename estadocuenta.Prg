@@ -75,25 +75,27 @@ estadoCuenta.text_3.value := "Saldo al "+dtoc(estadoCuenta.datePicker_2.value)+"
 
 
 for i = 1 to oDocumentos:lastrec()
-	nDebe :=  iif(oDocumentos:getrow(i):fieldget(5) = 101 .or. oDocumentos:getrow(i):fieldget(5) = 111 .or. oDocumentos:getrow(i):fieldget(5) = 113 .or. oDocumentos:getrow(i):fieldget(5) = 103  ,oDocumentos:getrow(i):fieldget(4),0 )
-	nHaber := iif(oDocumentos:getrow(i):fieldget(5) = 102 .or. oDocumentos:getrow(i):fieldget(5) = 112 .or. oDocumentos:getrow(i):fieldget(5) = 98,oDocumentos:getrow(i):fieldget(4),0 )
-	nSaldoAnterior := nSaldoAnterior + nDebe - nHaber
-	cDescripcion := alltrim(oDocumentos:getrow(i):fieldget(3))+" "+alltrim(oDocumentos:getrow(i):fieldget(7))+"-"+str(oDocumentos:getrow(i):fieldget(8))
-	if oDocumentos:getrow(i):fieldget(6) != 0
-		cDescripcion := cDescripcion +" - $ " + str(oDocumentos:getrow(i):fieldget(6))
-	// else
+	if (oDocumentos:getrow(i):fieldget(5) != 98 .and. oDocumentos:getrow(i):fieldget(4) != 0) .or. (oDocumentos:getrow(i):fieldget(5) = 98 .and. oDocumentos:getrow(i):fieldget(4) != 0)
+		nDebe :=  iif(oDocumentos:getrow(i):fieldget(5) = 101 .or. oDocumentos:getrow(i):fieldget(5) = 111 .or. oDocumentos:getrow(i):fieldget(5) = 113 .or. oDocumentos:getrow(i):fieldget(5) = 103  ,oDocumentos:getrow(i):fieldget(4),0 )
+		nHaber := iif(oDocumentos:getrow(i):fieldget(5) = 102 .or. oDocumentos:getrow(i):fieldget(5) = 112 .or. oDocumentos:getrow(i):fieldget(5) = 98 ,oDocumentos:getrow(i):fieldget(4),0 )
+		nSaldoAnterior := nSaldoAnterior + nDebe - nHaber
+		cDescripcion := alltrim(oDocumentos:getrow(i):fieldget(3))+" "+alltrim(oDocumentos:getrow(i):fieldget(7))+"-"+str(oDocumentos:getrow(i):fieldget(8))
+		if oDocumentos:getrow(i):fieldget(6) != 0
+			cDescripcion := cDescripcion +" - $ " + str(oDocumentos:getrow(i):fieldget(6))
+		// else
+			
+		endIf
 		
-	endIf
-	
-	estadoCuenta.text_5.value := estadoCuenta.text_5.value + oDocumentos:getrow(i):fieldget(6)
-	
-	
-	aadd(aGrid,{	oDocumentos:getrow(i):fieldget(1), ;
-								dtoc(oDocumentos:getrow(i):fieldget(2)), ; 
-								cDescripcion, ;
-								nDebe, ;
-								nHaber, ;
-								nSaldoAnterior })
+		estadoCuenta.text_5.value := estadoCuenta.text_5.value + oDocumentos:getrow(i):fieldget(6)
+		
+		
+		aadd(aGrid,{	oDocumentos:getrow(i):fieldget(1), ;
+									dtoc(oDocumentos:getrow(i):fieldget(2)), ; 
+									cDescripcion, ;
+									nDebe, ;
+									nHaber, ;
+									nSaldoAnterior })
+	endif
 next
 
 nLargoArray := len(aGrid)

@@ -8,12 +8,11 @@ local cTipoDoc := tipoDocumento(nDocumento)
 //
 do case
 
-	// case cTipoDoc == 'F' .or. cTipoDoc == 'D' .or. cTipoDoc == 'C' .or. cTipoDoc == 'P' .or. cTipoDoc == 'Q'
-	case cTipoDoc == 101 .or. cTipoDoc == 111 .or. cTipoDoc == 91 .or. cTipoDoc == 81 .or. cTipoDoc == 102 .or. cTipoDoc == 112 .or. cTipoDoc == 103 .or. cTipoDoc == 113
+	case cTipoDoc == 101 .or. cTipoDoc == 111 .or. cTipoDoc == 91 .or. cTipoDoc == 81 
 		aLargos := {120,200,45,80,30,40,80 }
 		aTitulos := {'Codigo','Articulo','Cant.','Precio Unit.','Iva','Dto.','PrecioFinal'}
 		aControls := {{'TEXTBOX','CHARACTER'},{'TEXTBOX','CHARACTER'},{'TEXTBOX','NUMERIC','999.99'},{'TEXTBOX','NUMERIC','999,999.99'},{'TEXTBOX','NUMERIC','99'},{'TEXTBOX','NUMERIC','999'},{'TEXTBOX','NUMERIC','999,999,999.99'}}
-	case cTipoDoc == 98 
+	case cTipoDoc == 98 .or. cTipoDoc == 102 .or. cTipoDoc == 112 .or. cTipoDoc == 103 .or. cTipoDoc == 113
 		aLargos := {120,120,120,120,120 }
 		aTitulos := {'Nro Factura','Imp.Factura','Fecha','Imp.Aplicado','Saldo Factura'}
 	 	aControls :={{'TEXTBOX','NUMERIC','99999999'},{'TEXTBOX','NUMERIC','999,999.99'},{'TEXTBOX','CHARACTER'},{'TEXTBOX','NUMERIC','999,999.99'},{'TEXTBOX','NUMERIC','999,999.99'}}
@@ -44,16 +43,16 @@ do case
 		cargarReciboCliente(nDocumento)
 	case cTipoDoc == 102 
 		documentogen.title := "eTicket Nota de Crédito"
-		cargarFacturaCreditoCliente(nDocumento)
+		cargarReciboCliente(nDocumento)
 	case cTipoDoc == 112
 		documentogen.title := "eFactura Nota de Crédito"
-		cargarFacturaCreditoCliente(nDocumento)
+		cargarReciboCliente(nDocumento)
 	case cTipoDoc == 103
 		documentogen.title := "eTicket Nota de Débito"
-		cargarFacturaCreditoCliente(nDocumento)
+		cargarReciboCliente(nDocumento)
 	case cTipoDoc == 113
 		documentogen.title := "eFactura Nota de Débito"
-		cargarFacturaCreditoCliente(nDocumento)
+		cargarReciboCliente(nDocumento)
 	case cTipoDoc == 101
 		documentogen.title := "eTicket"
 		cargarFacturaCreditoCliente(nDocumento)
@@ -131,11 +130,9 @@ do case
 					else
 						msgInfo('Documento No.'+str(documentogen.text_6.value)+' Anulado')
 					endIf
-				case nTipoDoc =101 .or.nTipoDoc = 111 
+				case nTipoDoc =101 .or. nTipoDoc = 111 
 					notaCreditoCliente(documentogen.text_6.value,nCajero)  
-				// else
-					// anularDevolucion(documentogen.text_6.value,nCajero)
-				// endIf
+				
 			end case
 		else
 					msginfo("Usuario no autorizado")

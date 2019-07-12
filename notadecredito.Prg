@@ -1,40 +1,56 @@
 #include <hmg.ch>
 
-procedure notaCreditoCliente(nFactura)
+procedure notaCreditoCliente(nFactura,nCajero)
 local nTipoDoc:= tipoDocumento(nFactura)
 local cTipoDocumento := descripcionDocumento(nTipoDoc)
-if cajaAbierta()
+if !cajaAbierta()
+	msgInfo("Caja Cerrada !!!")
+	return .f.
+endIf   
 
-
-if !IsWindowActive(notaCredito)
-	load window notaCredito
+if IsWindowActive(notaCredito)
+	msgInfo("No es posible Hacer la Devolucion")
+	return .f.
+endif
+	
 	do case
 	case  ( nTipoDoc = 101 .or. nTipoDoc = 111) 
 		if !facturaSinDevolucion(nFactura)
 			msginfo(cTipoDocumento+" con Nota de Crédito")
-			notaCredito.release
+			// notaCredito.release
 			return .f.
 		endif
 		if !facturaSinRecibos(nFactura)
 			msginfo(cTipoDocumento+" Con Recibos")
-			notaCredito.release
+			// notaCredito.release
 			return .f.
 		endif
+		aColumCont := {{'TEXTBOX','CHARACTER'},{'TEXTBOX','CHARACTER'},{'TEXTBOX','NUMERIC','999.99'},{'TEXTBOX','NUMERIC','999,999.99'},{'TEXTBOX','NUMERIC','99'},{'TEXTBOX','NUMERIC','999'},{'TEXTBOX','NUMERIC','999,999,999.99'},{'TEXTBOX','NUMERIC'}}
+		aColumTit :=	{'Codigo','Articulo','Cant.','Precio Unit.','Iva','Dto.','PrecioFinal','Nro fact'}
+		aColumWidth := {120,200,45,80,30,40,80,0 }
+		
+		load window notaCredito
 		rellenoFacturaDevolucion(nFactura,nTipoDoc)
 		notaCredito.button_1.caption := "Guardar Nota Credito"
+		
 	case ( nTipoDoc = 102 .or. nTipoDoc = 112)
 		if !nCreditoSinDevolucion(nFactura)
 			msginfo(cTipoDocumento+" con Nota de Débito")
-			notaCredito.release
+			// notaCredito.release
 			return .f.
 		endif
-		rellenoFacturaDevolucion(nFactura,nTipoDoc)
+		aColumCont := {{'TEXTBOX','CHARACTER'},{'TEXTBOX','CHARACTER'},{'TEXTBOX','NUMERIC','999.99'},{'TEXTBOX','NUMERIC','999,999.99'},{'TEXTBOX','NUMERIC','99'},{'TEXTBOX','NUMERIC','999'},{'TEXTBOX','NUMERIC','999,999,999.99'},{'TEXTBOX','NUMERIC'}}
+		aColumTit :=	{'','Doc.Referencia','Cant.','Precio Unit.','Iva','Dto.','Imp. Aplicado','Referencia'}
+		aColumWidth := {0,300,0,0,0,0,100,80 }
+		load window notaCredito
+		
+		rellenoFacturaGlobalDevolucion(nFactura,nTipoDoc)
 
 		notaCredito.button_1.caption := "Guardar Nota Debito"
 
 	otherwise
-		msgInfo("No es posible Hacer la Devolucion")
-		notaCredito.release
+		msgInfo("No es posible Hacer la Devolución")
+		// notaCredito.release
 		return .f.
 	end case
 	
@@ -43,28 +59,17 @@ if !IsWindowActive(notaCredito)
 
 	notaCredito.center
 	notaCredito.activate
-	
-endif
-else
-	msgInfo("Caja Cerrada !!!")
-endIf       
 
+return    
+
+ //si es con detalle de factura 
 procedure rellenoFacturaDevolucion(nFactura,nTipoDoc)
 local oCabezalFactura := facturaClienteCabezal(nFactura)
 local oDetalleFactura //:= detalleFacturaCliente(nFactura)
 local nTotalFactura := 0
 local nGlobal := refGlobal(nFactura)
-//local nTipoDoc := oCabezalFactura:getRow(1):fieldGet(4)
+oDetalleFactura := detalleFacturaCliente(nFactura)
 
-if nTipoDoc = 101 .or. nTipoDoc = 111
-	oDetalleFactura := detalleFacturaCliente(nFactura)	
-else
-	if nGlobal == "1" 
-		oDetalleFactura  := oDetalleGlobalDevolucion(nFactura,nTipoDoc)
-	else
-		oDetalleFactura  := oDetalleFacturaDevolucion(nFactura)
-	endif
-endif
 notaCredito.text_1.value := oCabezalFactura:getRow(1):fieldGet(3)
 notaCredito.text_2.value := str(nFactura)+" - "+nombreCliente(clienteFactura(nFactura))+" - "+dtoc(fechaFacturaCliente(nFactura))
 notaCredito.text_4.value := oCabezalFactura:getRow(1):fieldGet(5)
@@ -74,14 +79,36 @@ notaCredito.text_8.value := oCabezalFactura:getRow(1):fieldGet(8)
 for i = 1 to oDetalleFactura:lastrec()
 	oRow := oDetalleFactura:getRow(i)
 	notaCredito.grid_1.additem({ oRow:fieldGet(2), oRow:fieldGet(6),oRow:fieldGet(3),oRow:fieldGet(4),oRow:fieldGet(5)," ",oRow:fieldGet(3)*oRow:fieldGet(4), oRow:fieldGet(1)  })
-	if nGlobal == "1" 
-		nTotalFactura += round(oRow:fieldGet(3)*oRow:fieldGet(4),0)
-	else
-		nTotalFactura += round(oRow:fieldGet(3)*oRow:fieldGet(4) * (1 + oRow:fieldGet(5)/100),0)
-	endif
+	nTotalFactura += round(oRow:fieldGet(3)*oRow:fieldGet(4) * (1 + oRow:fieldGet(5)/100),0)
 next
 notaCredito.text_5.value := nTotalFactura
-// notaCredito.text_3.value := saldoFactura(nFactura)
+
+
+procedure rellenoFacturaGlobalDevolucion(nFactura,nTipoDoc)
+local oCabezalFactura := facturaClienteCabezal(nFactura)
+local oDetalleFactura //:= detalleFacturaCliente(nFactura)
+local nTotalFactura := 0
+
+oDetalleFactura  := oDetalleGlobalDevolucion(nFactura,nTipoDoc)
+	
+
+notaCredito.text_1.value := oCabezalFactura:getRow(1):fieldGet(3)
+notaCredito.text_2.value := str(nFactura)+" - "+nombreCliente(clienteFactura(nFactura))+" - "+dtoc(fechaFacturaCliente(nFactura))
+notaCredito.text_4.value := oCabezalFactura:getRow(1):fieldGet(5)
+notaCredito.text_7.value := oCabezalFactura:getRow(1):fieldGet(10)
+notaCredito.text_8.value := oCabezalFactura:getRow(1):fieldGet(8)
+
+for i = 1 to oDetalleFactura:lastrec()
+	oRow := oDetalleFactura:getRow(i)
+	notaCredito.grid_1.additem({ oRow:fieldGet(2), oRow:fieldGet(6),oRow:fieldGet(3),oRow:fieldGet(4),oRow:fieldGet(5)," ",oRow:fieldGet(4), oRow:fieldGet(1)  })
+	nTotalFactura += oRow:fieldGet(4)
+next
+notaCredito.text_5.value := nTotalFactura
+
+
+
+
+
 
 procedure cuentaMarcadosDevolucion()
 local nCantidad := len(notaCredito.grid_1.value)
@@ -99,7 +126,7 @@ local nTipoDoc := tipoDocumento(notaCredito.text_6.value)
 local dFechaFactura:= notaCredito.datePicker_1.value
 local nTotalFactura:= notaCredito.text_5.value
 local cDescripcion:= notaCredito.text_4.value
-local nCantidad := len(notaCredito.grid_1.value)
+// local nCantidad := len(notaCredito.grid_1.value)
 local nformaPago := notaCredito.text_8.value
 local nVendedor := notacredito.text_7.value
 local nCaja := cajaId()
@@ -161,49 +188,46 @@ endIf
 
 
 //if facturaClienteConDetalle()
-if nGlobal == "1"
-	for i=1 to notaCredito.grid_1.itemCount		
-		nNumeroFact := notaCredito.grid_1.cell(i,7)
-		nImpFactura := notaCredito.grid_1.cell(i,3) * notaCredito.grid_1.cell(i,4) 
-		if !modificoSaldoNCCliente(nNumeroFact,nImpFactura)
-			noTran()
-			WAIT CLEAR
-			msgInfo("No se pudo Modificar la Factura. Reintente!!!")
-			return .f.
-		endIf
+// if nGlobal == "1"
+	// for i=1 to notaCredito.grid_1.itemCount		
+		// nNumeroFact := notaCredito.grid_1.cell(i,8)
+		// nImpFactura := notaCredito.grid_1.cell(i,3) * notaCredito.grid_1.cell(i,4) 
+		// if !modificoSaldoNCCliente(nNumeroFact,nImpFactura)
+			// noTran()
+			// WAIT CLEAR
+			// msgInfo("No se pudo Modificar la Factura. Reintente!!!")
+			// return .f.
+		// endIf
 			
-	next
-else
-	for i=1 to notaCredito.grid_1.itemCount
-		cCodigo := notaCredito.grid_1.cell(i,1)
-		nCantidad := notaCredito.grid_1.cell(i,3)
-		nPrecioUnitario := notaCredito.grid_1.cell(i,4)
-		nIva := notaCredito.grid_1.cell(i,5)
-		nDto := notaCredito.grid_1.cell(i,6)
-		nImporte := notaCredito.grid_1.cell(i,7)
-		if !graboFactClienteDetalle(nNumero,i,cCodigo,nCantidad,nPrecioUnitario,nIva,nDto,nImporte)
-			noTran()
-			WAIT CLEAR
-			msgInfo("No se pudieron Guardar el detalle de la NOta de Crédito. Reintente!!!")
-			return .f.
-		endIf
-	next
-	if cTipoDocumento = 103 .or. cTipoDocumento = 113
-		if !modificoSaldoNCCliente(notaCredito.text_6.value,nTotalFactura)
-			noTran()
-			WAIT CLEAR
-			msgInfo("No se pudo Modificar la Factura. Reintente!!!")
-			return .f.
-		endIf
-	else
-		if !modificoSaldoFacturaCliente(notaCredito.text_6.value,nTotalFactura)
+	// next
+// else
+	do case
+	case  nTipoDoc = 101 .or. nTipoDoc = 111
+	
+		for i=1 to notaCredito.grid_1.itemCount
+			cCodigo := notaCredito.grid_1.cell(i,1)
+			nCantidad := notaCredito.grid_1.cell(i,3)
+			nPrecioUnitario := notaCredito.grid_1.cell(i,4)
+			nIva := notaCredito.grid_1.cell(i,5)
+			nDto := notaCredito.grid_1.cell(i,6)
+			nImporte := notaCredito.grid_1.cell(i,7)
+			if !graboFactClienteDetalle(nNumero,i,cCodigo,nCantidad,nPrecioUnitario,nIva,nDto,nImporte)
+				noTran()
+				WAIT CLEAR
+				msgInfo("No se pudieron Guardar el detalle de la NOta de Crédito. Reintente!!!")
+				return .f.
+			endIf
+		next
+	
+	case  nTipoDoc = 102 .or. nTipoDoc = 112
+		if !modificoSaldoNCCliente(notaCredito.text_6.value)
 			noTran()
 			WAIT CLEAR
 			msgInfo("No se pudo Modificar la Factura. Reintente!!!")
 			return .f.
 		endIf
-	endif
-endif
+	end case
+// endif
 
 finTransaccion()
 
@@ -236,49 +260,49 @@ function controloDevolucion()
 //endIf
 
 return .t.
-function anularDevolucion(nFactura,nCajero)
-if anuloDevolucion(nFactura,nCajero)
-	msgInfo('Documento No.'+str(nFactura)+' Anulado')
-else
-	msgBox("No se puede anular")
-endif
+// function anularDevolucion(nFactura,nCajero)
+// if anuloDevolucion(nFactura,nCajero)
+	// msgInfo('Documento No.'+str(nFactura)+' Anulado')
+// else
+	// msgBox("No se puede anular")
+// endif
 
 *************************************************
 *************************************************
 ******Implementaciones del modelo ***************
 *************************************************
 *************************************************
-function guardoCabezalNotaCredito(nDocumento, nCaja,nCliente,cTipo,dFecha,nImporte)
-local cQuery, oQuery
+// function guardoCabezalNotaCredito(nDocumento, nCaja,nCliente,cTipo,dFecha,nImporte)
+// local cQuery, oQuery
 
-cQuery := "insert into recibo_cliente_cab values("+str(nDocumento)+","+str(nCaja)+","+str(nCliente)+", "
-cQuery += " '"+dtos(dFecha)+"','"+cTipo+"',"+str(nImporte)+", current_timestamp ,"
-cQuery += " 'N',null,null) "
-oQuery:= oServer:Query(cQuery)
-If oQuery:NetErr() 
-  MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-  //si o puedo obtener el id del cabezal anulo todo para atrás
-  oQuery:=oServer:Query('ROLLBACK') 
-  return .f.
-else
-	return .t.
-endif
+// cQuery := "insert into recibo_cliente_cab values("+str(nDocumento)+","+str(nCaja)+","+str(nCliente)+", "
+// cQuery += " '"+dtos(dFecha)+"','"+cTipo+"',"+str(nImporte)+", current_timestamp ,"
+// cQuery += " 'N',null,null) "
+// oQuery:= oServer:Query(cQuery)
+// If oQuery:NetErr() 
+  // MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
+  // si o puedo obtener el id del cabezal anulo todo para atrás
+  // oQuery:=oServer:Query('ROLLBACK') 
+  // return .f.
+// else
+	// return .t.
+// endif
 
-function guardoDetalleNotaCredito(nNota,nFactura,nImporte)
-local cQuery, oQuery
+// function guardoDetalleNotaCredito(nNota,nFactura,nImporte)
+// local cQuery, oQuery
 
-cQuery := "insert into recibo_cliente_det values("+str(nNota)+","+str(nFactura)+", "
-cQuery := cQuery + " "+str(nImporte)+" )"
+// cQuery := "insert into recibo_cliente_det values("+str(nNota)+","+str(nFactura)+", "
+// cQuery := cQuery + " "+str(nImporte)+" )"
 
-oQuery:= oServer:Query(cQuery)
-If oQuery:NetErr() 
-  MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-  //si o puedo obtener el id del cabezal anulo todo para atrás
-  oQuery:=oServer:Query('ROLLBACK') 
-  return .f.
-else
-	return .t.
-endif
+// oQuery:= oServer:Query(cQuery)
+// If oQuery:NetErr() 
+  // MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
+  // si o puedo obtener el id del cabezal anulo todo para atrás
+  // oQuery:=oServer:Query('ROLLBACK') 
+  // return .f.
+// else
+	// return .t.
+// endif
 
 function notasCreditoFacturaCliente(nFactura)
 local cQuery, oQuery
@@ -288,7 +312,15 @@ cQuery += " from cfe_comprobante_cab c, cfe_tipos d, cfe_referencias_det r"
 cQuery += " where r.id_factura = c.id_factura "
 cQuery += " and d.id_cfe = c.tipoCFE "
 cQuery += " and r.id_factura_ref = "+str(nFactura)+" "
-cQuery += " and c.tipoCFE in (102,112) "
+cQuery += " and c.tipoCFE in (102,112,103,113) "
+cQuery += " union all "
+cQuery += " select c.id_factura, c.fecha,d.descripcion,c.importe,c.tipoCFE "
+cQuery += " from cfe_comprobante_cab c, cfe_tipos d, cfe_referencias_det r, cfe_referencias_det rd "
+cQuery += " where rd.id_factura = c.id_factura "
+cQuery += " and d.id_cfe = c.tipoCFE "
+cQuery += " and r.id_factura_ref = "+str(nFactura)+"  "
+cQuery += " and rd.id_factura_ref = r.id_factura "
+cQuery += " and c.tipoCFE in (103,113)"
 
 oQuery:= oServer:Query(cQuery)
 If oQuery:NetErr() 
@@ -334,46 +366,3 @@ If oQuery:NetErr()
 else
 	return .t.
 endif
-
-function anuloDevolucion(nFactura,nCajero)
-local cQuery
-local oQuery
-
-oQuery:= oServer:Query( 'BEGIN' ) //comienzo la transacción
-If oQuery:NetErr() 
-  MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-  oQuery:=oServer:Query('ROLLBACK') //si no puede hacer el comienzo de la transaccion cancelo
-  return .f.
-EndIf
-
-cQuery := " update factura_cliente_cab "
-cQuery += " set anulado = 'S', "
-cQuery += " usuario_anula = "+str(nCajero)+", "
-cQuery += " fecha_anula = current_timestamp "
-cQuery +=	" where numero_factura = "+str(nFactura)+" "
-oQuery:= oServer:Query( cQuery ) 
-If oQuery:NetErr() 
-  MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-  oQuery:=oServer:Query('ROLLBACK') 
-  return .f.
-EndIf
-
-cQuery := " update factura_cliente_cab f,factura_notacredito r "
-cQuery += " set saldo = f.importe "
-cQuery += " where r.numero_factura = f.numero_factura "
-cQuery += " and r.numero_notacredito = "+str(nFactura)+" "
-
-oQuery:= oServer:Query( cQuery ) 
-If oQuery:NetErr() 
-  MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-  oQuery:=oServer:Query('ROLLBACK') 
-  return .f.
-EndIf
-
-oQuery:= oServer:Query( 'COMMIT' ) 
-If oQuery:NetErr() 
-  MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-  oQuery:=oServer:Query('ROLLBACK') 
-  return .f.
-EndIf
-return .t.

@@ -605,7 +605,7 @@ endIf
 function facturaClienteCabezal(nFactura)
 local cQuery, oQuery
 
-cQuery := " select c.id_factura,c.fecha,c.id_cliente,c.tipoCFE,c.descripcion,c.serieCFE,c.numeroCFE,c.forma_pago,t.cantidad_copias, c.id_usuario" 
+cQuery := " select c.id_factura,c.fecha,c.id_cliente,c.tipoCFE,c.descripcion,c.serieCFE,c.numeroCFE,c.forma_pago,t.cantidad_copias, c.id_usuario,t.cantidad_copias_credito " 
 cQuery += " from cfe_comprobante_cab c, cfe_tipos t"
 cQuery += " where t.id_cfe = c.tipoCFE and c.id_factura = "+str(nFactura)+"  "
 
@@ -721,6 +721,7 @@ else
   return oQuery
 endIf
 
+
 function modificoSaldoFacturaCliente(nFactura,nImporte)
 local cQuery, oQuery
 
@@ -735,10 +736,29 @@ If oQuery:NetErr()
 else
 	return .t.
 endif
-function modificoSaldoNCCliente(nFactura,nImporte)
+
+function modificoSaldoNCCliente(nFactura)
 local cQuery, oQuery
 
-cQuery := " update cfe_comprobante_cab set saldo = saldo + "+str(nImporte)+" "
+// cQuery := " update cfe_comprobante_cab set saldo = saldo + "+str(nImporte)+" "
+// cQuery += " where id_factura = "+str(nFactura)+"  "
+cQuery := " update cfe_comprobante_cab f,cfe_referencias_det r "
+cQuery += " set f.saldo = f.saldo + r.importe_aplicado"
+cQuery += " where r.id_factura_ref = f.id_factura "
+cQuery += " and r.id_factura = "+str(nFactura)+" "
+oQuery:= oServer:Query(cQuery)
+If oQuery:NetErr() 
+  MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
+  oQuery:=oServer:Query('ROLLBACK') 
+  return .f.
+else
+	return .t.
+endif
+
+function modificoSaldoNDCliente(nFactura,nImporte)
+local cQuery, oQuery
+
+cQuery := " update cfe_comprobante_cab set saldo = saldo - "+str(nImporte)+" "
 cQuery += " where id_factura = (select id_factura_ref from cfe_referencias_det where id_factura = "+str(nFactura)+" ) "
 
 oQuery:= oServer:Query(cQuery)
