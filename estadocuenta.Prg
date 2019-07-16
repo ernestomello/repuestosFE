@@ -3,18 +3,28 @@
 procedure estadoCuentaClientes()
 
 load window estadoCuenta
-//do case
-//case cOpcion == 'clientes'
-//	estadoCuenta.frame_1.caption := 'Cliente: '
-//case cOpcion == 'proveedores'
-//	estadoCuenta.frame_1.caption := 'Proveedor: '
-//	estadoCuenta.button_2.visible := .f.
-//end do
-
+DEFINE CONTROL CONTEXTMENU grid_1 of estadoCuenta
+		MENUITEM "Ver Documento-Imprimir"  ONCLICK verFacturaEstado()
+		MENUITEM "Ver Documento"  ONCLICK muestroDocumentoEstado()
+		MENUITEM "Nota Credito /Debito"  ONCLICK notaCreditoDebitoEstado()
+	END MENU
 estadoCuenta.datePicker_1.value := date() - 30
 estadoCuenta.center
 estadoCuenta.activate
 
+function verFacturaEstado()
+verFacturaPDF(estadocuenta.grid_1.cell(estadocuenta.grid_1.value,1)) 
+rellenoGridCliente()
+return
+
+function muestroDocumentoEstado()
+muestroDocumentoCliente(estadocuenta.grid_1.cell(estadocuenta.grid_1.value,1))
+rellenoGridCliente()
+return
+function notaCreditoDebitoEstado()
+notaCreditoCliente(estadocuenta.grid_1.cell(estadocuenta.grid_1.value,1))
+rellenoGridCliente()
+return
 
 
 procedure buscoClienteEstadoCuenta()

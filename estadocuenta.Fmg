@@ -3,12 +3,6 @@
 
 DEFINE WINDOW TEMPLATE AT 117 , 332 WIDTH 678 HEIGHT 544 VIRTUAL WIDTH Nil VIRTUAL HEIGHT Nil TITLE "Estado de Cuenta Clientes" ICON NIL  NOSIZE CURSOR NIL ON INIT Nil ON RELEASE Nil ON INTERACTIVECLOSE Nil ON MOUSECLICK Nil ON MOUSEDRAG Nil ON MOUSEMOVE Nil ON SIZE Nil ON MAXIMIZE Nil ON MINIMIZE Nil ON PAINT Nil BACKCOLOR Nil NOTIFYICON NIL NOTIFYTOOLTIP NIL ON NOTIFYCLICK Nil ON GOTFOCUS Nil ON LOSTFOCUS Nil ON SCROLLUP Nil ON SCROLLDOWN Nil ON SCROLLLEFT Nil ON SCROLLRIGHT Nil ON HSCROLLBOX Nil ON VSCROLLBOX Nil
 
-    DEFINE CONTEXT MENU
-        MENUITEM "Ver Documento-Imprimir" ACTION verFacturaPDF(estadocuenta.grid_1.cell(estadocuenta.grid_1.value,1))
-        MENUITEM "Ver Documento" ACTION muestroDocumentoCliente(estadocuenta.grid_1.cell(estadocuenta.grid_1.value,1))
-        MENUITEM "Nota Credito Devolucion" ACTION notaCreditoCliente(estadocuenta.grid_1.cell(estadocuenta.grid_1.value,1))
-    END MENU
-
     DEFINE TEXTBOX Text_1
         ROW    30
         COL    20

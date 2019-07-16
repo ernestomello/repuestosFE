@@ -203,7 +203,12 @@ endIf
 // else
 	do case
 	case  nTipoDoc = 101 .or. nTipoDoc = 111
-	
+		if !modificoSaldoNDCliente(notaCredito.text_6.value)
+			noTran()
+			WAIT CLEAR
+			msgInfo("No se pudo Modificar la Factura. Reintente!!!")
+			return .f.
+		endIf
 		for i=1 to notaCredito.grid_1.itemCount
 			cCodigo := notaCredito.grid_1.cell(i,1)
 			nCantidad := notaCredito.grid_1.cell(i,3)

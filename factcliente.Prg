@@ -758,8 +758,12 @@ endif
 function modificoSaldoNDCliente(nFactura,nImporte)
 local cQuery, oQuery
 
-cQuery := " update cfe_comprobante_cab set saldo = saldo - "+str(nImporte)+" "
-cQuery += " where id_factura = (select id_factura_ref from cfe_referencias_det where id_factura = "+str(nFactura)+" ) "
+cQuery := " update cfe_comprobante_cab f,cfe_referencias_det r "
+cQuery += " set f.saldo = f.saldo - r.importe_aplicado"
+cQuery += " where r.id_factura_ref = f.id_factura "
+cQuery += " and r.id_factura_ref = "+str(nFactura)+" "
+// cQuery := " update cfe_comprobante_cab set saldo = saldo - "+str(nImporte)+" "
+// cQuery += " where id_factura = (select id_factura_ref from cfe_referencias_det where id_factura = "+str(nFactura)+" ) "
 
 oQuery:= oServer:Query(cQuery)
 If oQuery:NetErr() 
