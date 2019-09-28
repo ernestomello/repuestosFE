@@ -49,7 +49,10 @@ if nSocioGlobal != 0
 					notaCreditoCliente(nSocioGlobal,nCajero)  			
 				
 				case nTipoDoc =102 .or.nTipoDoc = 112
-					notaCreditoCliente(nSocioGlobal,nCajero)  		
+					notaCreditoCliente(nSocioGlobal,nCajero)  	
+
+				case nTipoDoc =91 .or.nTipoDoc = 81
+					notaCreditoCliente(nSocioGlobal,nCajero) 
 				otherwise
 					msgInfo("No es posible Hacer la Anulación")
 					return .f.

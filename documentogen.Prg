@@ -124,15 +124,16 @@ do case
 		nCajero := anulacion()
 		if nCajero != 0
 			do case 
-				case  nTipoDoc = 98 				
+				case  nTipoDoc == 98 				
 					if !anuloRecibo(documentogen.text_6.value,nCajero)  
 						MsGInfo('No se pudo anular el Movimiento, Consulte al ADMINISTRADOR')
 					else
 						msgInfo('Documento No.'+str(documentogen.text_6.value)+' Anulado')
 					endIf
-				case nTipoDoc =101 .or. nTipoDoc = 111 
+				case nTipoDoc == 101 .or. nTipoDoc == 111 
 					notaCreditoCliente(documentogen.text_6.value,nCajero)  
-				
+				case nTipoDoc == 91 .or. nTipoDoc == 81 
+					modificoSaldoFacturaCliente(documentogen.text_6.value, 0 ) 
 			end case
 		else
 					msginfo("Usuario no autorizado")

@@ -18,8 +18,8 @@ return
 function menuContextual(cFormaPago)
 if cFormaPago == "Contado"
 DEFINE CONTROL CONTEXTMENU grid_1 of presupuestos
-	// MENUITEM "Cancelar" ONCLICK cancelarPresupuesto(presupuestos.grid_1.cell(presupuestos.grid_1.value,1),presupuestos.grid_1.cell(presupuestos.grid_1.value,4))
-	MENUITEM "Ver Documento" ONCLICK muestroDocumentoCliente(presupuestos.grid_1.cell(presupuestos.grid_1.value,1))
+	MENUITEM "Anular" ONCLICK cancelarPresupuesto(presupuestos.grid_1.cell(presupuestos.grid_1.value[1],1),presupuestos.grid_1.cell(presupuestos.grid_1.value[1],4))
+	MENUITEM "Ver Documento" ONCLICK muestroDocumentoCliente(presupuestos.grid_1.cell(presupuestos.grid_1.value[1],1))
 	// MENUITEM "Crédito" ONCLICK facturoDocumento(presupuestos.grid_1.cell(presupuestos.grid_1.value,1),presupuestos.grid_1.cell(presupuestos.grid_1.value,4), 111)
 	MENUITEM "Contado" ONCLICK facturoDocumento(presupuestos.grid_1.value, 1)
 	MENUITEM "Credito" ONCLICK facturoDocumento(presupuestos.grid_1.value, 2)
@@ -28,8 +28,8 @@ formularioContado()
 
 else
 DEFINE CONTROL CONTEXTMENU grid_1 of presupuestos
-	MENUITEM "Cancelar" ONCLICK cancelarPresupuesto(presupuestos.grid_1.cell(presupuestos.grid_1.value,1),presupuestos.grid_1.cell(presupuestos.grid_1.value,4))
-	MENUITEM "Ver Documento" ONCLICK muestroDocumentoCliente(presupuestos.grid_1.cell(presupuestos.grid_1.value,1))
+	MENUITEM "Cancelar" ONCLICK cancelarPresupuesto(presupuestos.grid_1.cell(presupuestos.grid_1.value[1],1),presupuestos.grid_1.cell(presupuestos.grid_1.value[1],4))
+	MENUITEM "Ver Documento" ONCLICK muestroDocumentoCliente(presupuestos.grid_1.cell(presupuestos.grid_1.value[1],1))
 	// MENUITEM "Crédito" ONCLICK facturoDocumento(presupuestos.grid_1.cell(presupuestos.grid_1.value,1),presupuestos.grid_1.cell(presupuestos.grid_1.value,4), 111)
 	MENUITEM "Crédito" ONCLICK facturoDocumento(presupuestos.grid_1.value, 2)
 	// MENUITEM "Contado" ONCLICK facturoDocumento(presupuestos.grid_1.cell(presupuestos.grid_1.value,1),presupuestos.grid_1.cell(presupuestos.grid_1.value,4), 101)
@@ -199,6 +199,9 @@ Function cancelarPresupuesto(nFactura,nImporte)
 if msgYesNo("Marca como Cancelado el Presupuesto","ATENCIÓN",.T.)
 	modificoSaldoFacturaCliente(nFactura,nImporte)
 endIf
+activoGridPresupuesto()
+
+return
 
 procedure imprimeEstadoCuentaPresupuestosCliente()
 local oDocumentos, nSaldoAnterior, nSaldoActual

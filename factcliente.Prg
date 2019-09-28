@@ -872,6 +872,7 @@ cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"
 cQuery += " - (select ifnull(sum(importe),0) from cfe_comprobante_cab"
 cQuery += " where id_cliente = "+str(nCliente)+" "
 cQuery += " and tipoCFE in (102,112,98) "
+//cQuery += " and forma_pago = 2 " ver las formas de pago de los recibos para que sean tomados por este resumen
 cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' )"
 // cQuery += " and anulado = 'N' ) "
 // cQuery += " -(SELECT ifnull(sum(importe),0) FROM cfe_comprobante_cab "
