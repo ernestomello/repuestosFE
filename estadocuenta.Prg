@@ -72,7 +72,7 @@ local nHaber:= 0,nDebe := 0
 //local cOpcion := estadoCuenta.text_5.value
 local aGrid:= {}
 estadoCuenta.text_5.value := 0
-
+WAIT WINDOW "Procesando Información - AGUARDE" NOWAIT 
 	oDocumentos := documentosCliente(estadoCuenta.text_1.value,estadoCuenta.datePicker_1.value,estadoCuenta.datePicker_2.value )
 	nSaldoActual := saldoEntreFechasCliente(estadoCuenta.text_1.value,ctod("01/01/1980"),estadoCuenta.datePicker_2.value)
 	nSaldoAnterior := saldoEntreFechasCliente(estadoCuenta.text_1.value,ctod("01/01/1980"),dFechaHasta)
@@ -114,6 +114,7 @@ for i= nLargoArray to 1 step -1
 	estadoCuenta.grid_1.additem(agrid[i])
 
 next
+WAIT CLEAR
 
 procedure imprimeEstadoCuentaCliente(nCliente,dFechaDesde,dFechaHasta,nPrevio)
 local oDocumentos, nSaldoAnterior
