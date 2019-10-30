@@ -35,7 +35,7 @@ endif
 		 
 		if fechaUltimoMovimientoCliente(i) > impresionEstado.datePicker_3.value 
 			if nPrevio != 3
-				imprimeEstadoCuentaCliente(i,dFechaDesde,dFechaHasta,nPrevio)
+				imprimeEstadoCuentaCliente(i,dFechaDesde,dFechaHasta,nPrevio,0)
 			endif 
 		endif
 	next
@@ -89,7 +89,7 @@ case nPrevio = 1
 case nPrevio = 2
 	SELECT PRINTER  dialog  preview  
 // case nPrevio = 3
-	//SELECT PRINTER  'Informes' SAVEAS 'C:\estadoCuenta.PDF'
+	// SELECT PRINTER  DEFAULT SAVEAS 'C:\estadoCuenta.PDF'
 endcase
 
 

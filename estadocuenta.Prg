@@ -6,7 +6,7 @@ load window estadoCuenta
 DEFINE CONTROL CONTEXTMENU grid_1 of estadoCuenta
 		MENUITEM "Ver Documento-Imprimir"  ONCLICK verFacturaEstado()
 		MENUITEM "Ver Documento"  ONCLICK muestroDocumentoEstado()
-		MENUITEM "Nota Credito /Debito"  ONCLICK notaCreditoDebitoEstado()
+		MENUITEM "Anula Según Documento"  ONCLICK notaCreditoDebitoEstado()
 	END MENU
 estadoCuenta.datePicker_1.value := date() - 30
 estadoCuenta.center
@@ -22,7 +22,7 @@ muestroDocumentoCliente(estadocuenta.grid_1.cell(estadocuenta.grid_1.value,1))
 rellenoGridCliente()
 return
 function notaCreditoDebitoEstado()
-notaCreditoCliente(estadocuenta.grid_1.cell(estadocuenta.grid_1.value,1))
+anuloMovimientos(estadocuenta.grid_1.cell(estadocuenta.grid_1.value,1))
 rellenoGridCliente()
 return
 
@@ -116,16 +116,18 @@ for i= nLargoArray to 1 step -1
 next
 WAIT CLEAR
 
-procedure imprimeEstadoCuentaCliente(nCliente,dFechaDesde,dFechaHasta,nPrevio)
+procedure imprimeEstadoCuentaCliente(nCliente,dFechaDesde,dFechaHasta,nPrevio, nControla)
 local oDocumentos, nSaldoAnterior
 local dFechaSaldoAnt := dFechaDesde - 1
 local nSaldoActual := saldoEntreFechasCliente(nCliente,ctod("01/01/1980"),dFechaHasta)
-
-if nSaldoActual > 0
+if nControla == 0 .and. nSaldoActual <= 0
+	return .f.
+endif
+// if nSaldoActual > 0
 	oDocumentos := documentosCliente(nCliente,dFechaDesde,dFechaHasta )
 	nSaldoAnterior := saldoEntreFechasCliente(nCliente,ctod("01/01/1980"),dFechaSaldoAnt)
 	imprimoEstadoCuenta(nCliente,oDocumentos,nSaldoAnterior,dFechaSaldoAnt,nSaldoActual,dFechaHasta,nPrevio)
-endif
+// endif
 
 
 

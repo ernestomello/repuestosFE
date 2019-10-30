@@ -106,6 +106,7 @@ private i
    factCliente.text_5.value:= factCliente.text_5.value + round((factCliente.grid_1.item(i)[8]) * (1 + factCliente.grid_1.item(i)[6]/100),0)
   
   next
+  factCliente.frame_5.caption := "Total de "+alltrim(str(cantItem))+" lineas "
 
 return
 
@@ -141,6 +142,7 @@ factCliente.text_18.value := 0
 factCliente.text_19.value := ''
 factCliente.text_20.value := ''
 factCliente.frame_4.caption := "RUT"
+ factCliente.frame_5.caption := "Total"
 
 
 factCliente.grid_1.deleteAllItems
@@ -510,6 +512,7 @@ for i= 1 to oDetalle:lastRec()
 	nTotalFactura += round(oDetalle:getrow(i):fieldGet(10) * (1 + oDetalle:getrow(i):fieldGet(8)/100),0)
 next
 factCliente.text_5.value := nTotalFactura
+ factCliente.frame_5.caption := "Total de "+alltrim(str(i))+" lineas"
 
 function rellenoFacturasVarias(aFacturas)
 // local oCabezal := facturaClienteCabezal(nFactura)
@@ -534,6 +537,7 @@ for i= 1 to oDetalle:lastRec()
 	//nTotalFactura += oDetalle:getrow(i):fieldGet(10)														
 	nTotalFactura += round(oDetalle:getrow(i):fieldGet(10) * (1 + oDetalle:getrow(i):fieldGet(8)/100),0)
 next
+factCliente.frame_5.caption := "Total de "+alltrim(str(i))+" lineas"
 factCliente.text_5.value := nTotalFactura
 
 function facturaClienteConDetalle()
@@ -845,20 +849,6 @@ else
   return oQuery:getRow(1):fieldGet(1)
 endIf
 
-// function idMovFActuraCliente(nFactura)
-// local cQuery
-// local oQuery
-
-// cQuery := "select id_mov from factura_cliente_cab m "
-// cQuery += " where numero_factura = "+str(nFactura)+"  "
-
-// oQuery := oServer:Query(cQuery)
-// If oQuery:NetErr()												
-  // MsgInfo("SQL SELECT error: " + oQuery:Error())
-// else
-  // return oQuery:getRow(1):fieldGet(1)
-// endIf
-
 function saldoEntreFechasCliente(nCliente,dFechaDesde,dFechaHasta)
 local cQuery,oQuery
 
@@ -868,18 +858,18 @@ cQuery += " where id_cliente = "+str(nCliente)+" "
 cQuery += " and tipoCFE in (101,111,103,113) "
 cQuery += " and forma_pago = 2 "
 cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' )"
-// cQuery += " and id_factura not in (Select id_factura_ref from cfe_referencias_det ) ) "
+
 cQuery += " - (select ifnull(sum(importe),0) from cfe_comprobante_cab"
 cQuery += " where id_cliente = "+str(nCliente)+" "
-cQuery += " and tipoCFE in (102,112,98) "
-//cQuery += " and forma_pago = 2 " ver las formas de pago de los recibos para que sean tomados por este resumen
+cQuery += " and tipoCFE in (102,112) "
+cQuery += " and forma_pago = 2 " 
 cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' )"
-// cQuery += " and anulado = 'N' ) "
-// cQuery += " -(SELECT ifnull(sum(importe),0) FROM cfe_comprobante_cab "
-// cQuery += " where id_cliente = "+str(nCliente)+" "
-// cQuery += " and tipoCFE in (102,112) "
-// cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"'  "
-// cQuery += " and anulado = 'N' ) "
+cQuery += " - (select ifnull(sum(importe),0) from cfe_comprobante_cab"
+cQuery += " where id_cliente = "+str(nCliente)+" "
+cQuery += " and tipoCFE in (98) "
+cQuery += " and forma_pago = 1 " 
+cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' )"
+
 oQuery:= oServer:Query(cQuery)
 If oQuery:NetErr() 
   MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )

@@ -67,7 +67,7 @@ next
 
 
 procedure cuentaTotales()
-local nCantidad := len(reciboCliente.grid_1.value)
+local nCantidad  := len(reciboCliente.grid_1.value)
 local nLinea := 	PARAMETROini("LineasDetalle","N")
 local nTotImporte := 0
 
@@ -78,6 +78,7 @@ if nCantidad > nLinea
 endif
 
 vacioCalculo()
+nCantidad := len(reciboCliente.grid_1.value)
 
 for i= 1 to nCantidad
 		reciboCliente.grid_1.cell(reciboCliente.grid_1.value[i],8) := 'SI'

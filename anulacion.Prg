@@ -25,40 +25,39 @@ endif
 
 
 
-procedure anuloMovimientos()
+procedure anuloMovimientos(nIdFactura)
+
+if nIdFactura = 0
 
 busquedaGeneral("l","","Documentos para Anular",1)   
+nIdFactura := nSocioGlobal
+nSocioGlobal := 0
+endif
 
-if nSocioGlobal != 0
-	// if msgYesNo("Esta operación anulará el documento, CONTINÚA?")
-			
-		// cargoDocumentoGen(nSocioGlobal, "ANULAR")
-				
-	// EndIf
-	nTipoDoc := tipoDocumento(nSocioGlobal)
-		nCajero := anulacion()
-		if nCajero != 0
-			do case 
-				case  nTipoDoc = 98 				
-					if !anuloRecibo(nSocioGlobal,nCajero)  
-						MsGInfo('No se pudo anular el Movimiento, Consulte al ADMINISTRADOR')
-					else
-						msgInfo('Documento No.'+str(nSocioGlobal)+' Anulado')
-					endIf
-				case nTipoDoc =101 .or. nTipoDoc = 111 
-					notaCreditoCliente(nSocioGlobal,nCajero)  			
-				
-				case nTipoDoc =102 .or.nTipoDoc = 112
-					notaCreditoCliente(nSocioGlobal,nCajero)  	
+if nIdFactura != 0
+	nTipoDoc := tipoDocumento(nIdFactura)
+	do case 
+		case  nTipoDoc = 98 
+			nCajero := anulacion()
+			if nCajero = 0
+				msginfo("Usuario no autorizado")
+				return .f.
+			endIf
+			if !anuloRecibo(nIdFactura,nCajero)  
+				MsGInfo('No se pudo anular el Movimiento, Consulte al ADMINISTRADOR')
+			else
+				msgInfo('Documento No.'+str(nIdFactura)+' Anulado')
+			endIf
+		case nTipoDoc =101 .or. nTipoDoc = 111 
+			notaCreditoCliente(nIdFactura)  			
+		
+		case nTipoDoc =102 .or.nTipoDoc = 112
+			notaCreditoCliente(nIdFactura)  	
 
-				case nTipoDoc =91 .or.nTipoDoc = 81
-					notaCreditoCliente(nSocioGlobal,nCajero) 
-				otherwise
-					msgInfo("No es posible Hacer la Anulación")
-					return .f.
-			end case
-		else
-					msginfo("Usuario no autorizado")
-		endIf
-  nSocioGlobal := 0
+		case nTipoDoc =91 .or.nTipoDoc = 81
+			notaCreditoCliente(nIdFactura) 
+		otherwise
+			msgInfo("No es posible Hacer la Anulación")
+			return .f.
+	end case
 endIf                                                                                                    

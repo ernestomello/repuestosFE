@@ -248,7 +248,7 @@ DEFINE WINDOW TEMPLATE AT 117 , 332 WIDTH 678 HEIGHT 544 VIRTUAL WIDTH Nil VIRTU
         COL    500
         WIDTH  100
         HEIGHT 50
-        ACTION imprimeEstadoCuentaCliente(estadoCuenta.text_1.value,estadoCuenta.datePicker_1.value,estadoCuenta.datePicker_2.value,2)
+        ACTION imprimeEstadoCuentaCliente(estadoCuenta.text_1.value,estadoCuenta.datePicker_1.value,estadoCuenta.datePicker_2.value,2,1)
         CAPTION "Imprimir Reporte"
         FONTNAME "Arial"
         FONTSIZE 9

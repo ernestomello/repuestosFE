@@ -59,7 +59,7 @@ Function main()
 
 				SEPARATOR
 
-              ITEM 'Anulación Movimientos'    ACTION anuloMovimientos()
+              ITEM 'Anulación Movimientos'    ACTION anuloMovimientos(0)
 				SEPARATOR
               ITEM 'Pendientes de Facturacion Electrónica'    ACTION emiteFacturaElectronica()
 				SEPARATOR

@@ -45,7 +45,7 @@ local nCantidad := len(envioEstados.grid_1.value)
 for i= 1 to nCantidad
 	if envioEstados.grid_1.cell( envioEstados.grid_1.value[i],4) =='SI'
 		//msginfo(str(envioEstados.grid_1.cell(envioEstados.grid_1.value [i] ,1)))
-		imprimeEstadoCuentaCliente(envioEstados.grid_1.cell(envioEstados.grid_1.value [i] ,1),envioEstados.datePicker_1.value,envioEstados.datePicker_2.value,2) 
+		imprimeEstadoCuentaCliente(envioEstados.grid_1.cell(envioEstados.grid_1.value [i] ,1),envioEstados.datePicker_1.value,envioEstados.datePicker_2.value,2,0) 
 	endif
 	WAIT CLEAR
 next
