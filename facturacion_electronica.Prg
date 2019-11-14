@@ -495,6 +495,7 @@ local nFormaPago := oIdMov:getRow(1):fieldGet(13)
 local nTipoDocumento := oIdMov:getRow(1):fieldGet(4)
 local cRazonR :=if( len(alltrim(aSocio)) != 0, hb_atokens(aSocio,"|")[3],"")
 local cLinea := ""
+local cAdendaSicfe := "<nsAdenda:AdendaSicfe>"+chr(13)+chr(10)+"<nsAdenda:IdCaja>N/A</nsAdenda:IdCaja>"+chr(13)+chr(10)+"<nsAdenda:IdUsuario>N/A</nsAdenda:IdUsuario>"+chr(13)+chr(10)+"</nsAdenda:AdendaSicfe>"
 if nFormaPago = 2 
 	cAdenda += "&lt;br&gt;"+"Cliente Nro: "+str(oIdMov:getRow(1):fieldGet(7))+" - "+cEspeciales(cRazonR)
 	if (nTipoDocumento = 111 .or. nTipoDocumento = 101)
@@ -507,7 +508,7 @@ else
 endif
 cAdenda += "&lt;br&gt;"+"Ref: "+str(oIdMov:getRow(1):fieldGet(1))
 
-cLinea := "<nsAdenda:Adenda>"+cAdenda+"</nsAdenda:Adenda>"+chr(13)
+cLinea := "<nsAdenda:Adenda>"+cAdendaSicfe+cAdenda+"</nsAdenda:Adenda>"+chr(13)
 // "10|"+cAdenda//+chr(13)+chr(10)
 
 fwrite(parchivo,cLinea)

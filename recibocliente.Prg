@@ -548,6 +548,7 @@ EndIf
 
 cQuery := " update cfe_comprobante_cab "
 cQuery += " set importe = 0, "
+cQuery += " descripcion = concat('#CANCELADO#',current_timestamp(),'#Cajero: ',nCajero) ,"
 cQuery += " saldo = 0 where id_factura = "+str(nRecibo)+" "
 oQuery:= oServer:Query( cQuery ) 
 If oQuery:NetErr() 
