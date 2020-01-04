@@ -28,6 +28,7 @@ Function main()
 	Public  cDepEmisior := PARAMETROini("FEDEPEMISOR","C")
 	Public  cHojaWSFE := PARAMETROini("FEHOJAWS","C")
 	Public  nSOAPSw := PARAMETROini("FESOAPWS","C")
+	public cPuntoVenta := PARAMETROini("PUNTOVENTA","C")
 	
 	
 	SeteoAmbiente() 
