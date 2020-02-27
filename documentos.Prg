@@ -545,12 +545,12 @@ local nTipoDocumento :=tipoDocumento(nFactura)
 local nCantidaCopias := cantidadCopias(nTipoDocumento)
 
 if nTipoDocumento = 98 
-		oDetalle :=reciboClienteDetalle(nFactura)
-	else
-		oDetalle :=facturaClienteDetalle(nFactura)
-	endif
+	oDetalle :=reciboClienteDetalle(nFactura)
+else
+	oDetalle :=facturaClienteDetalle(nFactura)
+endif
 
-	oCabezal :=facturaClienteCabezal(nFactura)
+oCabezal :=facturaClienteCabezal(nFactura)
 
 
 
@@ -576,9 +576,17 @@ endif
 
 // puerto := alltrim(puertoDocumento(oCabezal:GetRow(1):fieldGet(4)))
 if cTipoPapelRec == "A5"
-	SELECT PRINTER  DEFAULT  PAPERSIZE PRINTER_PAPER_A5 ORIENTATION PRINTER_ORIENT_LANDSCAPE 
+	if copia = 1
+		SELECT PRINTER  DIALOG PREVIEW PAPERSIZE PRINTER_PAPER_A5 ORIENTATION PRINTER_ORIENT_LANDSCAPE
+	else
+		SELECT PRINTER  DEFAULT  PAPERSIZE PRINTER_PAPER_A5 ORIENTATION PRINTER_ORIENT_LANDSCAPE 
+	endif
 else
-	SELECT PRINTER  DEFAULT  PAPERSIZE PRINTER_PAPER_A4 ORIENTATION PRINTER_ORIENT_PORTRAIT 
+	if copia = 1
+		SELECT PRINTER  dialog PREVIEW  //PAPERSIZE PRINTER_PAPER_A4 ORIENTATION PRINTER_ORIENT_PORTRAIT 
+	else
+		SELECT PRINTER  DEFAULT  PAPERSIZE PRINTER_PAPER_A4 ORIENTATION PRINTER_ORIENT_PORTRAIT 
+	endif
 endif
 start printdoc
 START PRINTPAGE

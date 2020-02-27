@@ -13,7 +13,18 @@ estadoCuenta.center
 estadoCuenta.activate
 
 function verFacturaEstado()
-verFacturaPDF(estadocuenta.grid_1.cell(estadocuenta.grid_1.value,1)) 
+
+cTipoDocumento := tipoDocumento(estadocuenta.grid_1.cell(estadocuenta.grid_1.value,1))
+
+if cTipoDocumento != 81 .and. cTipoDocumento != 91 .and. cTipoDocumento != 98
+	verFacturaPDF(estadocuenta.grid_1.cell(estadocuenta.grid_1.value,1))
+else
+	imprimoMovimiento(estadocuenta.grid_1.cell(estadocuenta.grid_1.value,1),1,'','','') //mando imprimir ese movimiento con el idMov
+endif
+	
+
+
+//verFacturaPDF(estadocuenta.grid_1.cell(estadocuenta.grid_1.value,1)) 
 rellenoGridCliente()
 return
 
