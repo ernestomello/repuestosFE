@@ -4,6 +4,7 @@
 //puede ser R=Recibo, N=Bonificaciones, D=Devolución.
 procedure reciboProveedor(cTipoDocumento)
 
+if !IsWindowActive(reciboProveedor)
 load window reciboProveedor
 reciboProveedor.text_6.value := cTipoDocumento
 reciboProveedor.title := descripcionDocumento(cTipoDocumento)
@@ -21,7 +22,9 @@ if cTipoDocumento != 98
 endif
 reciboProveedor.center
 reciboProveedor.activate
-
+else	
+	reciboProveedor.setfocus
+endif
 
 procedure vacioCalculoProveedor()
 

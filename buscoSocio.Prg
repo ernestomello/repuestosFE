@@ -11,7 +11,7 @@ local oQuery
 local orden := nOrden
 local cFechaAnular:= 	PARAMETROini("FECHANULAR","C")
  
-  if !IsWindowActive(busqueda)
+  if !IsWindowActive(conveniopagocobrador)
   		if vpc == 'a'
   			aBusca:= { {'TEXTBOX','CHARACTER'}, {'TEXTBOX','CHARACTER'},{'TEXTBOX','CHARACTER'},{'TEXTBOX','CHARACTER'}}
   		else

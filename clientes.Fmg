@@ -1,7 +1,7 @@
 * HMG-IDE ANSI Form Designer Generated Code
 * (c) Roberto Lopez - http://sites.google.com/site/hmgweb
 
-DEFINE WINDOW TEMPLATE AT 140 , 303 WIDTH 719 HEIGHT 384 VIRTUAL WIDTH Nil VIRTUAL HEIGHT Nil TITLE "Mantenimiento de Clientes" ICON NIL  NOSIZE CURSOR NIL ON INIT Nil ON RELEASE Nil ON INTERACTIVECLOSE Nil ON MOUSECLICK Nil ON MOUSEDRAG Nil ON MOUSEMOVE Nil ON SIZE Nil ON MAXIMIZE Nil ON MINIMIZE Nil ON PAINT Nil BACKCOLOR Nil NOTIFYICON NIL NOTIFYTOOLTIP NIL ON NOTIFYCLICK Nil ON GOTFOCUS Nil ON LOSTFOCUS Nil ON SCROLLUP Nil ON SCROLLDOWN Nil ON SCROLLLEFT Nil ON SCROLLRIGHT Nil ON HSCROLLBOX Nil ON VSCROLLBOX Nil
+DEFINE WINDOW TEMPLATE AT 140 , 303 WIDTH 729 HEIGHT 481 VIRTUAL WIDTH Nil VIRTUAL HEIGHT Nil TITLE "Mantenimiento de Clientes" ICON NIL  NOSIZE CURSOR NIL ON INIT Nil ON RELEASE Nil ON INTERACTIVECLOSE Nil ON MOUSECLICK Nil ON MOUSEDRAG Nil ON MOUSEMOVE Nil ON SIZE Nil ON MAXIMIZE Nil ON MINIMIZE Nil ON PAINT Nil BACKCOLOR Nil NOTIFYICON NIL NOTIFYTOOLTIP NIL ON NOTIFYCLICK Nil ON GOTFOCUS Nil ON LOSTFOCUS Nil ON SCROLLUP Nil ON SCROLLDOWN Nil ON SCROLLLEFT Nil ON SCROLLRIGHT Nil ON HSCROLLBOX Nil ON VSCROLLBOX Nil
 
     DEFINE TEXTBOX Text_13
         ROW    22
@@ -95,7 +95,7 @@ DEFINE WINDOW TEMPLATE AT 140 , 303 WIDTH 719 HEIGHT 384 VIRTUAL WIDTH Nil VIRTU
     DEFINE TEXTBOX Text_1
         ROW    120
         COL    140
-        WIDTH  400
+        WIDTH  500
         HEIGHT 24
         FONTNAME "Arial"
         FONTSIZE 9
@@ -155,9 +155,9 @@ DEFINE WINDOW TEMPLATE AT 140 , 303 WIDTH 719 HEIGHT 384 VIRTUAL WIDTH Nil VIRTU
     END TEXTBOX
 
     DEFINE TEXTBOX Text_4
-        ROW    220
-        COL    80
-        WIDTH  120
+        ROW    230
+        COL    40
+        WIDTH  150
         HEIGHT 24
         FONTNAME "Arial"
         FONTSIZE 9
@@ -186,9 +186,9 @@ DEFINE WINDOW TEMPLATE AT 140 , 303 WIDTH 719 HEIGHT 384 VIRTUAL WIDTH Nil VIRTU
     END TEXTBOX
 
     DEFINE TEXTBOX Text_5
-        ROW    220
-        COL    270
-        WIDTH  120
+        ROW    260
+        COL    40
+        WIDTH  150
         HEIGHT 24
         FONTNAME "Arial"
         FONTSIZE 9
@@ -217,9 +217,9 @@ DEFINE WINDOW TEMPLATE AT 140 , 303 WIDTH 719 HEIGHT 384 VIRTUAL WIDTH Nil VIRTU
     END TEXTBOX
 
     DEFINE TEXTBOX Text_6
-        ROW    220
-        COL    470
-        WIDTH  180
+        ROW    230
+        COL    220
+        WIDTH  300
         HEIGHT 24
         FONTNAME "Arial"
         FONTSIZE 9
@@ -248,8 +248,8 @@ DEFINE WINDOW TEMPLATE AT 140 , 303 WIDTH 719 HEIGHT 384 VIRTUAL WIDTH Nil VIRTU
     END TEXTBOX
 
     DEFINE TEXTBOX Text_7
-        ROW    290
-        COL    30
+        ROW    360
+        COL    20
         WIDTH  640
         HEIGHT 24
         FONTNAME "Arial"
@@ -425,77 +425,76 @@ DEFINE WINDOW TEMPLATE AT 140 , 303 WIDTH 719 HEIGHT 384 VIRTUAL WIDTH Nil VIRTU
         OPAQUE .T.
     END FRAME
 
-    DEFINE LABEL Label_5
-        ROW    220
+    DEFINE FRAME Frame_5
+        ROW    210
         COL    20
-        WIDTH  60
+        WIDTH  180
+        HEIGHT 120
+        FONTNAME "Arial"
+        FONTSIZE 9
+        FONTBOLD .T.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        CAPTION "Teléfonos"
+        BACKCOLOR Nil
+        FONTCOLOR Nil
+        OPAQUE .T.
+    END FRAME
+
+    DEFINE TEXTBOX Text_3
+        ROW    290
+        COL    40
+        WIDTH  150
         HEIGHT 24
-        VALUE "Telefono"
         FONTNAME "Arial"
         FONTSIZE 9
         TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
         FONTBOLD .F.
         FONTITALIC .F.
         FONTUNDERLINE .F.
         FONTSTRIKEOUT .F.
+        ONENTER Nil
         HELPID Nil
+        TABSTOP .T.
         VISIBLE .T.
-        TRANSPARENT .F.
-        ACTION Nil
-        AUTOSIZE .F.
-        BACKCOLOR NIL
-        FONTCOLOR NIL
-    END LABEL
+        READONLY .F.
+        RIGHTALIGN .F.
+        DISABLEDBACKCOLOR Nil
+        DISABLEDFONTCOLOR Nil
+        CASECONVERT NONE
+        BACKCOLOR Nil
+        FONTCOLOR Nil
+        INPUTMASK Nil
+        FORMAT Nil
+        VALUE ""
+    END TEXTBOX
 
-    DEFINE LABEL Label_6
-        ROW    220
+    DEFINE FRAME Frame_7
+        ROW    210
         COL    210
-        WIDTH  60
-        HEIGHT 24
-        VALUE "Celular"
+        WIDTH  320
+        HEIGHT 120
         FONTNAME "Arial"
         FONTSIZE 9
-        TOOLTIP ""
-        FONTBOLD .F.
+        FONTBOLD .T.
         FONTITALIC .F.
         FONTUNDERLINE .F.
         FONTSTRIKEOUT .F.
-        HELPID Nil
-        VISIBLE .T.
-        TRANSPARENT .F.
-        ACTION Nil
-        AUTOSIZE .F.
-        BACKCOLOR NIL
-        FONTCOLOR NIL
-    END LABEL
-
-    DEFINE LABEL Label_7
-        ROW    220
-        COL    410
-        WIDTH  60
-        HEIGHT 24
-        VALUE "Correo"
-        FONTNAME "Arial"
-        FONTSIZE 9
-        TOOLTIP ""
-        FONTBOLD .F.
-        FONTITALIC .F.
-        FONTUNDERLINE .F.
-        FONTSTRIKEOUT .F.
-        HELPID Nil
-        VISIBLE .T.
-        TRANSPARENT .F.
-        ACTION Nil
-        AUTOSIZE .F.
-        BACKCOLOR NIL
-        FONTCOLOR NIL
-    END LABEL
+        CAPTION "Correos Electrónicos"
+        BACKCOLOR Nil
+        FONTCOLOR Nil
+        OPAQUE .T.
+    END FRAME
 
     DEFINE FRAME Frame_3
-        ROW    250
-        COL    20
-        WIDTH  670
-        HEIGHT 80
+        ROW    340
+        COL    10
+        WIDTH  690
+        HEIGHT 90
         FONTNAME "Arial"
         FONTSIZE 9
         FONTBOLD .T.
@@ -571,6 +570,99 @@ DEFINE WINDOW TEMPLATE AT 140 , 303 WIDTH 719 HEIGHT 384 VIRTUAL WIDTH Nil VIRTU
         VISIBLE .T.
         TRANSPARENT .F.
     END CHECKBOX
+
+    DEFINE TEXTBOX Text_8
+        ROW    260
+        COL    220
+        WIDTH  300
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER Nil
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .F.
+        DISABLEDBACKCOLOR Nil
+        DISABLEDFONTCOLOR Nil
+        CASECONVERT NONE
+        BACKCOLOR Nil
+        FONTCOLOR Nil
+        INPUTMASK Nil
+        FORMAT Nil
+        VALUE ""
+    END TEXTBOX
+
+    DEFINE TEXTBOX Text_10
+        ROW    290
+        COL    220
+        WIDTH  300
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER Nil
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .F.
+        DISABLEDBACKCOLOR Nil
+        DISABLEDFONTCOLOR Nil
+        CASECONVERT NONE
+        BACKCOLOR Nil
+        FONTCOLOR Nil
+        INPUTMASK Nil
+        FORMAT Nil
+        VALUE ""
+    END TEXTBOX
+
+    DEFINE TEXTBOX Text_11
+        ROW    390
+        COL    20
+        WIDTH  640
+        HEIGHT 24
+        FONTNAME "Arial"
+        FONTSIZE 9
+        TOOLTIP ""
+        ONCHANGE Nil
+        ONGOTFOCUS Nil
+        ONLOSTFOCUS Nil
+        FONTBOLD .F.
+        FONTITALIC .F.
+        FONTUNDERLINE .F.
+        FONTSTRIKEOUT .F.
+        ONENTER Nil
+        HELPID Nil
+        TABSTOP .T.
+        VISIBLE .T.
+        READONLY .F.
+        RIGHTALIGN .F.
+        DISABLEDBACKCOLOR Nil
+        DISABLEDFONTCOLOR Nil
+        CASECONVERT NONE
+        BACKCOLOR Nil
+        FONTCOLOR Nil
+        INPUTMASK Nil
+        FORMAT Nil
+        VALUE ""
+    END TEXTBOX
 
 END WINDOW
 

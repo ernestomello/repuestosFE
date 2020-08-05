@@ -38,6 +38,7 @@ endif
 return
 
 procedure rellenoDatosClientes(nCliente)
+local oCliente := oClientes(nCliente)
 
 clientes.text_13.value :=  nCliente
 clientes.text_9.value :=  rutCliente(nCliente) 
@@ -49,18 +50,27 @@ clientes.text_5.value :=  celularCliente(nCliente)
 clientes.text_6.value :=  correoCliente(nCliente)
 clientes.text_7.value :=  dirParticularCliente(nCliente)
 clientes.check_1.value := iif(ctacteCliente(nCliente) = 1,.t.,.f.)
+clientes.text_5.value := oCliente:GetRow(1):fieldGet(11)
+clientes.text_3.value := oCliente:GetRow(1):fieldGet(12)
+clientes.text_8.value := oCliente:GetRow(1):fieldGet(13)
+clientes.text_10.value := oCliente:GetRow(1):fieldGet(14)
+clientes.text_11.value := oCliente:GetRow(1):fieldGet(15)
 
 return
 
 procedure vacioDatosClientes()
 
-clientes.text_9.value := ''
 clientes.text_1.value :=  ''
 clientes.text_2.value :=  ''
+clientes.text_3.value :=  ''
 clientes.text_4.value :=  ''
 clientes.text_5.value :=  ''
 clientes.text_6.value :=  ''
 clientes.text_7.value :=  ''
+clientes.text_8.value :=  ''
+clientes.text_9.value :=  ''
+clientes.text_10.value :=  ''
+clientes.text_11.value :=  ''
 clientes.text_13.value := 0
 clientes.check_1.value := .t.
 return
@@ -81,10 +91,12 @@ local nCtaCte := iif(clientes.check_1.value = .t.,1,0)
 if controloIngresoCliente()
   if !existeCliente(clientes.text_13.value)
   	if !mismosDatosCliente(clientes.text_2.value, clientes.text_9.value)
-			if ! nuevoCliente(clientes.text_9.value, clientes.text_1.value, ;
+		if ! nuevoCliente(clientes.text_9.value, clientes.text_1.value, ;
 											clientes.text_2.value, nConsumoFinal, ;
 											clientes.text_4.value, clientes.text_5.value, ;
-											clientes.text_6.value, clientes.text_7.value, nCtaCte  )
+											clientes.text_6.value, clientes.text_7.value, nCtaCte, ;
+											clientes.text_5.value, clientes.text_3.value, clientes.text_8.value, ;
+											clientes.text_10.value, clientes.text_11.value )
 											
 	      msgInfo('No se pudieron guardar los cambios. AVISE AL ADMINISTRADOR')
 	      
@@ -95,10 +107,12 @@ if controloIngresoCliente()
 	  endIf
   else
   
-		if ! modificoCliente(clientes.text_13.value,clientes.text_9.value,;
+	if ! modificoCliente(clientes.text_13.value,clientes.text_9.value,;
 											 clientes.text_1.value,clientes.text_2.value, nConsumoFinal, ;
 											 clientes.text_4.value, clientes.text_5.value, ;
-											 clientes.text_6.value, clientes.text_7.value, nCtaCte )
+											 clientes.text_6.value, clientes.text_7.value, nCtaCte,;
+											 clientes.text_5.value, clientes.text_3.value, clientes.text_8.value, ;
+											 clientes.text_10.value, clientes.text_11.value )
       msgInfo('No se pudieron actualizar los cambios. AVISE AL ADMINISTRADOR')
     else
       msginfo('Datos de Cliente actualizados')
@@ -279,13 +293,14 @@ endIf
 *************************************************
 *************************************************
 
-function nuevoCliente(cRut, cRazonSocial, cNombre,nConsumoFinal, cTelefono, cCelular, cCorreo, cDireccion,nCtaCte)
+function nuevoCliente(cRut, cRazonSocial, cNombre,nConsumoFinal, cTelefono, cCelular, cCorreo, cDireccion,nCtaCte,cTel2,cTel3,cCorr2,cCorr3,cDir2)
 local cQuery := ''
 local oQuery
 
 cQuery += " insert into cliente values (null, '"+cRut+"',  '"+cNombre+"','"+cRazonSocial+"', "
 cQuery += " '"+cTelefono+"', '"+cCelular+"', "
-cQuery += " '"+cCorreo+"', '"+cDireccion+"', "+str(nConsumoFinal)+", "+str(nCtaCte)+" ) "
+cQuery += " '"+cCorreo+"', '"+cDireccion+"', "+str(nConsumoFinal)+", "+str(nCtaCte)+" , "
+cQuery += " '"+cTel2+"', '"+cTel3+"', '"+cCorr2+"','"+cCorr3+"','"+cDir2+"' ) "
 
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
@@ -305,7 +320,7 @@ endif
 
 
 
-function modificoCliente(nIdCliente,cRut, cRazonSocial, cNombre,nConsumoFinal, cTelefono, cCelular, cCorreo, cDireccion,nCtaCte)
+function modificoCliente(nIdCliente,cRut, cRazonSocial, cNombre,nConsumoFinal, cTelefono, cCelular, cCorreo, cDireccion,nCtaCte,cTel2,cTel3,cCorr2,cCorr3,cDir2)
 local cQuery := ''
 local oQuery
 
@@ -314,7 +329,10 @@ cQuery += " razon_social = '"+cRazonSocial+"', nombre = '"+cNombre+"',  "
 cQuery += " telefono = '"+cTelefono+"', celular = '"+cCelular+"', correo_electronico = '"+cCorreo+"', "
 cQuery += " direccion_particular = '"+cDireccion+"', "
 cQuery += " consumo_final = "+str(nConsumoFinal)+", "
-cQuery += " cta_cte = "+str(nCtaCte)+" "
+cQuery += " cta_cte = "+str(nCtaCte)+", "
+cQuery += " telefono_2 = '"+cTel2+"', telefono_3 = '"+cTel3+"' ,"
+cQuery += " correo_2= '"+cCorr2+"',  correo_3 = '"+cCorr3+"' ,"
+cQuery += " direccion_2 = '"+cDir2+"' "
 cQuery += " where  id_cliente = "+str(nIdCliente)+" "
 
 
@@ -586,3 +604,15 @@ if oQuery:lastRec() > 0
 else
 	return ""
 endif
+
+function oClientes(nCliente)
+	local cQuery, oQuery
+	
+	cQuery := " select * from cliente"
+	cQuery += " where id_cliente = "+str(nCliente)+" "
+	oQuery := oServer:Query(cQuery)
+	If oQuery:NetErr()												
+		MsgInfo("SQL SELECT error: "+cQuery+":" + oQuery:Error())
+	else
+		return oQuery
+	endIf
