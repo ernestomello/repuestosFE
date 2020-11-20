@@ -284,7 +284,7 @@ cQuery += " "+str(nVenta)+", "
 cQuery += " "+str(nUnidad)+", "
 cQuery += " "+str(nMoneda)+", "
 cQuery += " '"+cDatosInternos+"',"
-cQuery += " "+str(nLocacion)+" )"
+cQuery += " "+str(nLocacion)+" ,'"+cCodBarra+"')"
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
   MsgInfo("SQL SELECT error: " + oQuery:Error())
@@ -293,7 +293,7 @@ else
   return .t.
 endIf
 
-function modificoArticulo(cCodBarra,cDescripcion,nMarca,nModelo,nAnio,nProveedor,dFecha,niva,nCosto,nVenta,nUnidad,nMoneda,cDatosInternos,nLocacion)
+function modificoArticulo(cIdArticulo,cCodBarra,cDescripcion,nMarca,nModelo,nAnio,nProveedor,dFecha,niva,nCosto,nVenta,nUnidad,nMoneda,cDatosInternos,nLocacion)
 local cQuery, oQuery
 
 cQuery := " update articulo set "
@@ -309,8 +309,9 @@ cQuery += " precio_venta = "+str(nVenta)+", "
 cQuery += " unidad = "+str(nUnidad)+", "
 cQuery += " moneda = "+str(nMoneda)+", "
 cQuery += " dato_interno = '"+cDatosInternos+"', "
-cQuery += " id_locacion = "+str(nLocacion)+" "
-cQuery += " where codigo_barra = '"+cCodBarra+"' "
+cQuery += " id_locacion = "+str(nLocacion)+", "
+cQuery += " codigo_barra = '"+cCodBarra+"' "
+cQuery += " where id_articulo = '"+cIdArticulo+"' "
 
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
@@ -346,6 +347,19 @@ If oQuery:NetErr()
 else
   return oQuery:GetRow(1):fieldGet(1)
 endIf
+
+function codigoArticulo(nArticulo)
+	local cQuery
+	local oQuery
+	
+	cQuery := "select id_articulo from articulo where  codigo_barra = '"+nArticulo+"' "
+	
+	oQuery := oServer:Query(cQuery)
+	If oQuery:NetErr()												
+	  MsgInfo("SQL SELECT error: " + oQuery:Error())
+	else
+	  return oQuery:GetRow(1):fieldGet(1)
+	endIf
 
 function descripcionArticulo(nArticulo)
 local cQuery

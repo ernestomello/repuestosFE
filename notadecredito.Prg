@@ -16,7 +16,7 @@ endif
 	do case
 	case  ( nTipoDoc = 101 .or. nTipoDoc = 111) 
 		if !facturaSinDevolucion(nFactura)
-			msginfo(cTipoDocumento+" con Nota de Crédito")
+			msginfo(cTipoDocumento+" con Nota de Crï¿½dito")
 			// notaCredito.release
 			return .f.
 		endif
@@ -25,9 +25,9 @@ endif
 			// notaCredito.release
 			return .f.
 		endif
-		aColumCont := {{'TEXTBOX','CHARACTER'},{'TEXTBOX','CHARACTER'},{'TEXTBOX','NUMERIC','999.99'},{'TEXTBOX','NUMERIC','999,999.99'},{'TEXTBOX','NUMERIC','99'},{'TEXTBOX','NUMERIC','999'},{'TEXTBOX','NUMERIC','999,999,999.99'},{'TEXTBOX','NUMERIC'}}
-		aColumTit :=	{'Codigo','Articulo','Cant.','Precio Unit.','Iva','Dto.','PrecioFinal','Nro fact'}
-		aColumWidth := {120,200,45,80,30,40,80,0 }
+		aColumCont := {{'TEXTBOX','CHARACTER'},{'TEXTBOX','CHARACTER'},{'TEXTBOX','NUMERIC','999.99'},{'TEXTBOX','NUMERIC','999,999.99'},{'TEXTBOX','NUMERIC','99'},{'TEXTBOX','NUMERIC','999'},{'TEXTBOX','NUMERIC','999,999,999.99'},{'TEXTBOX','NUMERIC'},{'TEXTBOX','CHARACTER'}}
+		aColumTit :=	{'Codigo','Articulo','Cant.','Precio Unit.','Iva','Dto.','PrecioFinal','Nro fact',''}
+		aColumWidth := {120,200,45,80,30,40,80,0,0 }
 		
 		load window notaCredito
 		rellenoFacturaDevolucion(nFactura,nTipoDoc)
@@ -35,13 +35,13 @@ endif
 		
 	case ( nTipoDoc = 102 .or. nTipoDoc = 112)
 		if !nCreditoSinDevolucion(nFactura)
-			msginfo(cTipoDocumento+" con Nota de Débito")
+			msginfo(cTipoDocumento+" con Nota de Dï¿½bito")
 			// notaCredito.release
 			return .f.
 		endif
-		aColumCont := {{'TEXTBOX','CHARACTER'},{'TEXTBOX','CHARACTER'},{'TEXTBOX','NUMERIC','999.99'},{'TEXTBOX','NUMERIC','999,999.99'},{'TEXTBOX','NUMERIC','99'},{'TEXTBOX','NUMERIC','999'},{'TEXTBOX','NUMERIC','999,999,999.99'},{'TEXTBOX','NUMERIC'}}
-		aColumTit :=	{'','Doc.Referencia','Cant.','Precio Unit.','Iva','Dto.','Imp. Aplicado','Referencia'}
-		aColumWidth := {0,300,0,0,0,0,100,80 }
+		aColumCont := {{'TEXTBOX','CHARACTER'},{'TEXTBOX','CHARACTER'},{'TEXTBOX','NUMERIC','999.99'},{'TEXTBOX','NUMERIC','999,999.99'},{'TEXTBOX','NUMERIC','99'},{'TEXTBOX','NUMERIC','999'},{'TEXTBOX','NUMERIC','999,999,999.99'},{'TEXTBOX','NUMERIC'},{'TEXTBOX','CHARACTER'}}
+		aColumTit :=	{'','Doc.Referencia','Cant.','Precio Unit.','Iva','Dto.','Imp. Aplicado','Referencia',''}
+		aColumWidth := {0,300,0,0,0,0,100,80,0 }
 		load window notaCredito
 		
 		rellenoFacturaGlobalDevolucion(nFactura,nTipoDoc)
@@ -49,7 +49,7 @@ endif
 		notaCredito.button_1.caption := "Guardar Nota Debito"
 
 	otherwise
-		msgInfo("No es posible Hacer la Devolución")
+		msgInfo("No es posible Hacer la Devoluciï¿½n")
 		// notaCredito.release
 		return .f.
 	end case
@@ -210,7 +210,7 @@ endIf
 			return .f.
 		endIf
 		for i=1 to notaCredito.grid_1.itemCount
-			cCodigo := notaCredito.grid_1.cell(i,1)
+			cCodigo := notaCredito.grid_1.cell(i,9)
 			nCantidad := notaCredito.grid_1.cell(i,3)
 			nPrecioUnitario := notaCredito.grid_1.cell(i,4)
 			nIva := notaCredito.grid_1.cell(i,5)
@@ -219,7 +219,7 @@ endIf
 			if !graboFactClienteDetalle(nNumero,i,cCodigo,nCantidad,nPrecioUnitario,nIva,nDto,nImporte)
 				noTran()
 				WAIT CLEAR
-				msgInfo("No se pudieron Guardar el detalle de la NOta de Crédito. Reintente!!!")
+				msgInfo("No se pudieron Guardar el detalle de la NOta de Crï¿½dito. Reintente!!!")
 				return .f.
 			endIf
 		next
@@ -250,7 +250,7 @@ finTransaccion()
 info_("Imprimiendo Documento ...")
 if !imprimoMovimiento(nNumero,0,'','','')
 	WAIT CLEAR
-	msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menú")
+	msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menï¿½")
 	return .f.
 endif
 WAIT CLEAR
@@ -260,7 +260,7 @@ return .t.
 
 function controloDevolucion()
 //if len(notaCredito.grid_1.value) = 0
-//	msgInfo("Debe marcar una línea")
+//	msgInfo("Debe marcar una lï¿½nea")
 //	return .f.
 //endIf
 
@@ -286,7 +286,7 @@ return .t.
 // oQuery:= oServer:Query(cQuery)
 // If oQuery:NetErr() 
   // MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-  // si o puedo obtener el id del cabezal anulo todo para atrás
+  // si o puedo obtener el id del cabezal anulo todo para atrï¿½s
   // oQuery:=oServer:Query('ROLLBACK') 
   // return .f.
 // else
@@ -302,7 +302,7 @@ return .t.
 // oQuery:= oServer:Query(cQuery)
 // If oQuery:NetErr() 
   // MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-  // si o puedo obtener el id del cabezal anulo todo para atrás
+  // si o puedo obtener el id del cabezal anulo todo para atrï¿½s
   // oQuery:=oServer:Query('ROLLBACK') 
   // return .f.
 // else

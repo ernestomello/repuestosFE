@@ -55,18 +55,19 @@ local nLinea := 	PARAMETROini("LineasDetalle","N")
 local nPrecioUnitario := 0
 
   if (factCliente.text_9.value = 0 .or. factCliente.text_8.value =0)
-  	msginfo('La cantidad no puede ser CERO',"ATENCIÓN")
+  	msginfo('La cantidad no puede ser CERO',"ATENCIï¿½N")
     factCliente.text_8.SetFocus
 		Return
   endif
   // if factCliente.grid_1.itemCount >= nLinea
-  	// msginfo('Supera las '+str(nLinea)+' líneas '+chr(13)+'Guarde el Documento')
+  	// msginfo('Supera las '+str(nLinea)+' lï¿½neas '+chr(13)+'Guarde el Documento')
   	// Return
   // endif
 	if msgYesNo("Ingresa la Línea?","ATENCIÓN",.f.)
 	nPrecioUnitario:= round(factCliente.text_9.value - (factCliente.text_9.value * factCliente.text_11.value /100),0)
-    factCliente.grid_1.addItem({factCliente.text_6.value,factCliente.text_7.value,factCliente.text_8.value,nPrecioUnitario,factCliente.text_10.value,factCliente.text_16.value,factCliente.text_11.value,round(factCliente.text_8.value * nPrecioUnitario ,0) })
+    factCliente.grid_1.addItem({factCliente.text_6.value,factCliente.text_7.value,factCliente.text_8.value,nPrecioUnitario,factCliente.text_10.value,factCliente.text_16.value,factCliente.text_11.value,round(factCliente.text_8.value * nPrecioUnitario ,0),factCliente.text_23.value })
     factCliente.text_6.value:= ""
+    factCliente.text_23.value:= ""
     factCliente.text_7.value:=""
     factCliente.text_8.value:= 1
     factCliente.text_9.value:= 0
@@ -230,7 +231,7 @@ nNumero:= numeroDesde('CLIENTE')
 
 if !agregoNumeroDesde('CLIENTE')
 	WAIT CLEAR
-	msginfo("No se pudo actualizar el Número de la Factura")
+	msginfo("No se pudo actualizar el Nï¿½mero de la Factura")
 	return .f.
 endIf
 
@@ -238,7 +239,7 @@ endIf
 if nNumero == 0
 	noTran()
 	WAIT CLEAR
-	msgInfo("No se pudo Guardar el Número. Reintente!!!")
+	msgInfo("No se pudo Guardar el Nï¿½mero. Reintente!!!")
 	return .f.
 endif
 
@@ -260,7 +261,7 @@ endIf
 if facturaClienteConDetalle()
 	
 	for i=1 to nCantidad
-			cCodigo := factCliente.grid_1.cell(i,1)
+			cCodigo := factCliente.grid_1.cell(i,9)
 			nCantidadArt := factCliente.grid_1.cell(i,3)
 			nPrecioUnitario := factCliente.grid_1.cell(i,4)
 			nIva := factCliente.grid_1.cell(i,6)//calcular el cfe_ind_fact
@@ -339,7 +340,7 @@ if len(factCliente.text_13.value)  < 4 .and. factCliente.text_21.value = 2
 	return .f.
 endIf
 if factCliente.text_14.value = 111	.and. len(factCliente.text_4.value)= 0 .and. len(factCliente.text_4.value)= 0
-	msgBox("eFactura debe tener Nombre y Dirección")
+	msgBox("eFactura debe tener Nombre y Direcciï¿½n")
 	factCliente.text_3.SetFocus
 	return .f.
 endif
@@ -435,7 +436,7 @@ if factCliente.text_14.value != 81 .and. factCliente.text_14.value != 91
 	else
 		if !formatoCedula(factCliente.text_2.value)
 			if len(factCliente.text_2.value)!= 0
-				msgInfo("Formato RUT o Cédula Incorrecto")
+				msgInfo("Formato RUT o Cï¿½dula Incorrecto")
 			endif
 			factCliente.text_2.value := ""
 			factCliente.text_14.value := 101
@@ -451,6 +452,7 @@ endif
 procedure rellenoDatosLinea(nArticulo)
 
 factCliente.text_6.value := codigoBarraArticulo(nArticulo)
+factCliente.text_23.value := codigoArticulo(nArticulo)
 factCliente.text_7.value := descripcionArticulo(nArticulo)+"-"+locacionArticulo(nArticulo)
 factCliente.text_9.value := precioVenta(nArticulo)
 iif (monedaArticulo(nArticulo)= 2,factCliente.text_9.fontcolor := {0,128,0},factCliente.text_9.fontcolor := {0,0,0})
@@ -598,7 +600,7 @@ cQuery += " "+str(nIva)+","+str(nDto)+" ) "
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr() 
   MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-  //si no puedo guardar alguna de las lìneas anulo todo para atrás
+  //si no puedo guardar alguna de las lï¿½neas anulo todo para atrï¿½s
   oQuery:=oServer:Query('ROLLBACK') 
   return .f.
 else
@@ -627,7 +629,8 @@ cQuery := " select d.id_factura,d.item, d.codigo_barra,a.descripcion, d.cantidad
 cQuery += " d.precio_unitario,a.fecha_precio, d.cfe_ind_fact, d.descripcion, d.importe "
 cQuery += " from cfe_comprobante_det d, articulo a "
 cQuery += " where d.id_factura = "+str(nFactura)+" "
-cQuery += " and a.codigo_barra = d.codigo_barra "
+//cQuery += " and a.codigo_barra = d.codigo_barra "
+cQuery += " and a.id_articulo = d.codigo_barra "
 cQuery += " order by 2"
 oQuery:= oServer:Query(cQuery)
 
@@ -643,7 +646,8 @@ cQuery := " select d.id_factura,d.item, d.codigo_barra,a.descripcion, d.cantidad
 cQuery += " d.precio_unitario,a.fecha_precio, d.cfe_ind_fact, d.descripcion, d.importe "
 cQuery += " from cfe_comprobante_det d, articulo a "
 cQuery += " where d.id_factura in ("+cFacturas+") "
-cQuery += " and a.codigo_barra = d.codigo_barra "
+//cQuery += " and a.codigo_barra = d.codigo_barra "
+cQuery += " and a.id_articulo = d.codigo_barra "
 cQuery += " order by 2"
 oQuery:= oServer:Query(cQuery)
 
@@ -661,7 +665,7 @@ function anuloFactura(nFactura,nCajero)
 local cQuery
 local oQuery
 
-oQuery:= oServer:Query( 'BEGIN' ) //comienzo la transacción
+oQuery:= oServer:Query( 'BEGIN' ) //comienzo la transacciï¿½n
 If oQuery:NetErr() 
   MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
   oQuery:=oServer:Query('ROLLBACK') //si no puede hacer el comienzo de la transaccion cancelo
@@ -713,9 +717,10 @@ function detalleFacturaCliente(nFactura)
 local cQuery
 local oQuery
 
-cQuery := "select  d.id_factura,d.codigo_barra,d.cantidad,d.precio_unitario,d.cfe_ind_fact,a.descripcion,cast(d.descripcion as unsigned),d.importe "
+cQuery := "select  d.id_factura,d.codigo_barra,d.cantidad,d.precio_unitario,d.cfe_ind_fact,a.descripcion,cast(d.descripcion as unsigned),d.importe,d.id_articulo "
 cQuery += " from  cfe_comprobante_det d, articulo a "
-cQuery += " where a.codigo_barra = d.codigo_barra "
+//cQuery += " where a.codigo_barra = d.codigo_barra "
+cQuery += " where a.id_articulo = d.codigo_barra "
 cQuery += " and d.id_factura = "+str(nFactura)+" "
 
 oQuery := oServer:Query(cQuery)
