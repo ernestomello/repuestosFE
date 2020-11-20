@@ -45,6 +45,7 @@ local cLocacion := descripcionLocacion(oArticulos:getRow(1):fieldGet(14))
 borraArticulo()
 
 articulo.text_1.value := oArticulos:getRow(1):fieldGet(1)
+articulo.text_13.value := oArticulos:getRow(1):fieldGet(15)
 articulo.text_2.value := oArticulos:getRow(1):fieldGet(2)
 articulo.marca.value := oArticulos:getRow(1):fieldGet(3)
 articulo.text_3.value := descripcionMarca(oArticulos:getRow(1):fieldGet(3))
@@ -89,6 +90,7 @@ iif (cMoneda = 3,articulo.text_8.fontcolor := {0,128,0},articulo.text_8.fontcolo
 procedure borraArticulo()
 
 articulo.text_1.value := ""
+articulo.text_13.value := ""
 articulo.text_2.value := ""
 articulo.text_3.value := ""
 articulo.text_4.value := ""
@@ -170,8 +172,8 @@ local nlocacion := idLocacion(articulo.combo_3.displayValue)
 if !controloArticulo()
 	return .f.
 endif
-if existeArticulo(articulo.text_1.value) 
-	if modificoArticulo(articulo.text_1.value,substr(articulo.text_2.value,1,50), ;
+if existeArticulo(articulo.text_13.value) 
+	if modificoArticulo(articulo.text_13.value,articulo.text_1.value,substr(articulo.text_2.value,1,50), ;
 	articulo.marca.value, articulo.modelo.value,articulo.spinner_1.value, ;
 	articulo.text_5.value, articulo.datepicker_1.value, ;
 	articulo.text_6.value, articulo.text_7.value,articulo.text_8.value,nUnidad,nMoneda,articulo.text_10.value,nlocacion)
@@ -195,7 +197,7 @@ if existeArticulo(articulo.text_1.value)
 	endIf
 else 
 
-if len(alltrim(articulo.text_1.value)) != 0 
+if len(alltrim(articulo.text_13.value)) != 0 
 	
 	if ingresoArticulo(articulo.text_1.value,substr(articulo.text_2.value,1,50), ;
 		articulo.marca.value, articulo.modelo.value,articulo.spinner_1.value, ;
@@ -287,7 +289,7 @@ cQuery += " '"+cDatosInternos+"',"
 cQuery += " "+str(nLocacion)+" ,'"+cCodBarra+"')"
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
-  MsgInfo("SQL SELECT error: " + oQuery:Error())
+  MsgInfo("SQL SELECT error "+cQuery+": " + oQuery:Error())
   return .f.
 else
   return .t.
@@ -315,7 +317,7 @@ cQuery += " where id_articulo = '"+cIdArticulo+"' "
 
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
-  MsgInfo("SQL SELECT error: " + oQuery:Error())
+  MsgInfo("SQL SELECT error "+cQuery+": " + oQuery:Error())
   return .f.
 else
   return .t.
@@ -329,7 +331,7 @@ cQuery := "select * from articulo where  codigo_barra = '"+nArticulo+"' "
 
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
-  MsgInfo("SQL SELECT error: " + oQuery:Error())
+  MsgInfo("SQL SELECT error "+cQuery+": " + oQuery:Error())
 else
   return oQuery
 endIf
@@ -343,7 +345,7 @@ cQuery := "select codigo_barra from articulo where  codigo_barra = '"+nArticulo+
 
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
-  MsgInfo("SQL SELECT error: " + oQuery:Error())
+  MsgInfo("SQL SELECT error "+cQuery+": " + oQuery:Error())
 else
   return oQuery:GetRow(1):fieldGet(1)
 endIf
@@ -356,7 +358,7 @@ function codigoArticulo(nArticulo)
 	
 	oQuery := oServer:Query(cQuery)
 	If oQuery:NetErr()												
-	  MsgInfo("SQL SELECT error: " + oQuery:Error())
+	  MsgInfo("SQL SELECT error "+cQuery+": " + oQuery:Error())
 	else
 	  return oQuery:GetRow(1):fieldGet(1)
 	endIf
@@ -369,7 +371,7 @@ cQuery := "select descripcion from articulo where  codigo_barra = '"+nArticulo+"
 
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
-  MsgInfo("SQL SELECT error: " + oQuery:Error())
+  MsgInfo("SQL SELECT error "+cQuery+": " + oQuery:Error())
 else
   return alltrim(oQuery:GetRow(1):fieldGet(1))
 endIf

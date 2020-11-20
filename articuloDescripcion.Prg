@@ -9,7 +9,7 @@ cQuery += " '"+cDescripcion+"')"
 
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
-  MsgInfo("SQL SELECT error: " + oQuery:Error())
+  MsgInfo("SQL SELECT error "+cQuery+": " + oQuery:Error())
   return .f.
 else
   return .t.
@@ -22,7 +22,7 @@ cQuery := "select * from articulo_compra where  codigo_barra = '"+nCodigo+"' "
 
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
-  MsgInfo("SQL SELECT error: " + oQuery:Error())
+  MsgInfo("SQL SELECT error "+cQuery+": " + oQuery:Error())
 endIf
 
 if oQuery:LastRec() > 0
@@ -42,7 +42,7 @@ cQuery += " where codigo_barra = '"+cCodigo+"' "
 
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
-  MsgInfo("SQL SELECT error: " + oQuery:Error())
+  MsgInfo("SQL SELECT error "+cQuery+": " + oQuery:Error())
   return .f.
 else
   return .t.
@@ -56,7 +56,7 @@ cQuery := "select * from articulo_compra where  codigo_barra = '"+nArticulo+"' "
 
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
-  MsgInfo("SQL SELECT error: " + oQuery:Error())
+  MsgInfo("SQL SELECT error "+cQuery+": " + oQuery:Error())
 else
   return oQuery
 endIf

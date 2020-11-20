@@ -2,7 +2,10 @@
 
 procedure factCliente(cTipoDocumento,aNumero,nFormaPago)
 local cFacturas :=""
-if cajaAbierta()
+if !cajaAbierta()
+	msgInfo("Caja Cerrada !!!")
+	return
+endIf
 if !IsWindowActive(factCliente)
 	Load Window factCliente
 	
@@ -29,16 +32,13 @@ if !IsWindowActive(factCliente)
 	factCliente.text_21.value :=nFormaPago
 	factCliente.text_11.value := iif(factCliente.text_21.value = 1 ,nDtoContado, 0)
 	iif(nFormaPago = 1,factCliente.text_17.visible := .f.,)
-	iif(nFormaPago = 1,factCliente.frame_2.visible := .f.,)
-	
+	iif(nFormaPago = 1,factCliente.frame_2.visible := .f.,)	
 	factCliente.Center
 	factCliente.Activate	
 else
 	msginfo("No se puede tener 2 Ventanas Activas")
 endif
-else
-	msgInfo("Caja Cerrada !!!")
-endIf       
+       
 
 Return
 
@@ -102,10 +102,8 @@ private i
   
   cantItem:= factCliente.grid_1.itemcount
   factCliente.text_5.value:=0
-  for i=1 to cantItem
-	 
-   factCliente.text_5.value:= factCliente.text_5.value + round((factCliente.grid_1.item(i)[8]) * (1 + factCliente.grid_1.item(i)[6]/100),0)
-  
+  for i=1 to cantItem	 
+  	factCliente.text_5.value:= factCliente.text_5.value + round((factCliente.grid_1.item(i)[8]) * (1 + factCliente.grid_1.item(i)[6]/100),0)
   next
   factCliente.frame_5.caption := "Total de "+alltrim(str(cantItem))+" lineas "
 
@@ -143,9 +141,7 @@ factCliente.text_18.value := 0
 factCliente.text_19.value := ''
 factCliente.text_20.value := ''
 factCliente.frame_4.caption := "RUT"
- factCliente.frame_5.caption := "Total"
-
-
+factCliente.frame_5.caption := "Total"
 factCliente.grid_1.deleteAllItems
 return
 
@@ -508,7 +504,8 @@ for i= 1 to oDetalle:lastRec()
 						oDetalle:getrow(i):fieldGet(7), ;
 						oDetalle:getrow(i):fieldGet(8), ; 
 						oDetalle:getrow(i):fieldGet(9), ; 
-						oDetalle:getrow(i):fieldGet(10)})
+						oDetalle:getrow(i):fieldGet(10),;
+						oDetalle:getrow(i):fieldget(11)})
 	
 	//nTotalFactura += oDetalle:getrow(i):fieldGet(10)														
 	nTotalFactura += round(oDetalle:getrow(i):fieldGet(10) * (1 + oDetalle:getrow(i):fieldGet(8)/100),0)
@@ -625,8 +622,8 @@ return oQuery
 function facturaClienteDetalle(nFactura)
 local cQuery, oQuery
 
-cQuery := " select d.id_factura,d.item, d.codigo_barra,a.descripcion, d.cantidad, "
-cQuery += " d.precio_unitario,a.fecha_precio, d.cfe_ind_fact, d.descripcion, d.importe "
+cQuery := " select d.id_factura,d.item, a.codigo_barra,a.descripcion, d.cantidad, "
+cQuery += " d.precio_unitario,a.fecha_precio, d.cfe_ind_fact, d.descripcion, d.importe,a.id_articulo "
 cQuery += " from cfe_comprobante_det d, articulo a "
 cQuery += " where d.id_factura = "+str(nFactura)+" "
 //cQuery += " and a.codigo_barra = d.codigo_barra "
@@ -717,7 +714,7 @@ function detalleFacturaCliente(nFactura)
 local cQuery
 local oQuery
 
-cQuery := "select  d.id_factura,d.codigo_barra,d.cantidad,d.precio_unitario,d.cfe_ind_fact,a.descripcion,cast(d.descripcion as unsigned),d.importe,d.id_articulo "
+cQuery := "select  d.id_factura,d.codigo_barra,d.cantidad,d.precio_unitario,d.cfe_ind_fact,a.descripcion,cast(d.descripcion as unsigned),d.importe,a.id_articulo "
 cQuery += " from  cfe_comprobante_det d, articulo a "
 //cQuery += " where a.codigo_barra = d.codigo_barra "
 cQuery += " where a.id_articulo = d.codigo_barra "

@@ -78,7 +78,7 @@ notaCredito.text_8.value := oCabezalFactura:getRow(1):fieldGet(8)
 
 for i = 1 to oDetalleFactura:lastrec()
 	oRow := oDetalleFactura:getRow(i)
-	notaCredito.grid_1.additem({ oRow:fieldGet(2), oRow:fieldGet(6),oRow:fieldGet(3),oRow:fieldGet(4),oRow:fieldGet(5)," ",oRow:fieldGet(3)*oRow:fieldGet(4), oRow:fieldGet(1)  })
+	notaCredito.grid_1.additem({ oRow:fieldGet(2), oRow:fieldGet(6),oRow:fieldGet(3),oRow:fieldGet(4),oRow:fieldGet(5)," ",oRow:fieldGet(3)*oRow:fieldGet(4), oRow:fieldGet(1),oRow:fieldGet(9)  })
 	nTotalFactura += round(oRow:fieldGet(3)*oRow:fieldGet(4) * (1 + oRow:fieldGet(5)/100),0)
 next
 notaCredito.text_5.value := nTotalFactura
@@ -100,7 +100,7 @@ notaCredito.text_8.value := oCabezalFactura:getRow(1):fieldGet(8)
 
 for i = 1 to oDetalleFactura:lastrec()
 	oRow := oDetalleFactura:getRow(i)
-	notaCredito.grid_1.additem({ oRow:fieldGet(2), oRow:fieldGet(6),oRow:fieldGet(3),oRow:fieldGet(4),oRow:fieldGet(5)," ",oRow:fieldGet(4), oRow:fieldGet(1)  })
+	notaCredito.grid_1.additem({ oRow:fieldGet(2), oRow:fieldGet(6),oRow:fieldGet(3),oRow:fieldGet(4),oRow:fieldGet(5)," ",oRow:fieldGet(4), oRow:fieldGet(1),""  })
 	nTotalFactura += oRow:fieldGet(4)
 next
 notaCredito.text_5.value := nTotalFactura
