@@ -172,47 +172,22 @@ local nlocacion := idLocacion(articulo.combo_3.displayValue)
 if !controloArticulo()
 	return .f.
 endif
-if existeArticulo(articulo.text_13.value) 
+//if existeArticulo(articulo.text_13.value) 
+if len(alltrim(articulo.text_13.value)) != 0 
 	if modificoArticulo(articulo.text_13.value,articulo.text_1.value,substr(articulo.text_2.value,1,50), ;
 	articulo.marca.value, articulo.modelo.value,articulo.spinner_1.value, ;
 	articulo.text_5.value, articulo.datepicker_1.value, ;
 	articulo.text_6.value, articulo.text_7.value,articulo.text_8.value,nUnidad,nMoneda,articulo.text_10.value,nlocacion)
 		if existeArticuloCompra(articulo.text_1.value)
 			if modificoArticuloCompra(articulo.text_1.value,articulo.text_11.value, articulo.text_12.value)
-				msgInfo("Artículo Modificado")
+				msgInfo("Artï¿½culo Modificado")
 				borraArticulo()	
 			else
 				msgInfo("No se pudieron guardar los cambios.CONSULTE")
 			endif
 		else
 			if altaArticuloCompra(articulo.text_1.value,articulo.text_11.value, articulo.text_12.value)
-				msgInfo("Artículo Modificado")
-				borraArticulo()	
-			else
-				msgInfo("No se pudieron guardar los cambios.CONSULTE")
-			endif
-		endif		
-	else
-		msgInfo("No se pudieron guardar los cambios.CONSULTE")
-	endIf
-else 
-
-if len(alltrim(articulo.text_13.value)) != 0 
-	
-	if ingresoArticulo(articulo.text_1.value,substr(articulo.text_2.value,1,50), ;
-		articulo.marca.value, articulo.modelo.value,articulo.spinner_1.value, ;
-		articulo.text_5.value, articulo.datepicker_1.value, ;
-		articulo.text_6.value, articulo.text_7.value,articulo.text_8.value,nUnidad,nMoneda,articulo.text_10.value, nlocacion)
-		if existeArticuloCompra(articulo.text_1.value)
-			if modificoArticuloCompra(articulo.text_1.value,articulo.text_11.value, articulo.text_12.value)
-				msgInfo("Artículo Modificado")
-				borraArticulo()	
-			else
-				msgInfo("No se pudieron guardar los cambios.CONSULTE")
-			endif
-		else
-			if altaArticuloCompra(articulo.text_1.value,articulo.text_11.value, articulo.text_12.value)
-				msgInfo("Artículo Modificado")
+				msgInfo("Artï¿½culo Modificado")
 				borraArticulo()	
 			else
 				msgInfo("No se pudieron guardar los cambios.CONSULTE")
@@ -222,21 +197,46 @@ if len(alltrim(articulo.text_13.value)) != 0
 		msgInfo("No se pudieron guardar los cambios.CONSULTE")
 	endIf
 else
-	msginfo("Debe Ingresar un codigo")
-endIf
+	//if len(alltrim(articulo.text_13.value)) = 0 
+	
+	if ingresoArticulo(articulo.text_1.value,substr(articulo.text_2.value,1,50), ;
+		articulo.marca.value, articulo.modelo.value,articulo.spinner_1.value, ;
+		articulo.text_5.value, articulo.datepicker_1.value, ;
+		articulo.text_6.value, articulo.text_7.value,articulo.text_8.value,nUnidad,nMoneda,articulo.text_10.value, nlocacion)
+		if existeArticuloCompra(articulo.text_1.value)
+			if modificoArticuloCompra(articulo.text_1.value,articulo.text_11.value, articulo.text_12.value)
+				msgInfo("Artï¿½culo Modificado")
+				borraArticulo()	
+			else
+				msgInfo("No se pudieron guardar los cambios.CONSULTE")
+			endif
+		else
+			if altaArticuloCompra(articulo.text_1.value,articulo.text_11.value, articulo.text_12.value)
+				msgInfo("Artï¿½culo Modificado")
+				borraArticulo()	
+			else
+				msgInfo("No se pudieron guardar los cambios.CONSULTE")
+			endif
+		endif		
+	else
+		msgInfo("No se pudieron guardar los cambios.CONSULTE")
+	endIf
+	//else
+		//msginfo("Debe Ingresar un codigo")
+	//endIf
 
 endIf
 
 function controloArticulo()
 
 if len(articulo.text_1.value) = 0
-	msginfo("El Código de Barras NO Puede estar Vacío")
+	msginfo("El Cï¿½digo de Barras NO Puede estar Vacï¿½o")
 	articulo.text_1.setfocus
 	return .f.
 endif
 
 if len(articulo.text_2.value) = 0
-	msginfo("La Descripción NO Puede estar Vacío")
+	msginfo("La Descripciï¿½n NO Puede estar Vacï¿½o")
 	articulo.text_2.setfocus
 	return .f.
 endif

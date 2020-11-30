@@ -526,11 +526,24 @@ return .t.
 
 function cEspeciales(cCadena)
 
-
-		cCadena := strtran(cCadena,"&","&amp;")
+	cCadena := strtran(cCadena,"&","&amp;")
+		cCadena := strtran(cCadena,"Ñ","Ã‘")
+		// cCadena := strtran(cCadena,"ñ","Ã‘")
+		cCadena := strtran(cCadena,"Á","Ã")
+		// cCadena := strtran(cCadena,"á","Ã¡")
+		cCadena := strtran(cCadena,"É","Ã‰")
+		// cCadena := strtran(cCadena,"é","Ã©")
+		cCadena := strtran(cCadena,"Í","ÃŒ")
+		// cCadena := strtran(cCadena,"í","Ã")
+		cCadena := strtran(cCadena,"Ó","Ã“")
+		// cCadena := strtran(cCadena,"ó","Ã³")
+		cCadena := strtran(cCadena,"Ú","Ãš")
+		// cCadena := strtran(cCadena,"ú","Ãº")
+		
+		/*cCadena := strtran(cCadena,"&","&amp;")
 		cCadena := strtran(cCadena,"ï¿½","Ã‘")
 		// cCadena := strtran(cCadena,"ï¿½","Ã‘")
-		cCadena := strtran(cCadena,"ï¿½","ï¿½")
+		cCadena := strtran(cCadena,"ï¿½","Ã¡")
 		// cCadena := strtran(cCadena,"ï¿½","Ã¡")
 		cCadena := strtran(cCadena,"ï¿½","Ã‰")
 		// cCadena := strtran(cCadena,"ï¿½","Ã©")
@@ -540,7 +553,7 @@ function cEspeciales(cCadena)
 		// cCadena := strtran(cCadena,"ï¿½","Ã³")
 		cCadena := strtran(cCadena,"ï¿½","Ãš")
 		// cCadena := strtran(cCadena,"ï¿½","Ãº")
-		
+		*/
 		cCadena := strtran(cCadena,">","&gt;")
 		cCadena := strtran(cCadena,"<","&lt;")		
 		cCadena := strtran(cCadena,'"',"&quot;")
@@ -552,7 +565,7 @@ function oDetalleFactura(nIdMov)
 local oQuery
 local cQuery
 
-cQuery := " select d.item,a.id_articulo, d.cantidad,d.precio_unitario,d.cfe_ind_fact,a.descripcion,ca.tipoCFE "
+cQuery := " select d.item,a.codigo_barra, d.cantidad,d.precio_unitario,d.cfe_ind_fact,a.descripcion,ca.tipoCFE "
 cQuery += " from  cfe_comprobante_cab ca, cfe_comprobante_det d , articulo a"
 cQuery += " where  ca.id_factura = "+str(nIdMov)+" and d.id_factura = ca.id_factura and a.id_articulo = d.codigo_barra"
 oQuery := oServer:Query(cQuery )
