@@ -180,14 +180,14 @@ if len(alltrim(articulo.text_13.value)) != 0
 	articulo.text_6.value, articulo.text_7.value,articulo.text_8.value,nUnidad,nMoneda,articulo.text_10.value,nlocacion)
 		if existeArticuloCompra(articulo.text_1.value)
 			if modificoArticuloCompra(articulo.text_1.value,articulo.text_11.value, articulo.text_12.value)
-				msgInfo("Art�culo Modificado")
+				msgInfo("Articulo Modificado")
 				borraArticulo()	
 			else
 				msgInfo("No se pudieron guardar los cambios.CONSULTE")
 			endif
 		else
 			if altaArticuloCompra(articulo.text_1.value,articulo.text_11.value, articulo.text_12.value)
-				msgInfo("Art�culo Modificado")
+				msgInfo("Articulo Modificado")
 				borraArticulo()	
 			else
 				msgInfo("No se pudieron guardar los cambios.CONSULTE")
@@ -205,14 +205,14 @@ else
 		articulo.text_6.value, articulo.text_7.value,articulo.text_8.value,nUnidad,nMoneda,articulo.text_10.value, nlocacion)
 		if existeArticuloCompra(articulo.text_1.value)
 			if modificoArticuloCompra(articulo.text_1.value,articulo.text_11.value, articulo.text_12.value)
-				msgInfo("Art�culo Modificado")
+				msgInfo("Articulo Modificado")
 				borraArticulo()	
 			else
 				msgInfo("No se pudieron guardar los cambios.CONSULTE")
 			endif
 		else
 			if altaArticuloCompra(articulo.text_1.value,articulo.text_11.value, articulo.text_12.value)
-				msgInfo("Art�culo Modificado")
+				msgInfo("Articulo Modificado")
 				borraArticulo()	
 			else
 				msgInfo("No se pudieron guardar los cambios.CONSULTE")
@@ -230,13 +230,13 @@ endIf
 function controloArticulo()
 
 if len(articulo.text_1.value) = 0
-	msginfo("El C�digo de Barras NO Puede estar Vac�o")
+	msginfo("El Codigo de Barras NO Puede estar Vacio")
 	articulo.text_1.setfocus
 	return .f.
 endif
 
 if len(articulo.text_2.value) = 0
-	msginfo("La Descripci�n NO Puede estar Vac�o")
+	msginfo("La Descripcion NO Puede estar Vacia")
 	articulo.text_2.setfocus
 	return .f.
 endif
@@ -248,7 +248,7 @@ if articulo.text_5.value = 0
 endif
 
 if articulo.combo_2.value = 0
-	msginfo("Debe Indicar una MOneda")
+	msginfo("Debe Indicar una Moneda")
 	articulo.combo_2.setfocus
 	return .f.
 endif
