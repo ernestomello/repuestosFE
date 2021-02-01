@@ -212,7 +212,7 @@ else
 			endif
 		else
 			if altaArticuloCompra(articulo.text_1.value,articulo.text_11.value, articulo.text_12.value)
-				msgInfo("Articulo Modificado")
+				msgInfo("Articulo Dado de Alta")
 				borraArticulo()	
 			else
 				msgInfo("No se pudieron guardar los cambios.CONSULTE")
@@ -241,6 +241,12 @@ if len(articulo.text_2.value) = 0
 	return .f.
 endif
 
+if len(articulo.text_3.value) = 0
+	msginfo("Debe indicar una Marca")
+	articulo.text_3.setfocus
+	return .f.
+endif
+
 if articulo.text_5.value = 0
 	msginfo("Debe Indicar un Proveedor")
 	articulo.text_5.setfocus
@@ -261,6 +267,12 @@ endif
 if articulo.text_8.value = 0
 	msginfo("Debe Indicar un Precio de Venta")
 	articulo.text_8.setfocus
+	return .f.
+endif
+
+if len(alltrim(dtos(articulo.text_11.value))) = 0
+	msginfo("Debe Indicar una Fecha de Compra")
+	articulo.text_11.setfocus
 	return .f.
 endif
 
@@ -289,8 +301,12 @@ cQuery += " '"+cDatosInternos+"',"
 cQuery += " "+str(nLocacion)+" ,'"+cCodBarra+"')"
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
-  MsgInfo("SQL SELECT error "+cQuery+": " + oQuery:Error())
-  return .f.
+	if at('PRIMARY',oQuery:Error()) != 0
+		MsgInfo("Articulo ya Existe con ese CODIGO DE BARRAS")
+	else						
+  		MsgInfo("SQL SELECT error "+cQuery+": " + oQuery:Error())
+	endIf
+	return .f.
 else
   return .t.
 endIf
@@ -316,9 +332,13 @@ cQuery += " codigo_barra = '"+cCodBarra+"' "
 cQuery += " where id_articulo = '"+cIdArticulo+"' "
 
 oQuery := oServer:Query(cQuery)
-If oQuery:NetErr()												
-  MsgInfo("SQL SELECT error "+cQuery+": " + oQuery:Error())
-  return .f.
+If oQuery:NetErr()				
+	if at('PRIMARY',oQuery:Error()) != 0
+		MsgInfo("Articulo ya Existe con ese CODIGO DE BARRAS")
+	else						
+  		MsgInfo("SQL SELECT error "+cQuery+": " + oQuery:Error())
+	endIf
+	return .f.
 else
   return .t.
 endIf
