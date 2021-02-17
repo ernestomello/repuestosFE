@@ -531,7 +531,9 @@ for i= 1 to oDetalle:lastRec()
 							oDetalle:getrow(i):fieldGet(7), ;
 							oDetalle:getrow(i):fieldGet(8), ; 
 							oDetalle:getrow(i):fieldGet(9), ; 
-							oDetalle:getrow(i):fieldGet(10)})
+							oDetalle:getrow(i):fieldGet(10),;
+							oDetalle:getrow(i):fieldGet(11);
+							})
 
 	//nTotalFactura += oDetalle:getrow(i):fieldGet(10)														
 	nTotalFactura += round(oDetalle:getrow(i):fieldGet(10) * (1 + oDetalle:getrow(i):fieldGet(8)/100),0)
@@ -640,7 +642,7 @@ function facturaClienteDetalleVarias(cFacturas)
 local cQuery, oQuery
 
 cQuery := " select d.id_factura,d.item, d.codigo_barra,a.descripcion, d.cantidad, "
-cQuery += " d.precio_unitario,a.fecha_precio, d.cfe_ind_fact, d.descripcion, d.importe "
+cQuery += " d.precio_unitario,a.fecha_precio, d.cfe_ind_fact, d.descripcion, d.importe,a.id_articulo "
 cQuery += " from cfe_comprobante_det d, articulo a "
 cQuery += " where d.id_factura in ("+cFacturas+") "
 //cQuery += " and a.codigo_barra = d.codigo_barra "

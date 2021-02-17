@@ -7,7 +7,7 @@
 <nsAd:TipoCFE>101</nsAd:TipoCFE>
 <nsAd:Serie></nsAd:Serie>
 <nsAd:Nro></nsAd:Nro>
-<nsAd:FchEmis>2020-11-24</nsAd:FchEmis>
+<nsAd:FchEmis>2021-02-17</nsAd:FchEmis>
 <nsAd:MntBruto>1</nsAd:MntBruto>
 <nsAd:FmaPago>1</nsAd:FmaPago>
 </nsAd:IdDoc>
@@ -24,26 +24,152 @@
 <nsAd:Totales>
 <nsAd:TpoMoneda>UYU</nsAd:TpoMoneda><nsAd:MntNoGrv>0.00</nsAd:MntNoGrv>
 <nsAd:MntNetoIvaTasaMin>0.00</nsAd:MntNetoIvaTasaMin>
-<nsAd:MntNetoIVATasaBasica>269.67</nsAd:MntNetoIVATasaBasica>
+<nsAd:MntNetoIVATasaBasica>9222.13</nsAd:MntNetoIVATasaBasica>
 <nsAd:IVATasaMin>10</nsAd:IVATasaMin>
 <nsAd:IVATasaBasica>22</nsAd:IVATasaBasica>
 <nsAd:MntIVATasaMin>0.00</nsAd:MntIVATasaMin>
-<nsAd:MntIVATasaBasica>59.33</nsAd:MntIVATasaBasica>
-<nsAd:MntTotal>329</nsAd:MntTotal>
-<nsAd:CantLinDet>1</nsAd:CantLinDet>
+<nsAd:MntIVATasaBasica>2028.87</nsAd:MntIVATasaBasica>
+<nsAd:MntTotal>11251</nsAd:MntTotal>
+<nsAd:CantLinDet>15</nsAd:CantLinDet>
 <nsAd:MontoNF>0.0</nsAd:MontoNF>
-<nsAd:MntPagar>329</nsAd:MntPagar>
+<nsAd:MntPagar>11251</nsAd:MntPagar>
 </nsAd:Totales>
  </nsAd:Encabezado>
 <nsAd:Detalle>
 <nsAd:Item>
 <nsAd:NroLinDet>1</nsAd:NroLinDet>
 <nsAd:IndFact>3</nsAd:IndFact>
-<nsAd:NomItem>14431C-CAÑO</nsAd:NomItem>
+<nsAd:NomItem>8045-RETEN 38X58X11</nsAd:NomItem>
 <nsAd:Cantidad>1.00</nsAd:Cantidad>
 <nsAd:UniMed>UN</nsAd:UniMed>
-<nsAd:PrecioUnitario>329.00</nsAd:PrecioUnitario>
-<nsAd:MontoItem>329</nsAd:MontoItem>
+<nsAd:PrecioUnitario>185.00</nsAd:PrecioUnitario>
+<nsAd:MontoItem>185</nsAd:MontoItem>
+</nsAd:Item>
+<nsAd:Item>
+<nsAd:NroLinDet>2</nsAd:NroLinDet>
+<nsAd:IndFact>3</nsAd:IndFact>
+<nsAd:NomItem>1524/8-REFRIGERANTE SUP 2000 4L</nsAd:NomItem>
+<nsAd:Cantidad>1.00</nsAd:Cantidad>
+<nsAd:UniMed>UN</nsAd:UniMed>
+<nsAd:PrecioUnitario>200.00</nsAd:PrecioUnitario>
+<nsAd:MontoItem>200</nsAd:MontoItem>
+</nsAd:Item>
+<nsAd:Item>
+<nsAd:NroLinDet>3</nsAd:NroLinDet>
+<nsAd:IndFact>3</nsAd:IndFact>
+<nsAd:NomItem>F75GI60-FITRO FORD FIESTA INY</nsAd:NomItem>
+<nsAd:Cantidad>1.00</nsAd:Cantidad>
+<nsAd:UniMed>UN</nsAd:UniMed>
+<nsAd:PrecioUnitario>178.00</nsAd:PrecioUnitario>
+<nsAd:MontoItem>178</nsAd:MontoItem>
+</nsAd:Item>
+<nsAd:Item>
+<nsAd:NroLinDet>4</nsAd:NroLinDet>
+<nsAd:IndFact>3</nsAd:IndFact>
+<nsAd:NomItem>OSR4193-LAMPARA P43 60/55</nsAd:NomItem>
+<nsAd:Cantidad>1.00</nsAd:Cantidad>
+<nsAd:UniMed>UN</nsAd:UniMed>
+<nsAd:PrecioUnitario>181.00</nsAd:PrecioUnitario>
+<nsAd:MontoItem>181</nsAd:MontoItem>
+</nsAd:Item>
+<nsAd:Item>
+<nsAd:NroLinDet>5</nsAd:NroLinDet>
+<nsAd:IndFact>3</nsAd:IndFact>
+<nsAd:NomItem>60022RSNTN-RULEMAN NTN</nsAd:NomItem>
+<nsAd:Cantidad>1.00</nsAd:Cantidad>
+<nsAd:UniMed>UN</nsAd:UniMed>
+<nsAd:PrecioUnitario>231.00</nsAd:PrecioUnitario>
+<nsAd:MontoItem>231</nsAd:MontoItem>
+</nsAd:Item>
+<nsAd:Item>
+<nsAd:NroLinDet>6</nsAd:NroLinDet>
+<nsAd:IndFact>3</nsAd:IndFact>
+<nsAd:NomItem>32552/93-ESPIRALES TRAS GOL 95----&gt;</nsAd:NomItem>
+<nsAd:Cantidad>2.00</nsAd:Cantidad>
+<nsAd:UniMed>UN</nsAd:UniMed>
+<nsAd:PrecioUnitario>1138.50</nsAd:PrecioUnitario>
+<nsAd:MontoItem>2277</nsAd:MontoItem>
+</nsAd:Item>
+<nsAd:Item>
+<nsAd:NroLinDet>7</nsAd:NroLinDet>
+<nsAd:IndFact>3</nsAd:IndFact>
+<nsAd:NomItem>RRR0017-ESCOBILLA FELXIBLE 17&quot;</nsAd:NomItem>
+<nsAd:Cantidad>2.00</nsAd:Cantidad>
+<nsAd:UniMed>UN</nsAd:UniMed>
+<nsAd:PrecioUnitario>300.00</nsAd:PrecioUnitario>
+<nsAd:MontoItem>600</nsAd:MontoItem>
+</nsAd:Item>
+<nsAd:Item>
+<nsAd:NroLinDet>8</nsAd:NroLinDet>
+<nsAd:IndFact>3</nsAd:IndFact>
+<nsAd:NomItem>633313CH-RULEMAN RUEDA FIAT</nsAd:NomItem>
+<nsAd:Cantidad>1.00</nsAd:Cantidad>
+<nsAd:UniMed>UN</nsAd:UniMed>
+<nsAd:PrecioUnitario>550.00</nsAd:PrecioUnitario>
+<nsAd:MontoItem>550</nsAd:MontoItem>
+</nsAd:Item>
+<nsAd:Item>
+<nsAd:NroLinDet>9</nsAd:NroLinDet>
+<nsAd:IndFact>3</nsAd:IndFact>
+<nsAd:NomItem>E42GM2153-SOPORTE BARRA TENS CORSA</nsAd:NomItem>
+<nsAd:Cantidad>1.00</nsAd:Cantidad>
+<nsAd:UniMed>UN</nsAd:UniMed>
+<nsAd:PrecioUnitario>691.00</nsAd:PrecioUnitario>
+<nsAd:MontoItem>691</nsAd:MontoItem>
+</nsAd:Item>
+<nsAd:Item>
+<nsAd:NroLinDet>10</nsAd:NroLinDet>
+<nsAd:IndFact>3</nsAd:IndFact>
+<nsAd:NomItem>1801/93-BARRA TORSION IZQ HILUX90</nsAd:NomItem>
+<nsAd:Cantidad>1.00</nsAd:Cantidad>
+<nsAd:UniMed>UN</nsAd:UniMed>
+<nsAd:PrecioUnitario>3231.00</nsAd:PrecioUnitario>
+<nsAd:MontoItem>3231</nsAd:MontoItem>
+</nsAd:Item>
+<nsAd:Item>
+<nsAd:NroLinDet>11</nsAd:NroLinDet>
+<nsAd:IndFact>3</nsAd:IndFact>
+<nsAd:NomItem>F75PSL561-FILTRO ACEITE PH2870A</nsAd:NomItem>
+<nsAd:Cantidad>1.00</nsAd:Cantidad>
+<nsAd:UniMed>UN</nsAd:UniMed>
+<nsAd:PrecioUnitario>181.00</nsAd:PrecioUnitario>
+<nsAd:MontoItem>181</nsAd:MontoItem>
+</nsAd:Item>
+<nsAd:Item>
+<nsAd:NroLinDet>12</nsAd:NroLinDet>
+<nsAd:IndFact>3</nsAd:IndFact>
+<nsAd:NomItem>3723035070-SOPORTE CARDAN HILUX 4X2 2.4-2.8DSL</nsAd:NomItem>
+<nsAd:Cantidad>1.00</nsAd:Cantidad>
+<nsAd:UniMed>UN</nsAd:UniMed>
+<nsAd:PrecioUnitario>937.00</nsAd:PrecioUnitario>
+<nsAd:MontoItem>937</nsAd:MontoItem>
+</nsAd:Item>
+<nsAd:Item>
+<nsAd:NroLinDet>13</nsAd:NroLinDet>
+<nsAd:IndFact>3</nsAd:IndFact>
+<nsAd:NomItem>82111360-ACEITE 20W50 5LTS AMARILLO</nsAd:NomItem>
+<nsAd:Cantidad>1.00</nsAd:Cantidad>
+<nsAd:UniMed>UN</nsAd:UniMed>
+<nsAd:PrecioUnitario>1190.00</nsAd:PrecioUnitario>
+<nsAd:MontoItem>1190</nsAd:MontoItem>
+</nsAd:Item>
+<nsAd:Item>
+<nsAd:NroLinDet>14</nsAd:NroLinDet>
+<nsAd:IndFact>3</nsAd:IndFact>
+<nsAd:NomItem>HR7MCU-BUJIA BOSCH</nsAd:NomItem>
+<nsAd:Cantidad>4.00</nsAd:Cantidad>
+<nsAd:UniMed>UN</nsAd:UniMed>
+<nsAd:PrecioUnitario>153.75</nsAd:PrecioUnitario>
+<nsAd:MontoItem>615</nsAd:MontoItem>
+</nsAd:Item>
+<nsAd:Item>
+<nsAd:NroLinDet>15</nsAd:NroLinDet>
+<nsAd:IndFact>3</nsAd:IndFact>
+<nsAd:NomItem>1-BOLSA  NYLON</nsAd:NomItem>
+<nsAd:Cantidad>1.00</nsAd:Cantidad>
+<nsAd:UniMed>UN</nsAd:UniMed>
+<nsAd:PrecioUnitario>4.00</nsAd:PrecioUnitario>
+<nsAd:MontoItem>4</nsAd:MontoItem>
 </nsAd:Item>
 </nsAd:Detalle>
 <nsAd:CAEData>
@@ -57,4 +183,4 @@
 <nsAdenda:Adenda><nsAdenda:AdendaSicfe>
 <nsAdenda:IdCaja>CasaCentral</nsAdenda:IdCaja>
 <nsAdenda:IdUsuario>N/A</nsAdenda:IdUsuario>
-</nsAdenda:AdendaSicfe>Obs:                                                                                                                                                                                                                                                                &lt;br&gt;Ref: 347747</nsAdenda:Adenda></nsAdenda:CFE_Adenda>
+</nsAdenda:AdendaSicfe>Obs:                                                                                                                                                                                                                                                                &lt;br&gt;Ref: 347748</nsAdenda:Adenda></nsAdenda:CFE_Adenda>

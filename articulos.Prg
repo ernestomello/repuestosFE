@@ -112,21 +112,23 @@ articulo.combo_3.value := 0
 
 
 procedure buscarArticulo()
-local nArticulo := articulo.text_1.value
-if existeArticulo(nArticulo)
-		    rellenoDatosArticulo(nArticulo)
-		    cArticuloGlobal := ""
-	  else
-	    
-	      busquedaGeneral('a')
-	    
-	       
-		      if len(cArticuloGlobal) != 0
-		        	rellenoDatosArticulo(cArticuloGlobal)      
-		        	cArticuloGlobal := ""
-		      endIf
-	  endif
-	
+	local nArticulo := articulo.text_1.value
+	if existeArticulo(nArticulo)
+	    rellenoDatosArticulo(nArticulo)
+	    cArticuloGlobal := ""
+	else
+	    if msgYesNo("El articulo no Existe, Continua Ingresando")
+			borraArticulo()
+			articulo.text_1.value := nArticulo
+			articulo.text_2.setfocus
+			return 
+		endIf
+		busquedaGeneral('a')
+	    if len(cArticuloGlobal) != 0
+	       	rellenoDatosArticulo(cArticuloGlobal)      
+	      	cArticuloGlobal := ""
+		endIf
+	endif	
 return
 
 procedure buscaMarca()

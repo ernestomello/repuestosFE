@@ -28,14 +28,14 @@ DEFINE WINDOW TEMPLATE AT 149 , 559 WIDTH 538 HEIGHT 584 VIRTUAL WIDTH Nil VIRTU
         FONTNAME "Arial"
         FONTSIZE 9
         TOOLTIP ""
-        ONCHANGE Nil
+        ONCHANGE nil
         ONGOTFOCUS Nil
-        ONLOSTFOCUS Nil
+        ONLOSTFOCUS buscarArticulo()
         FONTBOLD .F.
         FONTITALIC .F.
         FONTUNDERLINE .F.
         FONTSTRIKEOUT .F.
-        ONENTER buscarArticulo()
+        ONENTER nil
         HELPID Nil
         TABSTOP .T.
         VISIBLE .T.
