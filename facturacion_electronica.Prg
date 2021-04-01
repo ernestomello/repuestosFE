@@ -506,7 +506,7 @@ else
 		cAdenda += "&lt;br&gt;"+"Doc : "+cEspeciales(hb_atokens(aSocio,"|")[2])+"&lt;br&gt; Nombre: "+cEspeciales(hb_atokens(aSocio,"|")[3])+"&lt;br&gt; Direccion: "+cEspeciales(hb_atokens(aSocio,"|")[4])
 	endIf
 endif
-cAdenda += "&lt;br&gt;"+"Ref: "+str(oIdMov:getRow(1):fieldGet(1))
+cAdenda += "&lt;br&gt;"+"Ref: "+str(oIdMov:getRow(1):fieldGet(1))+" - "+str(oIdMov:getRow(1):fieldGet(8))
 
 cLinea := "<nsAdenda:Adenda>"+cAdendaSicfe+cAdenda+"</nsAdenda:Adenda>"+chr(13)
 // "10|"+cAdenda//+chr(13)+chr(10)
