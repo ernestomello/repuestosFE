@@ -83,9 +83,9 @@ Function main()
       			
       			POPUP 'Presupuestos'
       				ITEM 'Registro Contado'	ACTION factCliente(91,aDoc,1)
-      				ITEM 'Búsqueda Contados' ACTION presupuestos("Contado")//busquedaGeneral("pc","","Presupuestos Contado",1)  
+      				ITEM 'Busqueda Contados' ACTION presupuestos("Contado")//busquedaGeneral("pc","","Presupuestos Contado",1)  
       				SEPARATOR
-      				ITEM 'Registro Crédito' ACTION factCliente(81,aDoc,2)
+      				ITEM 'Registro Credito' ACTION factCliente(81,aDoc,2)
       				ITEM 'Estado de Cuenta' ACTION presupuestos("Credito")
       				
       			END POPUP
@@ -101,7 +101,7 @@ Function main()
       				ITEM 'Proveedores' 	ACTION mantenimientoProveedor(0)
       				SEPARATOR
       				ITEM 'Marcas ' 			ACTION mantenimientoMarca(0)
-      				ITEM 'Locación ' 		ACTION mantenimientoLocacion(0)
+      				ITEM 'Locacion ' 		ACTION mantenimientoLocacion(0)
       				SEPARATOR
       				ITEM 'Usuario '			ACTION mantenimientoUsuario(0)
       			
@@ -140,8 +140,8 @@ Function main()
                 
       												
       			END POPUP
-      			POPUP "Cotización Moneda"
-      				ITEM 'Cotización Moneda' ACTION cotizacion_moneda()
+      			POPUP "Cotizacion Moneda"
+      				ITEM 'Cotizacion Moneda' ACTION cotizacion_moneda()
       			END POPUP
 //      				ITEM 'Migrar Detalle FAC-REC' ACTION migraDetalle()
 //							ITEM 'Migrar Repuestos' ACTION migraArticulo()

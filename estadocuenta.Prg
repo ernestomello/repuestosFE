@@ -6,7 +6,7 @@ load window estadoCuenta
 DEFINE CONTROL CONTEXTMENU grid_1 of estadoCuenta
 		MENUITEM "Ver Documento-Imprimir"  ONCLICK verFacturaEstado()
 		MENUITEM "Ver Documento"  ONCLICK muestroDocumentoEstado()
-		MENUITEM "Anula Según Documento"  ONCLICK notaCreditoDebitoEstado()
+		MENUITEM "Anula Segï¿½n Documento"  ONCLICK notaCreditoDebitoEstado()
 	END MENU
 estadoCuenta.datePicker_1.value := date() - 30
 estadoCuenta.center
@@ -74,7 +74,7 @@ estadoCuenta.grid_1.deleteAllItems
 
 
 /* Tengo que hacer cambios para que sirva para clientes y proveedores 
-Agregar un saldo en cada línea y el saldo de la Factura.
+Agregar un saldo en cada lï¿½nea y el saldo de la Factura.
 */
 procedure rellenoGridCliente()
 local oDocumentos, nSaldoAnterior, nSaldoActual
@@ -83,7 +83,7 @@ local nHaber:= 0,nDebe := 0
 //local cOpcion := estadoCuenta.text_5.value
 local aGrid:= {}
 estadoCuenta.text_5.value := 0
-WAIT WINDOW "Procesando Información - AGUARDE" NOWAIT 
+WAIT WINDOW "Procesando Informaciï¿½n - AGUARDE" NOWAIT 
 	oDocumentos := documentosCliente(estadoCuenta.text_1.value,estadoCuenta.datePicker_1.value,estadoCuenta.datePicker_2.value )
 	nSaldoActual := saldoEntreFechasCliente(estadoCuenta.text_1.value,ctod("01/01/1980"),estadoCuenta.datePicker_2.value)
 	nSaldoAnterior := saldoEntreFechasCliente(estadoCuenta.text_1.value,ctod("01/01/1980"),dFechaHasta)
@@ -127,18 +127,18 @@ for i= nLargoArray to 1 step -1
 next
 WAIT CLEAR
 
-procedure imprimeEstadoCuentaCliente(nCliente,dFechaDesde,dFechaHasta,nPrevio, nControla)
+procedure imprimeEstadoCuentaCliente(nCliente,dFechaDesde,dFechaHasta,nPrevio, nControla,nSaldoMenor)
 local oDocumentos, nSaldoAnterior
 local dFechaSaldoAnt := dFechaDesde - 1
 local nSaldoActual := saldoEntreFechasCliente(nCliente,ctod("01/01/1980"),dFechaHasta)
 if nControla == 0 .and. nSaldoActual <= 0
 	return .f.
 endif
-// if nSaldoActual > 0
+if nSaldoActual >= nSaldoMenor
 	oDocumentos := documentosCliente(nCliente,dFechaDesde,dFechaHasta )
 	nSaldoAnterior := saldoEntreFechasCliente(nCliente,ctod("01/01/1980"),dFechaSaldoAnt)
 	imprimoEstadoCuenta(nCliente,oDocumentos,nSaldoAnterior,dFechaSaldoAnt,nSaldoActual,dFechaHasta,nPrevio)
-// endif
+endif
 
 
 

@@ -24,9 +24,10 @@ local oDocumentos, nSaldoAnterior, nSaldoActual
 local dFechaDesde := impresionEstado.datePicker_1.value - 1
 local dFechaHasta := impresionEstado.datePicker_2.value
 local nPrevio := impresionEstado.radioGroup_1.value
+local nSaldoMenor := impresionEstado.text_3.value
 
 if nPrevio = 3
-	info_("Esta función no esta implementada, Consulte al Desarrollador",.t.)
+	info_("Esta funcion no esta implementada, Consulte al Desarrollador",.t.)
 	WAIT CLEAR
 	return .f.
 endif
@@ -35,7 +36,7 @@ endif
 		 
 		if fechaUltimoMovimientoCliente(i) > impresionEstado.datePicker_3.value 
 			if nPrevio != 3
-				imprimeEstadoCuentaCliente(i,dFechaDesde,dFechaHasta,nPrevio,0)
+				imprimeEstadoCuentaCliente(i,dFechaDesde,dFechaHasta,nPrevio,0,nSaldoMenor)
 			endif 
 		endif
 	next
@@ -98,7 +99,7 @@ START PRINTPAGE
 
 @ xpos + 2, ypos + 2   PRINT data "Fecha: "+dtoc(Date())+" " size fuente
 @ xpos + 2, ypos + 80  PRINT data " Morales Repuestos " SIZE fuente bold
-@ xpos + 2, ypos + 190 PRINT data "Página" right size fuente
+@ xpos + 2, ypos + 190 PRINT data "Pï¿½gina" right size fuente
 @ xpos + 5, ypos + 2   PRINT data "Hora:  "+Time() size fuente
 @ xpos + 5, ypos + 190 PRINT data str(nPag) right size fuente
 @ xPos + 10, yPos      PRINT LINE TO xPos + 10 , (yPos + 190) PENWIDTH 0.5                               
@@ -128,7 +129,7 @@ for i= nLargoArray to 1 step -1
 		nPag ++
 		@ xpos + 2, ypos + 2   PRINT data "Fecha: "+dtoc(Date())+" " size fuente
 		@ xpos + 2, ypos + 80  PRINT data " Morales Repuestos " SIZE fuente bold
-		@ xpos + 2, ypos + 190 PRINT data "Página" right size fuente
+		@ xpos + 2, ypos + 190 PRINT data "Pï¿½gina" right size fuente
 		@ xpos + 5, ypos + 2   PRINT data "Hora:  "+Time() size fuente
 		@ xpos + 5, ypos + 190 PRINT data str(nPag) right size fuente
 		@ xPos + 10, yPos      PRINT LINE TO xPos + 10 , (yPos + 190) PENWIDTH 0.5       
@@ -183,7 +184,7 @@ START PRINTPAGE
 
 @ xpos + 2, ypos + 2   PRINT data "Fecha: "+dtoc(Date())+" "
 @ xpos + 2, ypos + 80  PRINT data " Morales Repuestos " SIZE fuente bold
-@ xpos + 2, ypos + 190 PRINT data "Página" right size fuente
+@ xpos + 2, ypos + 190 PRINT data "Pï¿½gina" right size fuente
 @ xpos + 5, ypos + 2   PRINT data "Hora:  "+Time()
 @ xpos + 5, ypos + 190 PRINT data str(nPag) right size fuente
 @ xPos + 10, yPos      PRINT LINE TO xPos + 10 , (yPos + 190) PENWIDTH 0.5        
@@ -212,7 +213,7 @@ if 	ultimoMes != 0
 		nPag ++
 		@ xpos + 2, ypos + 2   PRINT data "Fecha: "+dtoc(Date())+" "
 		@ xpos + 2, ypos + 80  PRINT data " Morales Repuestos " SIZE fuente bold
-		@ xpos + 2, ypos + 190 PRINT data "Página" right size fuente
+		@ xpos + 2, ypos + 190 PRINT data "Pï¿½gina" right size fuente
 		@ xpos + 5, ypos + 2   PRINT data "Hora:  "+Time()
 		@ xpos + 5, ypos + 190 PRINT data str(nPag) right size fuente
 		@ xPos + 10, yPos      PRINT LINE TO xPos + 10 , (yPos + 190) PENWIDTH 0.5        
@@ -238,7 +239,7 @@ END PRINTPAGE
 END PRINTDOC
 
 ***************************************
-* Para determinar el último día del mes pasando una fecha de referencia
+* Para determinar el ï¿½ltimo dï¿½a del mes pasando una fecha de referencia
 *
 ***************************************
 function dUltimoDiaMes(dFecha)
