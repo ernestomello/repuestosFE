@@ -55,7 +55,7 @@ local nLinea := 	PARAMETROini("LineasDetalle","N")
 local nPrecioUnitario := 0
 
   if (factCliente.text_9.value = 0 .or. factCliente.text_8.value =0)
-  	msginfo('La cantidad no puede ser CERO',"ATENCIï¿½N")
+  	msginfo('La cantidad no puede ser CERO',"ATENCIÓN")
     factCliente.text_8.SetFocus
 		Return
   endif
@@ -227,7 +227,7 @@ nNumero:= numeroDesde('CLIENTE')
 
 if !agregoNumeroDesde('CLIENTE')
 	WAIT CLEAR
-	msginfo("No se pudo actualizar el Nï¿½mero de la Factura")
+	msginfo("No se pudo actualizar el Número de la Factura")
 	return .f.
 endIf
 
@@ -235,7 +235,7 @@ endIf
 if nNumero == 0
 	noTran()
 	WAIT CLEAR
-	msgInfo("No se pudo Guardar el Nï¿½mero. Reintente!!!")
+	msgInfo("No se pudo Guardar el Número. Reintente!!!")
 	return .f.
 endif
 
@@ -336,7 +336,7 @@ if len(factCliente.text_13.value)  < 4 .and. factCliente.text_21.value = 2
 	return .f.
 endIf
 if factCliente.text_14.value = 111	.and. len(factCliente.text_4.value)= 0 .and. len(factCliente.text_4.value)= 0
-	msgBox("eFactura debe tener Nombre y Direcciï¿½n")
+	msgBox("eFactura debe tener Nombre y Dirección")
 	factCliente.text_3.SetFocus
 	return .f.
 endif
@@ -432,7 +432,7 @@ if factCliente.text_14.value != 81 .and. factCliente.text_14.value != 91
 	else
 		if !formatoCedula(factCliente.text_2.value)
 			if len(factCliente.text_2.value)!= 0
-				msgInfo("Formato RUT o Cï¿½dula Incorrecto")
+				msgInfo("Formato RUT o Cédula Incorrecto")
 			endif
 			factCliente.text_2.value := ""
 			factCliente.text_14.value := 101

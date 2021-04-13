@@ -99,7 +99,7 @@ START PRINTPAGE
 
 @ xpos + 2, ypos + 2   PRINT data "Fecha: "+dtoc(Date())+" " size fuente
 @ xpos + 2, ypos + 80  PRINT data " Morales Repuestos " SIZE fuente bold
-@ xpos + 2, ypos + 190 PRINT data "Pï¿½gina" right size fuente
+@ xpos + 2, ypos + 190 PRINT data "Página" right size fuente
 @ xpos + 5, ypos + 2   PRINT data "Hora:  "+Time() size fuente
 @ xpos + 5, ypos + 190 PRINT data str(nPag) right size fuente
 @ xPos + 10, yPos      PRINT LINE TO xPos + 10 , (yPos + 190) PENWIDTH 0.5                               
@@ -129,7 +129,7 @@ for i= nLargoArray to 1 step -1
 		nPag ++
 		@ xpos + 2, ypos + 2   PRINT data "Fecha: "+dtoc(Date())+" " size fuente
 		@ xpos + 2, ypos + 80  PRINT data " Morales Repuestos " SIZE fuente bold
-		@ xpos + 2, ypos + 190 PRINT data "Pï¿½gina" right size fuente
+		@ xpos + 2, ypos + 190 PRINT data "Página" right size fuente
 		@ xpos + 5, ypos + 2   PRINT data "Hora:  "+Time() size fuente
 		@ xpos + 5, ypos + 190 PRINT data str(nPag) right size fuente
 		@ xPos + 10, yPos      PRINT LINE TO xPos + 10 , (yPos + 190) PENWIDTH 0.5       
@@ -184,7 +184,7 @@ START PRINTPAGE
 
 @ xpos + 2, ypos + 2   PRINT data "Fecha: "+dtoc(Date())+" "
 @ xpos + 2, ypos + 80  PRINT data " Morales Repuestos " SIZE fuente bold
-@ xpos + 2, ypos + 190 PRINT data "Pï¿½gina" right size fuente
+@ xpos + 2, ypos + 190 PRINT data "Página" right size fuente
 @ xpos + 5, ypos + 2   PRINT data "Hora:  "+Time()
 @ xpos + 5, ypos + 190 PRINT data str(nPag) right size fuente
 @ xPos + 10, yPos      PRINT LINE TO xPos + 10 , (yPos + 190) PENWIDTH 0.5        
@@ -213,7 +213,7 @@ if 	ultimoMes != 0
 		nPag ++
 		@ xpos + 2, ypos + 2   PRINT data "Fecha: "+dtoc(Date())+" "
 		@ xpos + 2, ypos + 80  PRINT data " Morales Repuestos " SIZE fuente bold
-		@ xpos + 2, ypos + 190 PRINT data "Pï¿½gina" right size fuente
+		@ xpos + 2, ypos + 190 PRINT data "Página" right size fuente
 		@ xpos + 5, ypos + 2   PRINT data "Hora:  "+Time()
 		@ xpos + 5, ypos + 190 PRINT data str(nPag) right size fuente
 		@ xPos + 10, yPos      PRINT LINE TO xPos + 10 , (yPos + 190) PENWIDTH 0.5        

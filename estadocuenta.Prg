@@ -6,7 +6,7 @@ load window estadoCuenta
 DEFINE CONTROL CONTEXTMENU grid_1 of estadoCuenta
 		MENUITEM "Ver Documento-Imprimir"  ONCLICK verFacturaEstado()
 		MENUITEM "Ver Documento"  ONCLICK muestroDocumentoEstado()
-		MENUITEM "Anula Segï¿½n Documento"  ONCLICK notaCreditoDebitoEstado()
+		MENUITEM "Anula Según Documento"  ONCLICK notaCreditoDebitoEstado()
 	END MENU
 estadoCuenta.datePicker_1.value := date() - 30
 estadoCuenta.center
@@ -83,7 +83,7 @@ local nHaber:= 0,nDebe := 0
 //local cOpcion := estadoCuenta.text_5.value
 local aGrid:= {}
 estadoCuenta.text_5.value := 0
-WAIT WINDOW "Procesando Informaciï¿½n - AGUARDE" NOWAIT 
+WAIT WINDOW "Procesando Información - AGUARDE" NOWAIT 
 	oDocumentos := documentosCliente(estadoCuenta.text_1.value,estadoCuenta.datePicker_1.value,estadoCuenta.datePicker_2.value )
 	nSaldoActual := saldoEntreFechasCliente(estadoCuenta.text_1.value,ctod("01/01/1980"),estadoCuenta.datePicker_2.value)
 	nSaldoAnterior := saldoEntreFechasCliente(estadoCuenta.text_1.value,ctod("01/01/1980"),dFechaHasta)

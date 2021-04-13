@@ -16,7 +16,7 @@ endif
 	do case
 	case  ( nTipoDoc = 101 .or. nTipoDoc = 111) 
 		if !facturaSinDevolucion(nFactura)
-			msginfo(cTipoDocumento+" con Nota de Crï¿½dito")
+			msginfo(cTipoDocumento+" con Nota de Crédito")
 			// notaCredito.release
 			return .f.
 		endif
@@ -49,7 +49,7 @@ endif
 		notaCredito.button_1.caption := "Guardar Nota Debito"
 
 	otherwise
-		msgInfo("No es posible Hacer la Devoluciï¿½n")
+		msgInfo("No es posible Hacer la Devolución")
 		// notaCredito.release
 		return .f.
 	end case
@@ -219,7 +219,7 @@ endIf
 			if !graboFactClienteDetalle(nNumero,i,cCodigo,nCantidad,nPrecioUnitario,nIva,nDto,nImporte)
 				noTran()
 				WAIT CLEAR
-				msgInfo("No se pudieron Guardar el detalle de la NOta de Crï¿½dito. Reintente!!!")
+				msgInfo("No se pudieron Guardar el detalle de la Nota de Crédito. Reintente!!!")
 				return .f.
 			endIf
 		next
@@ -250,7 +250,7 @@ finTransaccion()
 info_("Imprimiendo Documento ...")
 if !imprimoMovimiento(nNumero,0,'','','')
 	WAIT CLEAR
-	msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menï¿½")
+	msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menú")
 	return .f.
 endif
 WAIT CLEAR
