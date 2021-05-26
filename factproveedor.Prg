@@ -61,12 +61,12 @@ cTipoDocumento := 111
 nNumero:= numeroDesde('PROVEEDOR')  	
 
 if !agregoNumeroDesde('PROVEEDOR')
-	msginfo("No se pudo actualizar el Número de la Factura")
+	msginfo("No se pudo actualizar el Nï¿½mero de la Factura")
 	return .f.
 endIf  	
 
 if controloFactProveedor()
-	if msgyesNo("Graba la Factura?","ATENCIÓN",.T.)
+	if msgyesNo("Graba la Factura?","ATENCION",.F.)
 	  if !graboFactProveedor(nNumero,nProveedor, cTipoDocumento,factProveedor.text_6.value, factProveedor.text_5.value,factProveedor.text_2.value)
 	    msgInfo('No se pudieron grabar los datos, REINTENTE!!!')
 	  else
@@ -86,7 +86,7 @@ if factProveedor.text_5.value = 0
 endIf
 
 if factProveedor.text_6.value = 0
-	msgInfo("Debe Ingresar un Número de factura")
+	msgInfo("Debe Ingresar un Nï¿½mero de factura")
 	return .f.
 endIf
 
@@ -103,13 +103,13 @@ return .t.
 *************************************************
 *************************************************
 function graboFactProveedor(nNumeroF,nProveedor, nTipoDocumento,nNumero,nImporte,dFechaFactura)
-// hay que modificar esta función porque está muy entreverada hay dominios cruzados :(
+// hay que modificar esta funciï¿½n porque estï¿½ muy entreverada hay dominios cruzados :(
 local idMov,nCajero,nLinea, cSerie, nCaja
 
 nCaja := cajaId()
 nNumero:= nNumero
 
-//comienzo la transacción
+//comienzo la transacciï¿½n
 oQuery:= oServer:Query( 'BEGIN' ) 
 If oQuery:NetErr() 
   MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
@@ -128,7 +128,7 @@ cQuery += " null, current_timestamp ) "
 oQuery:= oServer:Query(  cQuery )
 If oQuery:NetErr() 
   MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-  //si no puede guardar el cabezal anulo todo(incluido el número de factua)
+  //si no puede guardar el cabezal anulo todo(incluido el nï¿½mero de factua)
   oQuery:=oServer:Query('ROLLBACK') 
   return .f.    
 endIf
@@ -140,7 +140,7 @@ if facturaProveedorConDetalle()
 	oQuery:= oServer:Query( 'select LAST_INSERT_ID()')
 	If oQuery:NetErr() 
 	  MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-	  //si o puedo obtener el id del cabezal anulo todo para atrás
+	  //si o puedo obtener el id del cabezal anulo todo para atrï¿½s
 	  oQuery:=oServer:Query('ROLLBACK') 
 	  return .f.
 	endif
@@ -160,7 +160,7 @@ if facturaProveedorConDetalle()
 	  oQuery := oServer:Query(cQuery)
 	  If oQuery:NetErr() 
 	    MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-	    //si no puedo guardar alguna de las lìneas anulo todo para atrás
+	    //si no puedo guardar alguna de las lï¿½neas anulo todo para atrï¿½s
 	    oQuery:=oServer:Query('ROLLBACK') 
 	    return .f.
 	  endIf
@@ -170,7 +170,7 @@ if facturaProveedorConDetalle()
 endIf
 */
 
-//si llega acà es porque pudo hacer todos los insert comiteo las transacciones
+//si llega acï¿½ es porque pudo hacer todos los insert comiteo las transacciones
 //agregoNumeroDesde()
 oQuery:= oServer:Query('COMMIT')
 return .t.
@@ -251,7 +251,7 @@ cQuery := cQuery + "  where numero_factura = "+str(nFactura)+" "
 oQuery:= oServer:Query(cQuery)
 If oQuery:NetErr() 
   MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-  //si o puedo obtener el id del cabezal anulo todo para atrás
+  //si o puedo obtener el id del cabezal anulo todo para atrï¿½s
   oQuery:=oServer:Query('ROLLBACK') 
   return .f.
 else
