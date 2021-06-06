@@ -36,48 +36,50 @@ next
 
 procedure rellenoDatosArticulo(cArticulo)
 
-local oArticulos := oArticulo(cArticulo)
-local oArticulosCompra := oArticuloCompra(cArticulo)
-local cUnidad := nombreUnidad(oArticulos:getRow(1):fieldGet(11))
-local cMoneda := signoMOneda(oArticulos:getRow(1):fieldGet(12))
-local cLocacion := descripcionLocacion(oArticulos:getRow(1):fieldGet(14))
+	local oArticulos := oArticulo(cArticulo)
+	local oArticulosCompra := oArticuloCompra(cArticulo)
+	local cUnidad := nombreUnidad(oArticulos:getRow(1):fieldGet(11))
+	local cMoneda := signoMOneda(oArticulos:getRow(1):fieldGet(12))
+	local cLocacion := descripcionLocacion(oArticulos:getRow(1):fieldGet(14))
 
-borraArticulo()
+	borraArticulo()
+	articulo.nuevo.value := 'N'
+	articulo.text_1.value := oArticulos:getRow(1):fieldGet(1)
+	articulo.text_13.value := oArticulos:getRow(1):fieldGet(15)
+	
+	articulo.text_2.value := oArticulos:getRow(1):fieldGet(2)
+	articulo.marca.value := oArticulos:getRow(1):fieldGet(3)
+	articulo.text_3.value := descripcionMarca(oArticulos:getRow(1):fieldGet(3))
+	articulo.modelo.value := oArticulos:getRow(1):fieldGet(4)
+	articulo.text_4.value := descripcionModelo(oArticulos:getRow(1):fieldGet(4))
+	articulo.spinner_1.value := iif(oArticulos:getRow(1):fieldGet(6)!= 0,oArticulos:getRow(1):fieldGet(6),year(date()))
+	articulo.text_5.value := oArticulos:getRow(1):fieldGet(5)
+	articulo.text_9.value := nombreProveedor(oArticulos:getRow(1):fieldGet(5))
 
-articulo.text_1.value := oArticulos:getRow(1):fieldGet(1)
-articulo.text_13.value := oArticulos:getRow(1):fieldGet(15)
-articulo.text_2.value := oArticulos:getRow(1):fieldGet(2)
-articulo.marca.value := oArticulos:getRow(1):fieldGet(3)
-articulo.text_3.value := descripcionMarca(oArticulos:getRow(1):fieldGet(3))
-articulo.modelo.value := oArticulos:getRow(1):fieldGet(4)
-articulo.text_4.value := descripcionModelo(oArticulos:getRow(1):fieldGet(4))
-articulo.spinner_1.value := iif(oArticulos:getRow(1):fieldGet(6)!= 0,oArticulos:getRow(1):fieldGet(6),year(date()))
-articulo.text_5.value := oArticulos:getRow(1):fieldGet(5)
-articulo.text_9.value := nombreProveedor(oArticulos:getRow(1):fieldGet(5))
+	articulo.text_6.value := oArticulos:getRow(1):fieldGet(8)
+	articulo.text_7.value := oArticulos:getRow(1):fieldGet(9)
+	articulo.text_8.value := oArticulos:getRow(1):fieldGet(10)
+	articulo.text_10.value := oArticulos:getRow(1):fieldGet(13)
+	articulo.text_11.value := oArticulosCompra:getRow(1):fieldGet(2)
+	articulo.text_12.value := oArticulosCompra:getRow(1):fieldGet(3)
+	articulo.datepicker_1.value := oArticulos:getRow(1):fieldGet(7)
 
-articulo.text_6.value := oArticulos:getRow(1):fieldGet(8)
-articulo.text_7.value := oArticulos:getRow(1):fieldGet(9)
-articulo.text_8.value := oArticulos:getRow(1):fieldGet(10)
-articulo.text_10.value := oArticulos:getRow(1):fieldGet(13)
-articulo.text_11.value := oArticulosCompra:getRow(1):fieldGet(2)
-articulo.text_12.value := oArticulosCompra:getRow(1):fieldGet(3)
-articulo.datepicker_1.value := oArticulos:getRow(1):fieldGet(7)
-
-for i = 1 to articulo.combo_1.itemCount
-	if alltrim(articulo.combo_1.item(i)) = alltrim(cUnidad)
-		articulo.combo_1.Value  := i
-	endIf
-next
-for i = 1 to articulo.combo_3.itemCount
-	if alltrim(articulo.combo_3.item(i)) = alltrim(cLocacion)
-		articulo.combo_3.Value  := i
-	endIf
-next
-for i = 1 to articulo.combo_2.itemCount
-	if alltrim(articulo.combo_2.item(i)) = alltrim(cMoneda)
-		articulo.combo_2.Value  := i
-	endIf
-next
+	for i = 1 to articulo.combo_1.itemCount
+		if alltrim(articulo.combo_1.item(i)) = alltrim(cUnidad)
+			articulo.combo_1.Value  := i
+		endIf
+	next
+	for i = 1 to articulo.combo_3.itemCount
+		if alltrim(articulo.combo_3.item(i)) = alltrim(cLocacion)
+			articulo.combo_3.Value  := i
+		endIf
+	next
+	for i = 1 to articulo.combo_2.itemCount
+		if alltrim(articulo.combo_2.item(i)) = alltrim(cMoneda)
+			articulo.combo_2.Value  := i
+		endIf
+	next
+return
 
 function cambioMoneda()
 local nMoneda := monedaArticulo(articulo.text_1.value)
@@ -86,6 +88,12 @@ iif (nMoneda = 2,articulo.text_7.fontcolor := {0,128,0},articulo.text_7.fontcolo
 iif (nMoneda = 2,articulo.text_8.fontcolor := {0,128,0},articulo.text_8.fontcolor := {0,0,0})
 iif (cMoneda = 3,articulo.text_7.fontcolor := {0,128,0},articulo.text_7.fontcolor := {0,0,0})
 iif (cMoneda = 3,articulo.text_8.fontcolor := {0,128,0},articulo.text_8.fontcolor := {0,0,0})
+
+
+function nuevoArticulo()
+	borraArticulo()
+	// articulo.nuevo.value := 'S'
+return
 
 procedure borraArticulo()
 
@@ -108,20 +116,25 @@ articulo.spinner_1.value := year(date())
 articulo.combo_1.value := 0
 articulo.combo_2.value := 0
 articulo.combo_3.value := 0
+articulo.nuevo.value := 'S'
 
 
 
 procedure buscarArticulo()
 	local nArticulo := articulo.text_1.value
+	if articulo.nuevo.value != 'S'
+		return .f.
+	endIf	
 	if existeArticulo(nArticulo)
 	    rellenoDatosArticulo(nArticulo)
 	    cArticuloGlobal := ""
 	else
 	    if msgYesNo("El articulo no Existe, Continua Ingresando")
 			borraArticulo()
+			articulo.nuevo.value := 'N'
 			articulo.text_1.value := nArticulo
 			articulo.text_2.setfocus
-			return 
+			return .t.
 		endIf
 		busquedaGeneral('a')
 	    if len(cArticuloGlobal) != 0
@@ -129,7 +142,7 @@ procedure buscarArticulo()
 	      	cArticuloGlobal := ""
 		endIf
 	endif	
-return
+return .t.
 
 procedure buscaMarca()
 
@@ -177,13 +190,14 @@ endif
 //if existeArticulo(articulo.text_13.value) 
 if len(alltrim(articulo.text_13.value)) != 0 
 	if modificoArticulo(articulo.text_13.value,articulo.text_1.value,substr(articulo.text_2.value,1,50), ;
-	articulo.marca.value, articulo.modelo.value,articulo.spinner_1.value, ;
-	articulo.text_5.value, articulo.datepicker_1.value, ;
-	articulo.text_6.value, articulo.text_7.value,articulo.text_8.value,nUnidad,nMoneda,articulo.text_10.value,nlocacion)
+		articulo.marca.value, articulo.modelo.value,articulo.spinner_1.value, ;
+		articulo.text_5.value, articulo.datepicker_1.value, ;
+		articulo.text_6.value, articulo.text_7.value,articulo.text_8.value,nUnidad,nMoneda,articulo.text_10.value,nlocacion)
 		if existeArticuloCompra(articulo.text_1.value)
 			if modificoArticuloCompra(articulo.text_1.value,articulo.text_11.value, articulo.text_12.value)
 				msgInfo("Articulo Modificado")
 				borraArticulo()	
+				// articulo.nuevo.value := 'S'
 			else
 				msgInfo("No se pudieron guardar los cambios.CONSULTE")
 			endif
@@ -191,6 +205,7 @@ if len(alltrim(articulo.text_13.value)) != 0
 			if altaArticuloCompra(articulo.text_1.value,articulo.text_11.value, articulo.text_12.value)
 				msgInfo("Articulo Modificado")
 				borraArticulo()	
+				// articulo.nuevo.value := 'S'
 			else
 				msgInfo("No se pudieron guardar los cambios.CONSULTE")
 			endif
@@ -209,6 +224,7 @@ else
 			if modificoArticuloCompra(articulo.text_1.value,articulo.text_11.value, articulo.text_12.value)
 				msgInfo("Articulo Modificado")
 				borraArticulo()	
+				// articulo.nuevo.value := 'S'
 			else
 				msgInfo("No se pudieron guardar los cambios.CONSULTE")
 			endif
@@ -216,6 +232,7 @@ else
 			if altaArticuloCompra(articulo.text_1.value,articulo.text_11.value, articulo.text_12.value)
 				msgInfo("Articulo Dado de Alta")
 				borraArticulo()	
+				// articulo.nuevo.value := 'S'
 			else
 				msgInfo("No se pudieron guardar los cambios.CONSULTE")
 			endif
