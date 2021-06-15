@@ -6,7 +6,7 @@ rellenoComboUnidad()
 rellenoComboLocacion()
 rellenoComboMoneda()
 if len(alltrim(cArticulo)) != 0
-	rellenoDatosArticulo(cArticulo)
+	rellenoDatosArticulo(cArticulo,"codigo_barra")
 endIf
 
 articulo.center
@@ -34,9 +34,9 @@ for i = 1 to oMonedas:lastrec()
 	articulo.combo_2.addItem(alltrim(oMonedas:getRow(i):fieldGet(1)))
 next
 
-procedure rellenoDatosArticulo(cArticulo)
+procedure rellenoDatosArticulo(cArticulo,cAtributo)
 
-	local oArticulos := oArticulo(cArticulo)
+	local oArticulos := oArticulo(cArticulo,cAtributo)
 	local oArticulosCompra := oArticuloCompra(cArticulo)
 	local cUnidad := nombreUnidad(oArticulos:getRow(1):fieldGet(11))
 	local cMoneda := signoMOneda(oArticulos:getRow(1):fieldGet(12))
@@ -92,7 +92,7 @@ iif (cMoneda = 3,articulo.text_8.fontcolor := {0,128,0},articulo.text_8.fontcolo
 
 function nuevoArticulo()
 	borraArticulo()
-	// articulo.nuevo.value := 'S'
+	articulo.nuevo.value := 'S'
 return
 
 procedure borraArticulo()
@@ -116,7 +116,7 @@ articulo.spinner_1.value := year(date())
 articulo.combo_1.value := 0
 articulo.combo_2.value := 0
 articulo.combo_3.value := 0
-articulo.nuevo.value := 'S'
+// articulo.nuevo.value := 'S'
 
 
 
@@ -125,21 +125,27 @@ procedure buscarArticulo()
 	if articulo.nuevo.value != 'S'
 		return .f.
 	endIf	
-	if existeArticulo(nArticulo)
-	    rellenoDatosArticulo(nArticulo)
+	if existeCodigoBarras(nArticulo)
+	    rellenoDatosArticulo(nArticulo,"codigo_barra")
 	    cArticuloGlobal := ""
-	else
-	    if msgYesNo("El articulo no Existe, Continua Ingresando")
+		articulo.nuevo.value := 'N'
+	elseif existeArticulo(nArticulo)
+		rellenoDatosArticulo(nArticulo,"id_articulo")
+		articulo.nuevo.value := 'N'
+	else 
+		if msgYesNo("El articulo no Existe, Continua Ingresando? ")
 			borraArticulo()
-			articulo.nuevo.value := 'N'
+			articulo.nuevo.value := 'S'
 			articulo.text_1.value := nArticulo
 			articulo.text_2.setfocus
 			return .t.
-		endIf
-		busquedaGeneral('a')
-	    if len(cArticuloGlobal) != 0
-	       	rellenoDatosArticulo(cArticuloGlobal)      
-	      	cArticuloGlobal := ""
+		else
+			busquedaGeneral('a')
+			if len(cArticuloGlobal) != 0
+				rellenoDatosArticulo(cArticuloGlobal,"codigo_barra")      
+				cArticuloGlobal := ""
+			endIf
+			articulo.nuevo.value := 'N'
 		endIf
 	endif	
 return .t.
@@ -193,23 +199,23 @@ if len(alltrim(articulo.text_13.value)) != 0
 		articulo.marca.value, articulo.modelo.value,articulo.spinner_1.value, ;
 		articulo.text_5.value, articulo.datepicker_1.value, ;
 		articulo.text_6.value, articulo.text_7.value,articulo.text_8.value,nUnidad,nMoneda,articulo.text_10.value,nlocacion)
-		if existeArticuloCompra(articulo.text_1.value)
-			if modificoArticuloCompra(articulo.text_1.value,articulo.text_11.value, articulo.text_12.value)
+		// if existeArticuloCompra(articulo.text_13.value)
+			if modificoArticuloCompra(articulo.text_13.value,articulo.text_11.value, articulo.text_12.value)
 				msgInfo("Articulo Modificado")
 				borraArticulo()	
-				// articulo.nuevo.value := 'S'
+				articulo.nuevo.value := 'S'
 			else
 				msgInfo("No se pudieron guardar los cambios.CONSULTE")
 			endif
-		else
-			if altaArticuloCompra(articulo.text_1.value,articulo.text_11.value, articulo.text_12.value)
-				msgInfo("Articulo Modificado")
-				borraArticulo()	
-				// articulo.nuevo.value := 'S'
-			else
-				msgInfo("No se pudieron guardar los cambios.CONSULTE")
-			endif
-		endif		
+		// else
+		// 	if altaArticuloCompra(articulo.text_13.value,articulo.text_11.value, articulo.text_12.value)
+		// 		msgInfo("Articulo Modificado")
+		// 		borraArticulo()	
+		// 		articulo.nuevo.value := 'S'
+		// 	else
+		// 		msgInfo("No se pudieron guardar los cambios.CONSULTE")
+		// 	endif
+		// endif		
 	else
 		msgInfo("No se pudieron guardar los cambios.CONSULTE")
 	endIf
@@ -220,23 +226,23 @@ else
 		articulo.marca.value, articulo.modelo.value,articulo.spinner_1.value, ;
 		articulo.text_5.value, articulo.datepicker_1.value, ;
 		articulo.text_6.value, articulo.text_7.value,articulo.text_8.value,nUnidad,nMoneda,articulo.text_10.value, nlocacion)
-		if existeArticuloCompra(articulo.text_1.value)
-			if modificoArticuloCompra(articulo.text_1.value,articulo.text_11.value, articulo.text_12.value)
-				msgInfo("Articulo Modificado")
-				borraArticulo()	
-				// articulo.nuevo.value := 'S'
-			else
-				msgInfo("No se pudieron guardar los cambios.CONSULTE")
-			endif
-		else
+		// if existeArticuloCompra(articulo.text_1.value)
+		// 	if modificoArticuloCompra(articulo.text_1.value,articulo.text_11.value, articulo.text_12.value)
+		// 		msgInfo("Articulo Modificado")
+		// 		borraArticulo()	
+		// 		articulo.nuevo.value := 'S'
+		// 	else
+		// 		msgInfo("No se pudieron guardar los cambios.CONSULTE")
+		// 	endif
+		// else
 			if altaArticuloCompra(articulo.text_1.value,articulo.text_11.value, articulo.text_12.value)
 				msgInfo("Articulo Dado de Alta")
 				borraArticulo()	
-				// articulo.nuevo.value := 'S'
+				articulo.nuevo.value := 'S'
 			else
 				msgInfo("No se pudieron guardar los cambios.CONSULTE")
 			endif
-		endif		
+		// endif		
 	else
 		msgInfo("No se pudieron guardar los cambios.CONSULTE")
 	endIf
@@ -320,7 +326,7 @@ cQuery += " '"+cDatosInternos+"',"
 cQuery += " "+str(nLocacion)+" ,'"+cCodBarra+"')"
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
-	if at('PRIMARY',oQuery:Error()) != 0
+	if at('UNIQUE',oQuery:Error()) != 0
 		MsgInfo("Articulo ya Existe con ese CODIGO DE BARRAS")
 	else						
   		MsgInfo("SQL SELECT error "+cQuery+": " + oQuery:Error())
@@ -362,11 +368,11 @@ else
   return .t.
 endIf
 
-function oArticulo(nArticulo)
+function oArticulo(nArticulo, cAtributo)
 local cQuery
 local oQuery
 
-cQuery := "select * from articulo where  codigo_barra = '"+nArticulo+"' "
+cQuery := "select * from articulo where "+cAtributo+" = '"+nArticulo+"' "
 
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
@@ -560,22 +566,38 @@ else
   return oQuery:GetRow(1):fieldGet(1)
 endIf
 
+function existeCodigoBarras(nArticulo)
+	local cQuery
+	local oQuery
+
+	cQuery := "select * from articulo where  codigo_barra = '"+nArticulo+"' "
+
+	oQuery := oServer:Query(cQuery)
+	If oQuery:NetErr()												
+	MsgInfo("SQL SELECT error: " + oQuery:Error())
+	endIf
+
+	if oQuery:LastRec() > 0
+		return .t.
+	endif
+return .f.
+
 function existeArticulo(nArticulo)
-local cQuery
-local oQuery
-
-cQuery := "select * from articulo where  codigo_barra = '"+nArticulo+"' "
-
-oQuery := oServer:Query(cQuery)
-If oQuery:NetErr()												
-  MsgInfo("SQL SELECT error: " + oQuery:Error())
-endIf
-
-if oQuery:LastRec() > 0
-    return .t.
-  else
-    return .f.
-  endif
+	local cQuery
+	local oQuery
+	
+	cQuery := "select * from articulo where  id_articulo = '"+nArticulo+"' "
+	
+	oQuery := oServer:Query(cQuery)
+	If oQuery:NetErr()												
+	  MsgInfo("SQL SELECT error: " + oQuery:Error())
+	endIf
+	
+	if oQuery:LastRec() > 0
+		return .t.
+	endIf
+return .f.
+	
 
 function modificoPrecioVenta(nArticulo,nImporte)  
 local cQuery

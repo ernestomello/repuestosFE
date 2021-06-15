@@ -41,7 +41,7 @@ Function main()
     		MINBUTTON .T.;
     		MAXBUTTON .F.;
     		titlebar .T.;
-    		TITLE "Gestión de Ventas de "+cNombreEmpresa+" - Version " + cNroVersionAplicacion + ' - Terminal ' + cNombreTerminal ;
+    		TITLE "Gestiï¿½n de Ventas de "+cNombreEmpresa+" - Version " + cNroVersionAplicacion + ' - Terminal ' + cNombreTerminal ;
     		ICON	"MAINICON"			;
     		MAIN; 
     		ON RELEASE MySQL_Disconnect()
@@ -60,9 +60,9 @@ Function main()
 
 				SEPARATOR
 
-              ITEM 'Anulación Movimientos'    ACTION anuloMovimientos(0)
+              ITEM 'Anulaciï¿½n Movimientos'    ACTION anuloMovimientos(0)
 				SEPARATOR
-              ITEM 'Pendientes de Facturacion Electrónica'    ACTION emiteFacturaElectronica()
+              ITEM 'Pendientes de Facturacion Electrï¿½nica'    ACTION emiteFacturaElectronica()
 				SEPARATOR
               ITEM 'Buscar documentos' ACTION buscaDocumentos()
               
@@ -70,7 +70,7 @@ Function main()
       
       			POPUP 'Proveedores' 
                 
-               ITEM 'Compras Crédito'  ACTION factProveedor()
+               ITEM 'Compras Crï¿½dito'  ACTION factProveedor()
                ITEM 'Recibos '         ACTION reciboProveedor(98)
                ITEM 'Bonificaciones '  ACTION reciboProveedor(112)
                ITEM 'Devoluciones '    ACTION reciboProveedor(112)
@@ -284,8 +284,8 @@ Procedure MySQL_Connect()
 	If oServer:NetErr()
 		
 		cServidorSQL_Estado	:=	'<Desconectado>'
-		
-		MsgStop("No se pudo conectar con Servidor:"+chr(13)+cServidor+chr(13)+oServer:Error())
+		MsgStop("No se pudo conectar con Servidor:"+chr(13)+cServidor+chr(13)+cUsuario+chr(13)+cClave+chr(13)+oServer:Error())
+		// MsgStop("No se pudo conectar con Servidor:"+chr(13)+cServidor+chr(13)+oServer:Error())
 		Release Window ALL
 
 	Else

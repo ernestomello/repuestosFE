@@ -465,7 +465,7 @@ procedure buscoArticulos(nArticulo)
 local i
 local cCompu := 	PARAMETROini("Computadora","C")
 
-if existeArticulo(nArticulo) .and. len(nArticulo) != 0
+if existeCodigoBarras(nArticulo) .and. len(nArticulo) != 0
   rellenoDatosLinea(nArticulo)
   factCliente.text_8.setFocus
   cArticuloGlobal := ""

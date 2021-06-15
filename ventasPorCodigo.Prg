@@ -9,7 +9,7 @@ ventasPorCodigo.activate
 
 procedure  buscarArticuloVenta()
 local nArticulo := ventasPorCodigo.text_1.value
-if existeArticulo(nArticulo)
+if existeCodigoBarras(nArticulo)
 		  	ventasPorCodigo.text_2.value := descripcionArticulo(nArticulo)
 		    cArticuloGlobal := ""
 	  else
