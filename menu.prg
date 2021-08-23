@@ -41,7 +41,7 @@ Function main()
     		MINBUTTON .T.;
     		MAXBUTTON .F.;
     		titlebar .T.;
-    		TITLE "Gesti�n de Ventas de "+cNombreEmpresa+" - Version " + cNroVersionAplicacion + ' - Terminal ' + cNombreTerminal ;
+    		TITLE "Gestion de Ventas de "+cNombreEmpresa+" - Version " + cNroVersionAplicacion + ' - Terminal ' + cNombreTerminal ;
     		ICON	"MAINICON"			;
     		MAIN; 
     		ON RELEASE MySQL_Disconnect()
@@ -60,9 +60,9 @@ Function main()
 
 				SEPARATOR
 
-              ITEM 'Anulaci�n Movimientos'    ACTION anuloMovimientos(0)
+              ITEM 'Anulacion Movimientos'    ACTION anuloMovimientos(0)
 				SEPARATOR
-              ITEM 'Pendientes de Facturacion Electr�nica'    ACTION emiteFacturaElectronica()
+              ITEM 'Pendientes de Facturacion Electronica'    ACTION emiteFacturaElectronica()
 				SEPARATOR
               ITEM 'Buscar documentos' ACTION buscaDocumentos()
               
@@ -70,7 +70,7 @@ Function main()
       
       			POPUP 'Proveedores' 
                 
-               ITEM 'Compras Cr�dito'  ACTION factProveedor()
+               ITEM 'Compras Credito'  ACTION factProveedor()
                ITEM 'Recibos '         ACTION reciboProveedor(98)
                ITEM 'Bonificaciones '  ACTION reciboProveedor(112)
                ITEM 'Devoluciones '    ACTION reciboProveedor(112)

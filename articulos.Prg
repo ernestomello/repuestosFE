@@ -326,7 +326,7 @@ cQuery += " '"+cDatosInternos+"',"
 cQuery += " "+str(nLocacion)+" ,'"+cCodBarra+"')"
 oQuery := oServer:Query(cQuery)
 If oQuery:NetErr()												
-	if at('UNIQUE',oQuery:Error()) != 0
+	if (at('Duplicate',oQuery:Error()) != 0) .or.  (at('PRIMARY',oQuery:Error()) != 0)
 		MsgInfo("Articulo ya Existe con ese CODIGO DE BARRAS")
 	else						
   		MsgInfo("SQL SELECT error "+cQuery+": " + oQuery:Error())

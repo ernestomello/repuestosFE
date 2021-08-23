@@ -677,9 +677,10 @@ nTotalSIva := 0
 	
 	nTotalFactura := nTotalSIva + nIva
 	
-	
-	@ 263-nLineaA5,100 print data nTotalSIva 		right//pict '99999999999.99'
-	@ 263-nLineaA5,138 print data nIva  				right	//pict '99999999999.99'
+	if nTipoDocumento != 98
+		@ 263-nLineaA5,100 print data nTotalSIva right//pict '99999999999.99'
+		@ 263-nLineaA5,138 print data nIva       right	//pict '99999999999.99'
+	endif
 	@ 263-nLineaA5,142 print data "TOTAL" BOLD//pict '99999999999.99'
 	@ 263-nLineaA5,195 print data "$  "+STR(nTotalFactura) right	BOLD//pict '99999999999.99'
 	
