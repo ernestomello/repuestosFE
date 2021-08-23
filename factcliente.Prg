@@ -263,7 +263,7 @@ if facturaClienteConDetalle()
 			nIva := factCliente.grid_1.cell(i,6)//calcular el cfe_ind_fact
 			nDto := factCliente.grid_1.cell(i,7)
 			nImporte := factCliente.grid_1.cell(i,8)
-			cDetDescripcion := factCliente.grid_1.cell(i,9)
+			cDetDescripcion := factCliente.grid_1.cell(i,2) // para usar cuando se implemente el guardado de la descripcion
 			if !graboFactClienteDetalle(nNumero ,i,cCodigo,nCantidadArt,nPrecioUnitario,;
 																	nIva,nDto,nImporte)
 				noTran()
