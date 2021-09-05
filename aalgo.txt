@@ -15,7 +15,7 @@
 <nsAd:TipoCFE>101</nsAd:TipoCFE>
 <nsAd:Serie></nsAd:Serie>
 <nsAd:Nro></nsAd:Nro>
-<nsAd:FchEmis>2021-08-23</nsAd:FchEmis>
+<nsAd:FchEmis>2021-08-24</nsAd:FchEmis>
 <nsAd:MntBruto>1</nsAd:MntBruto>
 <nsAd:FmaPago>1</nsAd:FmaPago>
 </nsAd:IdDoc>
@@ -47,7 +47,7 @@
 <nsAd:Item>
 <nsAd:NroLinDet>1</nsAd:NroLinDet>
 <nsAd:IndFact>3</nsAd:IndFact>
-<nsAd:NomItem>1000/1-ABRAZADERA</nsAd:NomItem>
+<nsAd:NomItem>1000/1AA-ABRAZADERA SIN AA</nsAd:NomItem>
 <nsAd:Cantidad>1.00</nsAd:Cantidad>
 <nsAd:UniMed>UN</nsAd:UniMed>
 <nsAd:PrecioUnitario>26.00</nsAd:PrecioUnitario>
@@ -65,9 +65,9 @@
 <nsAdenda:Adenda><nsAdenda:AdendaSicfe>
 <nsAdenda:IdCaja>CasaCentral</nsAdenda:IdCaja>
 <nsAdenda:IdUsuario>N/A</nsAdenda:IdUsuario>
-</nsAdenda:AdendaSicfe>Obs:                                                                                                                                                                                                                                                                &lt;br&gt;Ref: 397384 - 1</nsAdenda:Adenda></nsAdenda:CFE_Adenda>
+</nsAdenda:AdendaSicfe>Obs:                                                                                                                                                                                                                                                                &lt;br&gt;Ref: 397386 - 1</nsAdenda:Adenda></nsAdenda:CFE_Adenda>
 ]]></cxml:cfexml>
-<cxml:referenciaERP>397384</cxml:referenciaERP>
+<cxml:referenciaERP>397386</cxml:referenciaERP>
 <cxml:devolverQR>0</cxml:devolverQR>
 <cxml:sizeQR>10</cxml:sizeQR>
 <cxml:impprime>0</cxml:impprime>

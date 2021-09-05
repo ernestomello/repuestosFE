@@ -333,15 +333,15 @@ xml+="         <tem:template>"+cHojaWSFE+"</tem:template>"+chr(13)
 xml+="      </tem:ObtenerPDF>"+chr(13)
 xml+="   </soapenv:Body>"+chr(13)
 xml+="</soapenv:Envelope>"+chr(13)
-hb_memowrit("vapdf.xml",xml)
+hb_memowrit(cDirInicioAplicacion+"\vapdf.xml",xml)
 cRespuesta := fHttpExecute(nSOAPSW,'SOAPAction:"http://tempuri.org/ISICFEEmisor/ObtenerPDF"',xml,.f.)
-hb_memowrit("soapanswerpdf.xml",cRespuesta)
-hb_MEMOWRIT("factura.pdf",hb_base64decode(cValTag(cRespuesta,"a:Buffer")))
+hb_memowrit(cDirInicioAplicacion+"\soapanswerpdf.xml",cRespuesta)
+hb_MEMOWRIT(cDirInicioAplicacion+"\factura.pdf",hb_base64decode(cValTag(cRespuesta,"a:Buffer")))
 	
 
 	if val(cValTag(cRespuesta,"a:Codigo")) = 0
 		
-		EXECUTE FILE '"' + exePdf + '"' PARAMETERS  '-print-to-default -print-settings "'+str(nCantCopias)+'x"  factura.pdf '
+		EXECUTE FILE '"' + exePdf + '"' PARAMETERS  '-print-to-default -print-settings "'+str(nCantCopias)+'x"  "'+cDirInicioAplicacion+'"\factura.pdf '
 		
 	else
 		msgInfo(" Devolucion de Errores"+chr(13)+cValTag(cRespuesta,"a:Descripcion"))
@@ -373,15 +373,15 @@ xml+="         <tem:template>"+cHojaWSFE+"</tem:template>"+chr(13)
 xml+="      </tem:ObtenerPDF>"+chr(13)
 xml+="   </soapenv:Body>"+chr(13)
 xml+="</soapenv:Envelope>"+chr(13)
-hb_memowrit("vapdf.xml",xml)
+hb_memowrit(cDirInicioAplicacion+"\vapdf.xml",xml)
 cRespuesta := fHttpExecute(nSOAPSW,'SOAPAction:"http://tempuri.org/ISICFEEmisor/ObtenerPDF"',xml,.f.)
-hb_memowrit("soapanswerpdf.xml",cRespuesta)
-hb_MEMOWRIT("factura.pdf",hb_base64decode(cValTag(cRespuesta,"a:Buffer")))
+hb_memowrit(cDirInicioAplicacion+"\soapanswerpdf.xml",cRespuesta)
+hb_MEMOWRIT(cDirInicioAplicacion+"\factura.pdf",hb_base64decode(cValTag(cRespuesta,"a:Buffer")))
 	
 
 	if val(cValTag(cRespuesta,"a:Codigo")) = 0
 		
-		EXECUTE FILE '"' + exePdf + '"' PARAMETERS  'factura.pdf '
+		EXECUTE FILE '"' + exePdf + '"' PARAMETERS  '"'+cDirInicioAplicacion+'"\factura.pdf '
 		
 	else
 		msgInfo(" Devolucion de Errores"+chr(13)+cValTag(cRespuesta,"a:Descripcion"))

@@ -12,7 +12,7 @@ function facturaElectronica(nIdMov,bImprime,esCorreccion)
 local oIdMov := oDocumentoCFE(nIdMov)
 local aCliente := iif(len(alltrim(oIdMov:getRow(1):fieldget(11)))=0, datoCliente(oIdMov:getRow(1):fieldGet(7)),oIdMov:getRow(1):fieldget(11))
 local cDirMov := substr(dtos(oIdMov:getRow(1):fieldGet(6)),1,4)+"\"+substr(dtos(oIdMov:getRow(1):fieldGet(6)),5,2)+"\"
-local cArchivo := "envioCFE.txt"
+local cArchivo := cDirInicioAplicacion+"\envioCFE.txt"
 local nTipoCFE := oIdMov:getRow(1):fieldGet(4)
 local pArchivo 
 local  cExeFile := "C:\Archivos de programa\SumatraPDF\SumatraPDF.exe"
@@ -129,14 +129,14 @@ cxml +="</soapenv:Body>"+chr(13)+chr(10)
 cxml +="</soapenv:Envelope>"+chr(13)+chr(10)
 
 
-hb_memowrit("aalgo.txt",cxml)
+hb_memowrit(cDirInicioAplicacion+"\aalgo.txt",cxml)
 cRespuesta := fHttpExecute(nSOAPSW,'SOAPAction:"http://tempuri.org/ISICFEEmisor/EnvioCFE"',cxml,.f.)
 
 if empty(cRespuesta)
 	return .f.
 endIf	
  // msgInfo (cValTag(cRespuesta,"a:Codigo"))
- hb_memowrit("soapanswer.xml",cRespuesta)
+ hb_memowrit(cDirInicioAplicacion+"\soapanswer.xml",cRespuesta)
 
   // msgInfo(cRespuesta)
  
