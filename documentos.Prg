@@ -12,43 +12,43 @@ do case
 			documento.center
 			documento.activate
 		else
-			msgInfo("La ventana ya está en uso")
+			msgInfo("La ventana ya estï¿½ en uso")
 		endif
 	case cTipoDoc = 98 
 		if !IsWindowActive(recibo)
 				cargoDocumentoGen(nDocumento, "MOSTRAR")
 		else
-			msgInfo("La ventana ya está en uso")
+			msgInfo("La ventana ya estï¿½ en uso")
 		endif
 	case cTipoDoc = 102
 		if !IsWindowActive(recibo)
 			cargoDocumentoGen(nDocumento, "MOSTRAR")
 		else
-			msgInfo("La ventana ya está en uso")
+			msgInfo("La ventana ya estï¿½ en uso")
 		endif
 	case cTipoDoc = 112
 		if !IsWindowActive(recibo)
 				cargoDocumentoGen(nDocumento, "MOSTRAR")
 		else
-			msgInfo("La ventana ya está en uso")
+			msgInfo("La ventana ya estï¿½ en uso")
 		endif
 	case cTipoDoc = 103
 		if !IsWindowActive(recibo)
 			cargoDocumentoGen(nDocumento, "MOSTRAR")
 		else
-			msgInfo("La ventana ya está en uso")
+			msgInfo("La ventana ya estï¿½ en uso")
 		endif
 	case cTipoDoc = 113
 		if !IsWindowActive(recibo)
 				cargoDocumentoGen(nDocumento, "MOSTRAR")
 		else
-			msgInfo("La ventana ya está en uso")
+			msgInfo("La ventana ya estï¿½ en uso")
 		endif
 	case cTipoDoc == 91
 		if !IsWindowActive(recibo)
 				cargoDocumentoGen(nDocumento, "MOSTRAR")
 		else
-			msgInfo("La ventana ya está en uso")
+			msgInfo("La ventana ya estï¿½ en uso")
 		endif
 end case
 
@@ -63,7 +63,7 @@ do case
 			documento.center
 			documento.activate
 		else
-			msgInfo("La ventana ya está en uso")
+			msgInfo("La ventana ya estï¿½ en uso")
 		endif
 	case cTipoDoc == 'R'
 		if !IsWindowActive(recibo)
@@ -72,7 +72,7 @@ do case
 			recibo.center
 			recibo.activate
 		else
-			msgInfo("La ventana ya está en uso")
+			msgInfo("La ventana ya estï¿½ en uso")
 		endif
 	case cTipoDoc == 'N'
 		if !IsWindowActive(recibo)
@@ -81,7 +81,7 @@ do case
 			recibo.center
 			recibo.activate
 		else
-			msgInfo("La ventana ya está en uso")
+			msgInfo("La ventana ya estï¿½ en uso")
 		endif
 end case
 //cargoDatosDocumentoCliente(cTipoDoc, nDocumento)
@@ -251,7 +251,7 @@ if nSocioGlobal != 0
 	info_("Imprimiendo Documento ...")
 	if !imprimoMovimiento(nSocioGlobal,0,'','','')
 		WAIT CLEAR
-		msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menú")
+		msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menï¿½")
 		return .f.
 	endif
 
@@ -262,7 +262,7 @@ WAIT CLEAR
 
 
 *************************************************
-* función para imprimir un documento emitido
+* funciï¿½n para imprimir un documento emitido
 * se le debe pasar el Nro de documento 
 * si es copia o no(1 o 0)
 * ***********************************************
@@ -319,22 +319,22 @@ xml:='<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/
 xml+="   <soapenv:Header/>"+chr(13)
 xml+="   <soapenv:Body>"+chr(13)
 xml+="      <tem:ObtenerPDF>"+chr(13)
-xml+="         <tem:nomusuario>erp2</tem:nomusuario>"+chr(13)
-xml+="         <tem:clave>erp2</tem:clave>"+chr(13)
+xml+="         <tem:nomusuario>"+cSOAPUSER+"</tem:nomusuario>"+chr(13)
+xml+="         <tem:clave>"+cSOAPCLAVE+"</tem:clave>"+chr(13)
 xml+="         <tem:p_idCFE>"+chr(13)
 xml+="            <sic:Numero>"+str(oCabezal:getRow(1):fieldGet(7))+"</sic:Numero>"+chr(13)
 xml+="            <sic:Serie>"+oCabezal:getRow(1):fieldGet(6)+"</sic:Serie>"+chr(13)
 xml+="            <sic:Tipo>"+str(oCabezal:getRow(1):fieldGet(4))+"</sic:Tipo>"+chr(13)
 xml+="            <sic:observado>0</sic:observado>"+chr(13)
-xml+="            <sic:rucemisor>120132110017</sic:rucemisor>"+chr(13)
+xml+="            <sic:rucemisor>"+cRutEmisior+"</sic:rucemisor>"+chr(13)
 xml+="         </tem:p_idCFE>"+chr(13)
-xml+="         <tem:p_tenant>morale</tem:p_tenant>"+chr(13)
+xml+="         <tem:p_tenant>"+cSOAPTENANT+"</tem:p_tenant>"+chr(13)
 xml+="         <tem:template>"+cHojaWSFE+"</tem:template>"+chr(13)
 xml+="      </tem:ObtenerPDF>"+chr(13)
 xml+="   </soapenv:Body>"+chr(13)
 xml+="</soapenv:Envelope>"+chr(13)
 hb_memowrit(cDirInicioAplicacion+"\vapdf.xml",xml)
-cRespuesta := fHttpExecute(nSOAPSW,'SOAPAction:"http://tempuri.org/ISICFEEmisor/ObtenerPDF"',xml,.f.)
+cRespuesta := fHttpExecute(cSOAPSW,'SOAPAction:"http://tempuri.org/ISICFEEmisor/ObtenerPDF"',xml,.f.)
 hb_memowrit(cDirInicioAplicacion+"\soapanswerpdf.xml",cRespuesta)
 hb_MEMOWRIT(cDirInicioAplicacion+"\factura.pdf",hb_base64decode(cValTag(cRespuesta,"a:Buffer")))
 	
@@ -359,22 +359,22 @@ xml:='<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/
 xml+="   <soapenv:Header/>"+chr(13)
 xml+="   <soapenv:Body>"+chr(13)
 xml+="      <tem:ObtenerPDF>"+chr(13)
-xml+="         <tem:nomusuario>erp2</tem:nomusuario>"+chr(13)
-xml+="         <tem:clave>erp2</tem:clave>"+chr(13)
+xml+="         <tem:nomusuario>"+cSOAPUSER+"</tem:nomusuario>"+chr(13)
+xml+="         <tem:clave>"+cSOAPCLAVE+"</tem:clave>"+chr(13)
 xml+="         <tem:p_idCFE>"+chr(13)
 xml+="            <sic:Numero>"+str(oCabezal:getRow(1):fieldGet(7))+"</sic:Numero>"+chr(13)
 xml+="            <sic:Serie>"+oCabezal:getRow(1):fieldGet(6)+"</sic:Serie>"+chr(13)
 xml+="            <sic:Tipo>"+str(oCabezal:getRow(1):fieldGet(4))+"</sic:Tipo>"+chr(13)
 xml+="            <sic:observado>0</sic:observado>"+chr(13)
-xml+="            <sic:rucemisor>120132110017</sic:rucemisor>"+chr(13)
+xml+="            <sic:rucemisor>"+cRutEmisior+"</sic:rucemisor>"+chr(13)
 xml+="         </tem:p_idCFE>"+chr(13)
-xml+="         <tem:p_tenant>morale</tem:p_tenant>"+chr(13)
+xml+="         <tem:p_tenant>"+cSOAPTENANT+"</tem:p_tenant>"+chr(13)
 xml+="         <tem:template>"+cHojaWSFE+"</tem:template>"+chr(13)
 xml+="      </tem:ObtenerPDF>"+chr(13)
 xml+="   </soapenv:Body>"+chr(13)
 xml+="</soapenv:Envelope>"+chr(13)
 hb_memowrit(cDirInicioAplicacion+"\vapdf.xml",xml)
-cRespuesta := fHttpExecute(nSOAPSW,'SOAPAction:"http://tempuri.org/ISICFEEmisor/ObtenerPDF"',xml,.f.)
+cRespuesta := fHttpExecute(cSOAPSW,'SOAPAction:"http://tempuri.org/ISICFEEmisor/ObtenerPDF"',xml,.f.)
 hb_memowrit(cDirInicioAplicacion+"\soapanswerpdf.xml",cRespuesta)
 hb_MEMOWRIT(cDirInicioAplicacion+"\factura.pdf",hb_base64decode(cValTag(cRespuesta,"a:Buffer")))
 	

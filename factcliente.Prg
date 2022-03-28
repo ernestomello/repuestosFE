@@ -258,6 +258,7 @@ if facturaClienteConDetalle()
 	
 	for i=1 to nCantidad
 			cCodigo := factCliente.grid_1.cell(i,9)
+			cDescripcionCod := factCliente.grid_1.cell(i,2)
 			nCantidadArt := factCliente.grid_1.cell(i,3)
 			nPrecioUnitario := factCliente.grid_1.cell(i,4)
 			nIva := factCliente.grid_1.cell(i,6)//calcular el cfe_ind_fact
@@ -265,7 +266,7 @@ if facturaClienteConDetalle()
 			nImporte := factCliente.grid_1.cell(i,8)
 			cDetDescripcion := factCliente.grid_1.cell(i,2) // para usar cuando se implemente el guardado de la descripcion
 			if !graboFactClienteDetalle(nNumero ,i,cCodigo,nCantidadArt,nPrecioUnitario,;
-																	nIva,nDto,nImporte)
+																	nIva,nDto,nImporte,cDescripcionCod)
 				noTran()
 				WAIT CLEAR
 				msgInfo("No se pudieron Guardar el detalle de la Factura. Reintente!!!")
@@ -499,7 +500,7 @@ procedure rellenoFacturaCliente(nFactura)
 
 	for i= 1 to oDetalle:lastRec()
 		factCliente.grid_1.addItem({oDetalle:getrow(i):fieldGet(3), ;
-							oDetalle:getrow(i):fieldGet(4), ; 
+							oDetalle:getrow(i):fieldGet(12), ; 
 							oDetalle:getrow(i):fieldGet(5), ; 
 							oDetalle:getrow(i):fieldGet(6), ; 
 							oDetalle:getrow(i):fieldGet(7), ;
@@ -527,7 +528,7 @@ factCliente.datePicker_1.value := date() //oCabezal:getrow(1):fieldget(2)
 
 for i= 1 to oDetalle:lastRec()
 	factCliente.grid_1.addItem({oDetalle:getrow(i):fieldGet(3), ;
-							oDetalle:getrow(i):fieldGet(4), ; 
+							oDetalle:getrow(i):fieldGet(12), ; 
 							oDetalle:getrow(i):fieldGet(5), ; 
 							oDetalle:getrow(i):fieldGet(6), ; 
 							oDetalle:getrow(i):fieldGet(7), ;
@@ -588,14 +589,14 @@ else
 	return .t.
 endIf
 	 
-function graboFactClienteDetalle(nNumero,nItem,cCodigo,nCantidad,nPrecioUnitario,nIva,nDto,nImporte)
+function graboFactClienteDetalle(nNumero,nItem,cCodigo,nCantidad,nPrecioUnitario,nIva,nDto,nImporte,cDescripcionCod)
 local cQuery,oQuery
 
 cQuery := " insert into cfe_comprobante_det values( " 
 cQuery += " "+str(nNumero)+", "+str(nItem)+", '"+cCodigo+"' , "
-cQuery += " "+str(nCantidad)+","+str(nPrecioUnitario)+" , 0,"
+cQuery += " "+str(nCantidad)+","+str(nPrecioUnitario)+" , "+str(nDto)+","
 cQuery += " "+str(nImporte)+" ,"
-cQuery += " "+str(nIva)+","+str(nDto)+" ) "
+cQuery += " "+str(nIva)+",'"+cDescripcionCod+"' ) "
 
 
 oQuery := oServer:Query(cQuery)
@@ -627,7 +628,7 @@ function facturaClienteDetalle(nFactura)
 local cQuery, oQuery
 
 cQuery := " select d.id_factura,d.item, a.codigo_barra,a.descripcion, d.cantidad, "
-cQuery += " d.precio_unitario,a.fecha_precio, d.cfe_ind_fact, d.descripcion, d.importe,a.id_articulo "
+cQuery += " d.precio_unitario,a.fecha_precio, d.cfe_ind_fact, d.id_cuota, d.importe,a.id_articulo,d.descripcion "
 cQuery += " from cfe_comprobante_det d, articulo a "
 cQuery += " where d.id_factura = "+str(nFactura)+" "
 //cQuery += " and a.codigo_barra = d.codigo_barra "
@@ -644,7 +645,7 @@ function facturaClienteDetalleVarias(cFacturas)
 local cQuery, oQuery
 
 cQuery := " select d.id_factura,d.item, d.codigo_barra,a.descripcion, d.cantidad, "
-cQuery += " d.precio_unitario,a.fecha_precio, d.cfe_ind_fact, d.descripcion, d.importe,a.id_articulo "
+cQuery += " d.precio_unitario,a.fecha_precio, d.cfe_ind_fact, d.id_cuota, d.importe,a.id_articulo, d.descripcion "
 cQuery += " from cfe_comprobante_det d, articulo a "
 cQuery += " where d.id_factura in ("+cFacturas+") "
 //cQuery += " and a.codigo_barra = d.codigo_barra "

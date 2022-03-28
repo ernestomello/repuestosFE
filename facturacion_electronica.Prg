@@ -109,9 +109,9 @@ cxml :='<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelop
 cxml +="<soapenv:Header/>"+chr(13)+chr(10)
 cxml +="<soapenv:Body>"+chr(13)+chr(10)
 cxml +="<cxml:EnvioCFE>"+chr(13)+chr(10)
-cxml +="<cxml:nomusuario>erp2</cxml:nomusuario>"+chr(13)+chr(10)
-cxml +="<cxml:clave>erp2</cxml:clave>"+chr(13)+chr(10)
-cxml +="<cxml:tenant>morale</cxml:tenant>"+chr(13)+chr(10)
+cxml +="<cxml:nomusuario>"+cSOAPUSER+"</cxml:nomusuario>"+chr(13)+chr(10)
+cxml +="<cxml:clave>"+cSOAPCLAVE+"</cxml:clave>"+chr(13)+chr(10)
+cxml +="<cxml:tenant>"+cSOAPTENANT+"</cxml:tenant>"+chr(13)+chr(10)
 cxml +="<cxml:cliente></cxml:cliente>"+chr(13)+chr(10)
 cxml +="<cxml:cfexml><![CDATA["+xArchivo+"]]></cxml:cfexml>"+chr(13)+chr(10)
 cxml +="<cxml:referenciaERP>"+str(nIdMov)+"</cxml:referenciaERP>"+chr(13)+chr(10)
@@ -130,7 +130,7 @@ cxml +="</soapenv:Envelope>"+chr(13)+chr(10)
 
 
 hb_memowrit(cDirInicioAplicacion+"\aalgo.txt",cxml)
-cRespuesta := fHttpExecute(nSOAPSW,'SOAPAction:"http://tempuri.org/ISICFEEmisor/EnvioCFE"',cxml,.f.)
+cRespuesta := fHttpExecute(cSOAPSW,'SOAPAction:"http://tempuri.org/ISICFEEmisor/EnvioCFE"',cxml,.f.)
 
 if empty(cRespuesta)
 	return .f.
@@ -566,7 +566,7 @@ function oDetalleFactura(nIdMov)
 local oQuery
 local cQuery
 
-cQuery := " select d.item,a.codigo_barra, d.cantidad,d.precio_unitario,d.cfe_ind_fact,a.descripcion,ca.tipoCFE "
+cQuery := " select d.item,a.codigo_barra, d.cantidad,d.precio_unitario,d.cfe_ind_fact,d.descripcion,ca.tipoCFE "
 cQuery += " from  cfe_comprobante_cab ca, cfe_comprobante_det d , articulo a"
 cQuery += " where  ca.id_factura = "+str(nIdMov)+" and d.id_factura = ca.id_factura and a.id_articulo = d.codigo_barra"
 oQuery := oServer:Query(cQuery )
