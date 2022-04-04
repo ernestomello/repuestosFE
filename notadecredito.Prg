@@ -35,7 +35,7 @@ endif
 		
 	case ( nTipoDoc = 102 .or. nTipoDoc = 112)
 		if !nCreditoSinDevolucion(nFactura)
-			msginfo(cTipoDocumento+" con Nota de Dï¿½bito")
+			msginfo(cTipoDocumento+" con Nota de Debito")
 			// notaCredito.release
 			return .f.
 		endif
@@ -68,7 +68,7 @@ local oCabezalFactura := facturaClienteCabezal(nFactura)
 local oDetalleFactura //:= detalleFacturaCliente(nFactura)
 local nTotalFactura := 0
 local nGlobal := refGlobal(nFactura)
-oDetalleFactura := detalleFacturaCliente(nFactura)
+oDetalleFactura := facturaClienteDetalle(nFactura)
 
 notaCredito.text_1.value := oCabezalFactura:getRow(1):fieldGet(3)
 notaCredito.text_2.value := str(nFactura)+" - "+nombreCliente(clienteFactura(nFactura))+" - "+dtoc(fechaFacturaCliente(nFactura))
@@ -78,8 +78,8 @@ notaCredito.text_8.value := oCabezalFactura:getRow(1):fieldGet(8)
 
 for i = 1 to oDetalleFactura:lastrec()
 	oRow := oDetalleFactura:getRow(i)
-	notaCredito.grid_1.additem({ oRow:fieldGet(2), oRow:fieldGet(6),oRow:fieldGet(3),oRow:fieldGet(4),oRow:fieldGet(5)," ",oRow:fieldGet(3)*oRow:fieldGet(4), oRow:fieldGet(1),oRow:fieldGet(9)  })
-	nTotalFactura += round(oRow:fieldGet(3)*oRow:fieldGet(4) * (1 + oRow:fieldGet(5)/100),0)
+	notaCredito.grid_1.additem({ oRow:fieldGet(3), oRow:fieldGet(4),oRow:fieldGet(5),oRow:fieldGet(6),oRow:fieldGet(8)," ",oRow:fieldGet(5)*oRow:fieldGet(6), oRow:fieldGet(1),oRow:fieldGet(11)  })
+	nTotalFactura += round(oRow:fieldGet(5)*oRow:fieldGet(6) * (1 + oRow:fieldGet(8)/100),0)
 next
 notaCredito.text_5.value := nTotalFactura
 
@@ -216,7 +216,8 @@ endIf
 			nIva := notaCredito.grid_1.cell(i,5)
 			nDto := notaCredito.grid_1.cell(i,6)
 			nImporte := notaCredito.grid_1.cell(i,7)
-			if !graboFactClienteDetalle(nNumero,i,cCodigo,nCantidad,nPrecioUnitario,nIva,nDto,nImporte)
+			cDetDescripcion := notaCredito.grid_1.cell(i,2)
+			if !graboFactClienteDetalle(nNumero,i,cCodigo,nCantidad,nPrecioUnitario,nIva,nDto,nImporte,cDetDescripcion)
 				noTran()
 				WAIT CLEAR
 				msgInfo("No se pudieron Guardar el detalle de la Nota de Crédito. Reintente!!!")

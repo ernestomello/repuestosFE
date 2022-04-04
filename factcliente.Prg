@@ -641,6 +641,24 @@ If oQuery:NetErr()
 endif
 return oQuery
 
+function detalleFacturaCliente(nFactura)
+	local cQuery
+	local oQuery
+	
+	cQuery := "select  d.id_factura,d.codigo_barra,d.cantidad,d.precio_unitario,d.cfe_ind_fact,a.descripcion,cast(d.descripcion as unsigned),d.importe,a.id_articulo "
+	cQuery += " from  cfe_comprobante_det d, articulo a "
+	//cQuery += " where a.codigo_barra = d.codigo_barra "
+	cQuery += " where a.id_articulo = d.codigo_barra "
+	cQuery += " and d.id_factura = "+str(nFactura)+" "
+	
+	oQuery := oServer:Query(cQuery)
+	If oQuery:NetErr()												
+		MsgInfo("SQL SELECT error: " + oQuery:Error())
+		return .f.
+	endIf
+return oQuery
+
+
 function facturaClienteDetalleVarias(cFacturas)
 local cQuery, oQuery
 
@@ -715,22 +733,7 @@ else
   return oQuery
 endIf
 
-function detalleFacturaCliente(nFactura)
-local cQuery
-local oQuery
 
-cQuery := "select  d.id_factura,d.codigo_barra,d.cantidad,d.precio_unitario,d.cfe_ind_fact,a.descripcion,cast(d.descripcion as unsigned),d.importe,a.id_articulo "
-cQuery += " from  cfe_comprobante_det d, articulo a "
-//cQuery += " where a.codigo_barra = d.codigo_barra "
-cQuery += " where a.id_articulo = d.codigo_barra "
-cQuery += " and d.id_factura = "+str(nFactura)+" "
-
-oQuery := oServer:Query(cQuery)
-If oQuery:NetErr()												
-  MsgInfo("SQL SELECT error: " + oQuery:Error())
-else
-  return oQuery
-endIf
 
 
 function modificoSaldoFacturaCliente(nFactura,nImporte)

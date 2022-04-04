@@ -658,7 +658,7 @@ nTotalSIva := 0
 			@ fila+lin,col+022 print data alltrim(oDetalle:GetRow(i):fieldGet(4))//+"-"+locacionArticulo(oDetalle:GetRow(i):fieldGet(3)) //NOMREPF
 			@ fila+lin,col+115 print data oDetalle:GetRow(i):fieldGet(5)  right//pict '999999.99' //CANTF
 			@ fila+lin,col+140 print data oDetalle:GetRow(i):fieldGet(6)  right//pict '99999.99' //PRVENTAF
-			@ fila+lin,col+152 print data ALLTRIM(oDetalle:GetRow(i):fieldGet(9))  right//pict '99.9' //PCTDESCF
+			@ fila+lin,col+152 print data oDetalle:GetRow(i):fieldGet(9)  right//pict '99.9' //PCTDESCF
 		endif
 		
 		if nTipoDocumento = 98
