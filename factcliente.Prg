@@ -27,7 +27,7 @@ if !IsWindowActive(factCliente)
 	factCliente.text_14.value := cTipoDocumento
 	factCliente.text_22.value := cTipoDocumento
 	factCliente.label_14.value := alltrim(descripcionDocumento(cTipoDocumento))
-	factCliente.label_1.value := iif (nFormaPago = 1, "Contado","Crédito")
+	factCliente.label_1.value := iif (nFormaPago = 1, "Contado","Credito")
 	factCliente.text_15.value := cajaId()
 	factCliente.text_21.value :=nFormaPago
 	factCliente.text_11.value := iif(factCliente.text_21.value = 1 ,nDtoContado, 0)
@@ -55,7 +55,7 @@ local nLinea := 	PARAMETROini("LineasDetalle","N")
 local nPrecioUnitario := 0
 
   if (factCliente.text_9.value = 0 .or. factCliente.text_8.value =0)
-  	msginfo('La cantidad no puede ser CERO',"ATENCIÓN")
+  	msginfo('La cantidad no puede ser CERO',"ATENCION")
     factCliente.text_8.SetFocus
 		Return
   endif
@@ -63,7 +63,7 @@ local nPrecioUnitario := 0
   	// msginfo('Supera las '+str(nLinea)+' lï¿½neas '+chr(13)+'Guarde el Documento')
   	// Return
   // endif
-	if msgYesNo("Ingresa la Línea?","ATENCIÓN",.f.)
+	if msgYesNo("Ingresa la Linea?","ATENCION",.f.)
 	nPrecioUnitario:= round(factCliente.text_9.value - (factCliente.text_9.value * factCliente.text_11.value /100),0)
     factCliente.grid_1.addItem({factCliente.text_6.value,factCliente.text_7.value,factCliente.text_8.value,nPrecioUnitario,factCliente.text_10.value,factCliente.text_16.value,factCliente.text_11.value,round(factCliente.text_8.value * nPrecioUnitario ,0),factCliente.text_23.value })
     factCliente.text_6.value:= ""
@@ -212,7 +212,7 @@ if !controloFactCliente()
 	return .f.
 endif	
 
-if !msgYesNo("Graba la Factura?","ATENCIÓN",.t.)
+if !msgYesNo("Graba la Factura?","ATENCION",.t.)
 	return .f.
 endif
 info_("Guardando en la Base de Datos ...")
@@ -227,7 +227,7 @@ nNumero:= numeroDesde('CLIENTE')
 
 if !agregoNumeroDesde('CLIENTE')
 	WAIT CLEAR
-	msginfo("No se pudo actualizar el Número de la Factura")
+	msginfo("No se pudo actualizar el Numero de la Factura")
 	return .f.
 endIf
 
@@ -235,7 +235,7 @@ endIf
 if nNumero == 0
 	noTran()
 	WAIT CLEAR
-	msgInfo("No se pudo Guardar el Número. Reintente!!!")
+	msgInfo("No se pudo Guardar el Numero. Reintente!!!")
 	return .f.
 endif
 
@@ -285,7 +285,7 @@ if esFacturaElectronica .and. cTipoDocumento != 81 .and. cTipoDocumento != 91
 	if ! facturaElectronica(nNumero,.f.,.f.)
 		noTran()
 		WAIT CLEAR
-		msgInfo("No se pudo guardar el documento en DGI, Reintente desde el Menú !!!")	
+		msgInfo("No se pudo guardar el documento en DGI, Reintente desde el Menu !!!")	
 		return .f.
 	endif
 endif
@@ -295,7 +295,7 @@ finTransaccion()
 info_("Imprimiendo Documento ...")
 if !imprimoMovimiento(nNumero,0,'','','')
 	WAIT CLEAR
-	msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menú")
+	msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menu")
 	return .f.
 endif
 WAIT CLEAR
@@ -305,6 +305,12 @@ return .t.
 
 
 function controloFactCliente()
+
+if factCliente.text_5.value > nTopeUI .and. len(factCliente.text_2.value) = 0 
+	msgInfo("El importe de la factura supera el maximo"+chr(10)+chr(13)+"Debe declarar una CI o RUT, Verifique ")
+	factCliente.text_2.setfocus
+	return .f.
+endif
 
 if factCliente.text_21.value = 2
 	if factCliente.text_1.value = 0
@@ -338,7 +344,7 @@ if len(factCliente.text_13.value)  < 4 .and. factCliente.text_21.value = 2
 	return .f.
 endIf
 if factCliente.text_14.value = 111	.and. len(factCliente.text_4.value)= 0 .and. len(factCliente.text_4.value)= 0
-	msgBox("eFactura debe tener Nombre y Dirección")
+	msgBox("eFactura debe tener Nombre y Direccion")
 	factCliente.text_3.SetFocus
 	return .f.
 endif
@@ -434,7 +440,7 @@ if factCliente.text_14.value != 81 .and. factCliente.text_14.value != 91
 	else
 		if !formatoCedula(factCliente.text_2.value)
 			if len(factCliente.text_2.value)!= 0
-				msgInfo("Formato RUT o Cédula Incorrecto")
+				msgInfo("Formato RUT o Cedula Incorrecto")
 			endif
 			factCliente.text_2.value := ""
 			factCliente.text_14.value := 101
@@ -988,10 +994,13 @@ function facturaSinDevolucion(nFactura)
 local oQuery, cQuery
 
 cQuery := " select c.id_factura "
-cQuery += " from cfe_referencias_det d, cfe_comprobante_cab c "
-cQuery += " where d.id_factura_ref = "+str(nFactura)+" "
-cQuery += " and c.id_factura = d.id_factura "
-cQuery += " and c.tipoCFE in (102,112)  "
+cQuery += " from  cfe_comprobante_cab c "
+cQuery += " where c.saldo != c.importe "
+cQuery += " and c.id_factura = "+str(nFactura)+" "
+// cQuery += " from cfe_referencias_det d, cfe_comprobante_cab c "
+// cQuery += " where d.id_factura_ref = "+str(nFactura)+" "
+// cQuery += " and c.id_factura = d.id_factura "
+// cQuery += " and c.tipoCFE in (102,112)  "
 
 oQuery:= oServer:Query(cQuery)
 If oQuery:NetErr() 

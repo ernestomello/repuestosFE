@@ -17,6 +17,7 @@ Function main()
 	Public  cArticuloGlobal := ""
 	//para FE
 	Public  esFacturaElectronica := PARAMETROini("FACTURAE","L")
+	Public  nTopeUI := PARAMETROini("FEUITOPE","N") * PARAMETROini("FEVALORUI","N")
 	Public  cNombreEmpresa := PARAMETROini("EMPRESA","C")
 	Public  cDirFE		:=	PARAMETROini("DIR_FE","C")
 	Public  exePDF := PARAMETROini("EXEPDF","C")

@@ -16,15 +16,15 @@ endif
 	do case
 	case  ( nTipoDoc = 101 .or. nTipoDoc = 111) 
 		if !facturaSinDevolucion(nFactura)
-			msginfo(cTipoDocumento+" con Nota de Crédito")
+			msginfo(cTipoDocumento+" con Nota de Credito")
 			// notaCredito.release
 			return .f.
 		endif
-		if !facturaSinRecibos(nFactura)
-			msginfo(cTipoDocumento+" Con Recibos")
-			// notaCredito.release
-			return .f.
-		endif
+		// if !facturaSinRecibos(nFactura)
+		// 	msginfo(cTipoDocumento+" Con Recibos")
+		// 	// notaCredito.release
+		// 	return .f.
+		// endif
 		aColumCont := {{'TEXTBOX','CHARACTER'},{'TEXTBOX','CHARACTER'},{'TEXTBOX','NUMERIC','999.99'},{'TEXTBOX','NUMERIC','999,999.99'},{'TEXTBOX','NUMERIC','99'},{'TEXTBOX','NUMERIC','999'},{'TEXTBOX','NUMERIC','999,999,999.99'},{'TEXTBOX','NUMERIC'},{'TEXTBOX','CHARACTER'}}
 		aColumTit :=	{'Codigo','Articulo','Cant.','Precio Unit.','Iva','Dto.','PrecioFinal','Nro fact',''}
 		aColumWidth := {120,200,45,80,30,40,80,0,0 }
@@ -49,7 +49,7 @@ endif
 		notaCredito.button_1.caption := "Guardar Nota Debito"
 
 	otherwise
-		msgInfo("No es posible Hacer la Devolución")
+		msgInfo("No es posible Hacer la Devolucion")
 		// notaCredito.release
 		return .f.
 	end case
