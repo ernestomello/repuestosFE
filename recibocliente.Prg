@@ -16,6 +16,7 @@ vacioDatosReciboCliente()
 	  if existeCliente(nCliente)
 		    rellenoDatosReciboCliente(nCliente)
 		    nSocioGlobal := 0
+			reciboCliente.text_1.readOnly := .t.
 	  else
 	    
 	      busquedaGeneral('cc','','Clientes',1)
@@ -24,6 +25,7 @@ vacioDatosReciboCliente()
 		      if nSocioGlobal != 0
 		        	rellenoDatosReciboCliente(nsocioGlobal)      
 		        	nSocioGlobal := 0
+					reciboCliente.text_1.readOnly := .t.
 		      endIf
 	  endif
 	
@@ -38,6 +40,7 @@ reciboCliente.text_4.value := 0
 reciboCliente.text_5.value := 0
 reciboCliente.text_6.value := 0
 reciboCliente.text_8.value := 0
+reciboCliente.text_1.readOnly := .f.
 
 procedure vacioCalculo()
 for i = 1 to reciboCliente.grid_1.itemcount           
@@ -73,7 +76,7 @@ local nTotImporte := 0
 
 
 if nCantidad > nLinea
-  	msginfo('Supera las '+str(nLinea)+' líneas '+chr(13)+'Guarde el Documento')
+  	msginfo('Supera las '+str(nLinea)+' lï¿½neas '+chr(13)+'Guarde el Documento')
   	return
 endif
 
@@ -104,7 +107,7 @@ nSaldoEntrega := nImporteEntrega
 
 for i= 1 to nCantidad
 	if nCantidad > nLinea
-		msginfo('Supera las '+str(nLinea)+' líneas '+chr(13)+'Desmarque Líneas para Calcular')
+		msginfo('Supera las '+str(nLinea)+' lï¿½neas '+chr(13)+'Desmarque Lï¿½neas para Calcular')
   	exit
 	endif
 	
@@ -160,7 +163,7 @@ local cAdenda := ""
 local nTipoDocumento:=111
 local nGlobal 
 
-if !msgYesNo("Graba el Recibo y la Bonificacion?","ATENCIÓN",.T.)
+if !msgYesNo("Graba el Recibo y la Bonificacion?","ATENCION",.T.)
 	return .f.
 endif
 
@@ -178,7 +181,7 @@ endIf
 		if !agregoNumeroDesde('CLIENTE')
 			noTran()
 			WAIT CLEAR
-			msginfo("No se pudo actualizar el Número del Recibo")
+			msginfo("No se pudo actualizar el Nï¿½mero del Recibo")
 			return .f.
 		endIf
 		// cAdenda := "Ref: "+str(nNumeroR)
@@ -195,7 +198,7 @@ endIf
 //			msgInfo("No se pudo Guardar el id. Reintente!!!")
 //			return .f.
 //		endIf
-		//guarda los detalles del recibo, controlando que la línea sea != 0
+		//guarda los detalles del recibo, controlando que la lï¿½nea sea != 0
 		for i = 1 to reciboCliente.grid_1.itemcount
 			if reciboCliente.grid_1.cell(i,8) = 'SI' .and. reciboCliente.grid_1.cell(i,5)!= 0
 				nDocumento := reciboCliente.grid_1.cell(i,1)
@@ -224,7 +227,7 @@ endIf
 		if !agregoNumeroDesde('CLIENTE')
 			noTran()
 			WAIT CLEAR
-			msginfo("No se pudo actualizar el Número de la Nota de Crédito")
+			msginfo("No se pudo actualizar el Nï¿½mero de la Nota de Crï¿½dito")
 			return .f.
 		endIf
 		// cAdenda := "Ref: "+str(nNumeroN)
@@ -233,7 +236,7 @@ endIf
 		// if !guardoCabezalNotaCredito(nNumeroN, cajaId(),reciboCliente.text_1.value,'N',reciboCliente.datePicker_1.value,reciboCliente.text_5.value)
 			noTran()
 			WAIT CLEAR
-			msgInfo("No se pudo Guardar la Nota de Crédito. Reintente!!!")
+			msgInfo("No se pudo Guardar la Nota de Crï¿½dito. Reintente!!!")
 			return .f.
 		endIf	
 //		nNota := ultimoId()
@@ -241,7 +244,7 @@ endIf
 //			msgInfo("No se pudo Guardar el id_nota_credito. Reintente!!!")
 //			return .f.
 //		endIf
-		//guarda los detalles de la Nota de Crédito, controlando que la línea sea != 0
+		//guarda los detalles de la Nota de Crï¿½dito, controlando que la lï¿½nea sea != 0
 		for i = 1 to reciboCliente.grid_1.itemcount
 			if reciboCliente.grid_1.cell(i,8) = 'SI' .and. reciboCliente.grid_1.cell(i,6)!= 0
 				// if !guardoDetalleNotaCredito(nNumeroN,reciboCliente.grid_1.cell(i,1),reciboCliente.grid_1.cell(i,6))
@@ -274,7 +277,7 @@ if  nNumeroN != 0
 		if ! facturaElectronica(nNumeroN,.f.,.t.)
 			noTran()
 			WAIT CLEAR
-			msgInfo("No se pudo guardar el documento en DGI, Reintente desde el Menú !!!")	
+			msgInfo("No se pudo guardar el documento en DGI, Reintente desde el Menï¿½ !!!")	
 			return .f.
 		endif
 	endIf
@@ -283,7 +286,7 @@ if  nNumeroN != 0
 	info_("Imprimiendo Documento ...")
 	if !imprimoMovimiento(nNumeroN,0,'','','')
 		WAIT CLEAR
-		msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menú")
+		msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menï¿½")
 		return .f.
 	endif
 endif
@@ -323,7 +326,7 @@ for i = 1 to reciboCliente.grid_1.itemcount
 		return .t.
 	endIf
 next
-msgInfo("Se debe marcar una línea al menos")
+msgInfo("Se debe marcar una lï¿½nea al menos")
 return .f.
 
 
@@ -345,7 +348,7 @@ local oQuery
 oQuery:= oServer:Query( 'select LAST_INSERT_ID()')
 If oQuery:NetErr() 
   MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-  //si o puedo obtener el id del cabezal anulo todo para atrás
+  //si o puedo obtener el id del cabezal anulo todo para atrï¿½s
   oQuery:=oServer:Query('ROLLBACK') 
   return 0
 else
@@ -384,7 +387,7 @@ cQuery += " 'N',null,null) "
 oQuery:= oServer:Query(cQuery) 
 If oQuery:NetErr() 
   MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-  //si no puedo obtener el id del cabezal anulo todo para atrás
+  //si no puedo obtener el id del cabezal anulo todo para atrï¿½s
   oQuery:=oServer:Query('ROLLBACK') 
   return .f.
 else
@@ -400,7 +403,7 @@ cQuery := cQuery + " "+str(nImporte)+" )"
 oQuery:= oServer:Query(cQuery)
 If oQuery:NetErr() 
   MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-  //si o puedo obtener el id del cabezal anulo todo para atrás
+  //si o puedo obtener el id del cabezal anulo todo para atrï¿½s
   oQuery:=oServer:Query('ROLLBACK') 
   return .f.
 else
@@ -539,7 +542,7 @@ function anuloRecibo(nRecibo,nCajero)
 local cQuery
 local oQuery
 
-oQuery:= oServer:Query( 'BEGIN' ) //comienzo la transacción
+oQuery:= oServer:Query( 'BEGIN' ) //comienzo la transacciï¿½n
 If oQuery:NetErr() 
   MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
   oQuery:=oServer:Query('ROLLBACK') //si no puede hacer el comienzo de la transaccion cancelo
@@ -592,3 +595,50 @@ If oQuery:NetErr()
   MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
 endif
 return oQuery:getRow(1):fieldGet(2)
+
+function elimina_tildes(cFrase)
+	local cFraseLimpia := ''
+	local nlargo := len(cFrase)
+	local j := 1
+	
+	for j := 1 to nlargo
+		cChar := substr(cFrase,j,1)
+		nChar := asc(cChar)
+		if (nChar >= 65 .and. nChar <= 90) .or. (nChar >= 97 .and. nChar <= 122)
+			cFraseLimpia += cChar
+		else
+			do case				
+				case (nChar >= 192 .and. nChar <= 197)
+					cFraseLimpia += 'A'
+				case (nChar = 199 )
+					cFraseLimpia += 'C'
+				case (nChar >= 200 .and. nChar <= 203)
+					cFraseLimpia += 'E'
+				case (nChar >= 204 .and. nChar <= 207)
+					cFraseLimpia += 'I'
+				case (nChar = 209)
+					cFraseLimpia += 'N'
+				case (nChar >= 210 .and. nChar <= 214)
+					cFraseLimpia += 'O'
+				case (nChar >= 217 .and. nChar <= 220)
+					cFraseLimpia += 'U'
+				case (nChar >= 224 .and. nChar <= 229)
+					cFraseLimpia += 'a'
+				case (nChar = 231 )
+					cFraseLimpia += 'c'
+				case (nChar >= 232 .and. nChar <= 235)
+					cFraseLimpia += 'e'
+				case (nChar >= 236 .and. nChar <= 239)
+					cFraseLimpia += 'i'
+				case (nChar = 241)
+					cFraseLimpia += 'n'
+				case (nChar >= 243 .and. nChar <= 246)
+					cFraseLimpia += 'o'
+				case (nChar >= 249 .and. nChar <= 252)
+					cFraseLimpia += 'u'
+				otherwise
+					cFraseLimpia += ' '
+			endcase
+		endIf		
+	next
+return cFraseLimpia
