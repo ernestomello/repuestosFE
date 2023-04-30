@@ -142,7 +142,7 @@ endIf
  
 	aLineasL:= cValTag(cRespuesta,"a:Descripcion")+"|"+cValTag(cRespuesta,"a:Serie")+"|"+cValTag(cRespuesta,"a:Numero")+"|"+cValTag(cRespuesta,"a:Hash")
 	cCodigoRespuesta := val(cValTag(cRespuesta,"a:Codigo"))
-	//codigo = 0 sin errore, codigo 100009 que ya fue emitido, asï¿? que igual sirve para grabar los datos faltantes.
+	//codigo = 0 sin errore, codigo 100009 que ya fue emitido, asï¿½? que igual sirve para grabar los datos faltantes.
 	if cCodigoRespuesta = 0 .or. cCodigoRespuesta = 100009		
 		if !actualizaFE(nIdMov, aLineasL)
 			return .f.
@@ -175,7 +175,7 @@ cQuery += " where id_factura = "+str(nIdMov)+" "
 oQuery:= oServer:Query(  cQuery )
 If oQuery:NetErr() 
   MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-  oQuery:=oServer:Query('ROLLBACK') //si no puede guardar el cabezal anulo todo(incluido el nï¿?mero de factua)
+  oQuery:=oServer:Query('ROLLBACK') //si no puede guardar el cabezal anulo todo(incluido el nï¿½?mero de factua)
   return .f.
 endif
 
@@ -194,7 +194,7 @@ cQuery += " where id_factura = "+str(nIdMov)+" "
 oQuery:= oServer:Query(  cQuery )
 If oQuery:NetErr() 
   MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-  oQuery:=oServer:Query('ROLLBACK') //si no puede guardar el cabezal anulo todo(incluido el nï¿?mero de factua)
+  oQuery:=oServer:Query('ROLLBACK') //si no puede guardar el cabezal anulo todo(incluido el nï¿½?mero de factua)
   return .f.
 endif
 
@@ -278,8 +278,8 @@ function linea3(pArchivo,oIdMov)
 local cLinea := "<nsAd:Emisor>"+chr(13)+chr(10)
 
 cLinea += "<nsAd:RUCEmisor>"+cRutEmisior+"</nsAd:RUCEmisor>"+chr(13)+chr(10)
-cLinea +="<nsAd:RznSoc>"+cEspeciales(cRazonEmisior)+"</nsAd:RznSoc>"+chr(13)+chr(10)
-cLinea +="<nsAd:NomComercial>"+cEspeciales(cNombreEmpresa)+"</nsAd:NomComercial>"+chr(13)+chr(10)
+cLinea +="<nsAd:RznSoc>"+elimina_tildes(cRazonEmisior)+"</nsAd:RznSoc>"+chr(13)+chr(10)
+cLinea +="<nsAd:NomComercial>"+elimina_tildes(cNombreEmpresa)+"</nsAd:NomComercial>"+chr(13)+chr(10)
 cLinea +="<nsAd:EmiSucursal>Sucursal principal</nsAd:EmiSucursal>"+chr(13)+chr(10)
 cLinea +="<nsAd:CdgDGISucur>"+cDGIEmisior+"</nsAd:CdgDGISucur>"+chr(13)+chr(10)
 cLinea +="<nsAd:DomFiscal>"+cDirEmisior+"</nsAd:DomFiscal>"+chr(13)+chr(10)
@@ -317,8 +317,8 @@ cLinea +="<nsAd:TipoDocRecep>"+cTipoDocR+"</nsAd:TipoDocRecep>"+chr(13)+chr(10)
 cLinea +="<nsAd:CodPaisRecep>"+cCodPaisR+"</nsAd:CodPaisRecep>"+chr(13)+chr(10)
 cLinea +="<nsAd:DocRecep>"+cDocR+"</nsAd:DocRecep>"+chr(13)+chr(10)
 // cLinea +="<nsAd:DocRecep>120130820017</nsAd:DocRecep>"+chr(13)
-cLinea +="<nsAd:RznSocRecep>"+cCliente+" - "+cEspeciales(cRazonR)+"</nsAd:RznSocRecep>"+chr(13)+chr(10)
-cLinea +="<nsAd:DirRecep>"+cEspeciales(cDirR)+"</nsAd:DirRecep>"+chr(13)+chr(10)
+cLinea +="<nsAd:RznSocRecep>"+cCliente+" - "+elimina_tildes(cRazonR)+"</nsAd:RznSocRecep>"+chr(13)+chr(10)
+cLinea +="<nsAd:DirRecep>"+elimina_tildes(cDirR)+"</nsAd:DirRecep>"+chr(13)+chr(10)
 cLinea +="<nsAd:CiudadRecep>"+cCiuR+"</nsAd:CiudadRecep>"+chr(13)+chr(10)
 cLinea +="<nsAd:DeptoRecep>"+cDepR+"</nsAd:DeptoRecep>"+chr(13)+chr(10)
 cLinea +="<nsAd:PaisRecep>"+cPaisR+"</nsAd:PaisRecep>"+chr(13)+chr(10)
@@ -422,7 +422,7 @@ else
 endif
 
 for j := 1 to oDetalle:lastRec()
-		cDescArt:= cEspeciales(alltrim(oDetalle:getRow(j):fieldGet(2))+"-"+alltrim(oDetalle:getRow(j):fieldGet(6)))
+		cDescArt:= elimina_tildes(alltrim(oDetalle:getRow(j):fieldGet(2))+"-"+alltrim(oDetalle:getRow(j):fieldGet(6)))
 		cCant := oDetalle:getRow(j):fieldGet(3)
 		cUnidad := "UN"
 		cIndica := cfeIndFacturacion(oDetalle:getRow(j):fieldGet(5))
@@ -490,20 +490,20 @@ return .t.
 
 
 function linea10(pArchivo,oIdMov,aSocio)
-local cAdenda := "Obs: "+cEspeciales(oIdMov:getRow(1):fieldGet(15))
+local cAdenda := "Obs: "+elimina_tildes(oIdMov:getRow(1):fieldGet(15))
 local nFormaPago := oIdMov:getRow(1):fieldGet(13)
 local nTipoDocumento := oIdMov:getRow(1):fieldGet(4)
 local cRazonR :=if( len(alltrim(aSocio)) != 0, hb_atokens(aSocio,"|")[3],"")
 local cLinea := ""
 local cAdendaSicfe := "<nsAdenda:AdendaSicfe>"+chr(13)+chr(10)+"<nsAdenda:IdCaja>"+cPuntoVenta+"</nsAdenda:IdCaja>"+chr(13)+chr(10)+"<nsAdenda:IdUsuario>N/A</nsAdenda:IdUsuario>"+chr(13)+chr(10)+"</nsAdenda:AdendaSicfe>"
 if nFormaPago = 2 
-	cAdenda += "&lt;br&gt;"+"Cliente Nro: "+str(oIdMov:getRow(1):fieldGet(7))+" - "+cEspeciales(cRazonR)
+	cAdenda += "&lt;br&gt;"+"Cliente Nro: "+str(oIdMov:getRow(1):fieldGet(7))+" - "+elimina_tildes(cRazonR)
 	if (nTipoDocumento = 111 .or. nTipoDocumento = 101)
-		cAdenda +="&lt;br&gt;"+cEspeciales(mensaje1Documento(nTipoDocumento))+"&lt;br&gt;"+cEspeciales(mensaje2Documento(nTipoDocumento))+"&lt;br&gt;"+cEspeciales(mensaje3Documento(nTipoDocumento))
+		cAdenda +="&lt;br&gt;"+elimina_tildes(mensaje1Documento(nTipoDocumento))+"&lt;br&gt;"+elimina_tildes(mensaje2Documento(nTipoDocumento))+"&lt;br&gt;"+elimina_tildes(mensaje3Documento(nTipoDocumento))
 	endIf
 else
 	if len(alltrim(aSocio)) != 0		
-		cAdenda += "&lt;br&gt;"+"Doc : "+cEspeciales(hb_atokens(aSocio,"|")[2])+"&lt;br&gt; Nombre: "+cEspeciales(hb_atokens(aSocio,"|")[3])+"&lt;br&gt; Direccion: "+cEspeciales(hb_atokens(aSocio,"|")[4])
+		cAdenda += "&lt;br&gt;"+"Doc : "+elimina_tildes(hb_atokens(aSocio,"|")[2])+"&lt;br&gt; Nombre: "+elimina_tildes(hb_atokens(aSocio,"|")[3])+"&lt;br&gt; Direccion: "+elimina_tildes(hb_atokens(aSocio,"|")[4])
 	endIf
 endif
 cAdenda += "&lt;br&gt;"+"Ref: "+str(oIdMov:getRow(1):fieldGet(1))+" - "+str(oIdMov:getRow(1):fieldGet(8))
@@ -527,33 +527,33 @@ return .t.
 function cEspeciales(cCadena)
 
 	cCadena := strtran(cCadena,"&","&amp;")
-		cCadena := strtran(cCadena,"Ñ","Ã‘")
-		// cCadena := strtran(cCadena,"ñ","Ã‘")
-		cCadena := strtran(cCadena,"Á","Ã")
-		// cCadena := strtran(cCadena,"á","Ã¡")
-		cCadena := strtran(cCadena,"É","Ã‰")
-		// cCadena := strtran(cCadena,"é","Ã©")
-		cCadena := strtran(cCadena,"Í","ÃŒ")
-		// cCadena := strtran(cCadena,"í","Ã")
-		cCadena := strtran(cCadena,"Ó","Ã“")
-		// cCadena := strtran(cCadena,"ó","Ã³")
-		cCadena := strtran(cCadena,"Ú","Ãš")
-		// cCadena := strtran(cCadena,"ú","Ãº")
+		cCadena := strtran(cCadena,"ï¿½","Ã‘")
+		// cCadena := strtran(cCadena,"ï¿½","Ã‘")
+		cCadena := strtran(cCadena,"ï¿½","ï¿½")
+		// cCadena := strtran(cCadena,"ï¿½","Ã¡")
+		cCadena := strtran(cCadena,"ï¿½","Ã‰")
+		// cCadena := strtran(cCadena,"ï¿½","Ã©")
+		cCadena := strtran(cCadena,"ï¿½","ÃŒ")
+		// cCadena := strtran(cCadena,"ï¿½","ï¿½")
+		cCadena := strtran(cCadena,"ï¿½","Ã“")
+		// cCadena := strtran(cCadena,"ï¿½","Ã³")
+		cCadena := strtran(cCadena,"ï¿½","Ãš")
+		// cCadena := strtran(cCadena,"ï¿½","Ãº")
 		
 		
 		/*cCadena := strtran(cCadena,"&","&amp;")
-		cCadena := strtran(cCadena,"ï¿?","Ã‘")
-		// cCadena := strtran(cCadena,"ï¿?","Ã‘")
-		cCadena := strtran(cCadena,"ï¿?","Ã¡")
-		// cCadena := strtran(cCadena,"ï¿?","Ã¡")
-		cCadena := strtran(cCadena,"ï¿?","Ã‰")
-		// cCadena := strtran(cCadena,"ï¿?","Ã©")
-		cCadena := strtran(cCadena,"ï¿?","ÃŒ")
-		// cCadena := strtran(cCadena,"ï¿?","ï¿?")
-		cCadena := strtran(cCadena,"ï¿?","Ã“")
-		// cCadena := strtran(cCadena,"ï¿?","Ã³")
-		cCadena := strtran(cCadena,"ï¿?","Ãš")
-		// cCadena := strtran(cCadena,"ï¿?","Ãº")
+		cCadena := strtran(cCadena,"ï¿½?","Ã‘")
+		// cCadena := strtran(cCadena,"ï¿½?","Ã‘")
+		cCadena := strtran(cCadena,"ï¿½?","Ã¡")
+		// cCadena := strtran(cCadena,"ï¿½?","Ã¡")
+		cCadena := strtran(cCadena,"ï¿½?","Ã‰")
+		// cCadena := strtran(cCadena,"ï¿½?","Ã©")
+		cCadena := strtran(cCadena,"ï¿½?","ÃŒ")
+		// cCadena := strtran(cCadena,"ï¿½?","ï¿½?")
+		cCadena := strtran(cCadena,"ï¿½?","Ã“")
+		// cCadena := strtran(cCadena,"ï¿½?","Ã³")
+		cCadena := strtran(cCadena,"ï¿½?","Ãš")
+		// cCadena := strtran(cCadena,"ï¿½?","Ãº")
 		*/
 		cCadena := strtran(cCadena,">","&gt;")
 		cCadena := strtran(cCadena,"<","&lt;")		
@@ -658,7 +658,7 @@ local oQuery
 local cQuery
 local cDesc := iif(nTipoDoc = 112 .or. nTipoDoc = 102 , "Bonificacion en ","Afecta : ")
 // el cfe_ind_fact que se trae es aleatorio y no necesariamente es el indicado para la N/C - N/D que se quiere hacer...pues pueden haber
-// mas de un tipo de indice de facturaciï¿?n (IVA)
+// mas de un tipo de indice de facturaciï¿½?n (IVA)
 cQuery := " select r.id_factura_ref,'2', 1,r.importe_aplicado, 22,concat( '"+cDesc+"',t.descripcion, ' ', r.serieCFE, '-',r.numeroCFE) "
 cQuery += " from  cfe_referencias_det r ,cfe_tipos t  "
 cQuery += " where  r.id_factura = "+str(nIdMov)+" and r.tipoCFE= t.id_cfe "
@@ -758,14 +758,14 @@ cQuery += " ,"+str(aCabezal[1,5])+",0.00,0.00 ,'"+aCabezal[1,6]+"',current_times
 oQuery:= oServer:Query(  cQuery )
 If oQuery:NetErr() 
   MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-  oQuery:=oServer:Query('ROLLBACK') //si no puede guardar el cabezal anulo todo(incluido el nï¿?mero de factua)
+  oQuery:=oServer:Query('ROLLBACK') //si no puede guardar el cabezal anulo todo(incluido el nï¿½?mero de factua)
   return 0    
 endif
 	 
 oQuery:= oServer:Query( 'select LAST_INSERT_ID()')
 If oQuery:NetErr() 
   MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-  oQuery:=oServer:Query('ROLLBACK') //si o puedo obtener el id del cabezal anulo todo para atrï¿?s
+  oQuery:=oServer:Query('ROLLBACK') //si o puedo obtener el id del cabezal anulo todo para atrï¿½?s
   return 0
 endif
                                        //detalle movimiento   
@@ -785,7 +785,7 @@ for i:= 1 to len(alineas)
   oQuery := oServer:Query(cQuery)
   If oQuery:NetErr() 
     MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-    oQuery:=oServer:Query('ROLLBACK') //si no puedo guardar alguna de las lï¿?neas anulo todo para atrï¿?s
+    oQuery:=oServer:Query('ROLLBACK') //si no puedo guardar alguna de las lï¿½?neas anulo todo para atrï¿½?s
     return 0
   endif
   
@@ -806,7 +806,7 @@ for i:= 1 to len(alineas)
 	endif 
 next
 
-if fDoble //cuando no se registran las lï¿?neas y se pone una genï¿?rica
+if fDoble //cuando no se registran las lï¿½?neas y se pone una genï¿½?rica
 	
 	// cDetalleGenerico := nombreCobradorConvenio(aCabezal[1,4])
 	nIndFact := iif(nTotLineas = 0, 5, cfeIndFacturacion(0))
@@ -816,7 +816,7 @@ if fDoble //cuando no se registran las lï¿?neas y se pone una genï¿?rica
   oQuery := oServer:Query(cQuery)
   If oQuery:NetErr() 
     MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-    oQuery:=oServer:Query('ROLLBACK') //si no puedo guardar alguna de las lï¿?neas anulo todo para atrï¿?s
+    oQuery:=oServer:Query('ROLLBACK') //si no puedo guardar alguna de las lï¿½?neas anulo todo para atrï¿½?s
     return 0
   endif
 endif
@@ -832,7 +832,7 @@ if len(aNotas) != 0
 	  oQuery := oServer:Query(cQuery)
 	  If oQuery:NetErr() 
 	    MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-	    oQuery:=oServer:Query('ROLLBACK') //si no puedo guardar alguna de las lï¿?neas anulo todo para atrï¿?s
+	    oQuery:=oServer:Query('ROLLBACK') //si no puedo guardar alguna de las lï¿½?neas anulo todo para atrï¿½?s
 	    return 0
 	  endif
 /*		
@@ -873,14 +873,14 @@ cQuery += " ,"+str(aCabezal[1,5])+",0.00,0.00 ,'"+aCabezal[1,6]+"',current_times
 oQuery:= oServer:Query(  cQuery )
 If oQuery:NetErr() 
   MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-  oQuery:=oServer:Query('ROLLBACK') //si no puede guardar el cabezal anulo todo(incluido el nï¿?mero de factua)
+  oQuery:=oServer:Query('ROLLBACK') //si no puede guardar el cabezal anulo todo(incluido el nï¿½?mero de factua)
   return 0    
 endif
 	 
 oQuery:= oServer:Query( 'select LAST_INSERT_ID()')
 If oQuery:NetErr() 
   MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-  oQuery:=oServer:Query('ROLLBACK') //si o puedo obtener el id del cabezal anulo todo para atrï¿?s
+  oQuery:=oServer:Query('ROLLBACK') //si o puedo obtener el id del cabezal anulo todo para atrï¿½?s
   return 0
 endif
                                        //detalle movimiento   
@@ -900,7 +900,7 @@ for i:= 1 to len(alineas)
   oQuery := oServer:Query(cQuery)
   If oQuery:NetErr() 
     MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-    oQuery:=oServer:Query('ROLLBACK') //si no puedo guardar alguna de las lï¿?neas anulo todo para atrï¿?s
+    oQuery:=oServer:Query('ROLLBACK') //si no puedo guardar alguna de las lï¿½?neas anulo todo para atrï¿½?s
     return 0
   endif
   
@@ -930,7 +930,7 @@ oDocCFE := oDocumentoCFE(nIdMov)
 	  oQuery := oServer:Query(cQuery)
 	  If oQuery:NetErr() 
 	    MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-	    oQuery:=oServer:Query('ROLLBACK') //si no puedo guardar alguna de las lï¿?neas anulo todo para atrï¿?s
+	    oQuery:=oServer:Query('ROLLBACK') //si no puedo guardar alguna de las lï¿½?neas anulo todo para atrï¿½?s
 	    return 0
 	  endif
 return idMov
@@ -957,14 +957,14 @@ cQuery := "select id_indicador  from cfe_ind_facturacion where valor= "+str(nidI
 oQuery := oServer:Query(cQuery)
  If oQuery:NetErr() 
     MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
-    return 2 //tasa mï¿?nima
+    return 2 //tasa mï¿½?nima
   endIf
 return oQuery:getRow(1):fieldGet(1)
 
 function iniTran()
 local oQuery
 
-oQuery:= oServer:Query( 'BEGIN' ) //comienzo la transacciï¿?n
+oQuery:= oServer:Query( 'BEGIN' ) //comienzo la transacciï¿½?n
 If oQuery:NetErr() 
   MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
   oQuery:=oServer:Query('ROLLBACK') //si no puede hacer el comienzo de la transaccion cancelo
@@ -976,7 +976,7 @@ return .t.
 function noTran()
 local oQuery
 
-oQuery:= oServer:Query( 'ROLLBACK' ) //comienzo la transacciï¿?n
+oQuery:= oServer:Query( 'ROLLBACK' ) //comienzo la transacciï¿½?n
 If oQuery:NetErr() 
   MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
   oQuery:=oServer:Query('ROLLBACK') //si no puede hacer el comienzo de la transaccion cancelo
@@ -988,7 +988,7 @@ return .t.
 function finTran()
 local oQuery
 
-oQuery:= oServer:Query( 'COMMIT' ) //comienzo la transacciï¿?n
+oQuery:= oServer:Query( 'COMMIT' ) //comienzo la transacciï¿½?n
 If oQuery:NetErr() 
   MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
   oQuery:=oServer:Query('ROLLBACK') //si no puede hacer el comienzo de la transaccion cancelo
@@ -1152,3 +1152,50 @@ Default nTimeOut := 2000
 lIsNet := !EMPTY( aAddr ) .AND. hb_socketConnect( socket , aAddr, nTimeOut )
 hb_socketClose( socket )
 RETURN lIsNet
+
+function elimina_tildes(cFrase)
+	local cFraseLimpia := ''
+	local nlargo := len(cFrase)
+	local j := 1
+	
+	for j := 1 to nlargo
+		cChar := substr(cFrase,j,1)
+		nChar := asc(cChar)
+		if (nChar >= 65 .and. nChar <= 90) .or. (nChar >= 97 .and. nChar <= 122)
+			cFraseLimpia += cChar
+		else
+			do case				
+				case (nChar >= 192 .and. nChar <= 197)
+					cFraseLimpia += 'A'
+				case (nChar = 199 )
+					cFraseLimpia += 'C'
+				case (nChar >= 200 .and. nChar <= 203)
+					cFraseLimpia += 'E'
+				case (nChar >= 204 .and. nChar <= 207)
+					cFraseLimpia += 'I'
+				case (nChar = 209)
+					cFraseLimpia += 'N'
+				case (nChar >= 210 .and. nChar <= 214)
+					cFraseLimpia += 'O'
+				case (nChar >= 217 .and. nChar <= 220)
+					cFraseLimpia += 'U'
+				case (nChar >= 224 .and. nChar <= 229)
+					cFraseLimpia += 'a'
+				case (nChar = 231 )
+					cFraseLimpia += 'c'
+				case (nChar >= 232 .and. nChar <= 235)
+					cFraseLimpia += 'e'
+				case (nChar >= 236 .and. nChar <= 239)
+					cFraseLimpia += 'i'
+				case (nChar = 241)
+					cFraseLimpia += 'n'
+				case (nChar >= 243 .and. nChar <= 246)
+					cFraseLimpia += 'o'
+				case (nChar >= 249 .and. nChar <= 252)
+					cFraseLimpia += 'u'
+				otherwise
+					cFraseLimpia += ' '
+			endcase
+		endIf		
+	next
+return cFraseLimpia
