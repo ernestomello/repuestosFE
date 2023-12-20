@@ -4,10 +4,11 @@
 * Carga El parametro pedido desde el archivo .ini en el directorio donde se ejecuto la aplicacion
 *
 ************************************************************************/
-Function PARAMETROINI( ID , TipoDeDato )
+Function PARAMETROINI( ID , TipoDeDato,ruta )
 	Local 	Retorno	
 	local	cValor		:=	''
-	local	cArchivoINI	:=	cDirInicioAplicacion+"\GRepuestos.ini"
+	//local	cArchivoINI	:=	cDirInicioAplicacion+"\GRepuestos.ini"
+	local	cArchivoINI	:=	iif( pcount() == 3, ruta+"GRepuestos.ini","GRepuestos.ini")
 
 	BEGIN INI FILE cArchivoINI
 

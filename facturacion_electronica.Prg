@@ -465,7 +465,7 @@ local i
 	for i := 1 to oNotaCredDeb:lastRec()
 	
 		cTipoCFE := oNotaCredDeb:getRow(i):fieldGet(4)
-		cSerie := oNotaCredDeb:getRow(i):fieldGet(5)
+		cSerie := alltrim(oNotaCredDeb:getRow(i):fieldGet(5))
 		cNumero := oNotaCredDeb:getRow(i):fieldGet(6)
 		cRazon := oNotaCredDeb:getRow(i):fieldGet(8)
 		cFecha := dtos(oNotaCredDeb:getRow(i):fieldGet(7))
