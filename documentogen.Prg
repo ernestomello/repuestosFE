@@ -3,8 +3,8 @@
 procedure cargoDocumentoGen(nDocumento, cFuncion)
 local cTipoDoc := tipoDocumento(nDocumento)
  
-//cargo un documento(nDocumento) factura, recibo, nota de crédito, nota de devolucion 
-//también defino si quiero imprimirlo o anularlo en el parámetro cFuncion
+//cargo un documento(nDocumento) factura, recibo, nota de crï¿½dito, nota de devolucion 
+//tambiï¿½n defino si quiero imprimirlo o anularlo en el parï¿½metro cFuncion
 //
 do case
 
@@ -42,22 +42,22 @@ do case
 		documentogen.title := "Recibo"
 		cargarReciboCliente(nDocumento)
 	case cTipoDoc == 102 
-		documentogen.title := "eTicket Nota de Crédito"
+		documentogen.title := "eTicket Nota de Crï¿½dito"
 		cargarReciboCliente(nDocumento)
 	case cTipoDoc == 112
-		documentogen.title := "eFactura Nota de Crédito"
+		documentogen.title := "eFactura Nota de Crï¿½dito"
 		cargarReciboCliente(nDocumento)
 	case cTipoDoc == 103
-		documentogen.title := "eTicket Nota de Débito"
+		documentogen.title := "eTicket Nota de Dï¿½bito"
 		cargarReciboCliente(nDocumento)
 	case cTipoDoc == 113
-		documentogen.title := "eFactura Nota de Débito"
+		documentogen.title := "eFactura Nota de Dï¿½bito"
 		cargarReciboCliente(nDocumento)
 	case cTipoDoc == 101
 		documentogen.title := "eTicket"
 		cargarFacturaCreditoCliente(nDocumento)
 	case cTipoDoc == 81
-		documentogen.title := "Presupuesto Crédito"
+		documentogen.title := "Presupuesto Crï¿½dito"
 		cargarFacturaCreditoCliente(nDocumento)
 	case cTipoDoc == 91
 		documentogen.title := "Presupuesto Contado"
@@ -103,7 +103,7 @@ next
 
 
 procedure cargarNotaCreditoCliente(nDocumento)
-// documentogen.title := "Nota de Crédito"
+// documentogen.title := "Nota de Crï¿½dito"
 
 procedure realizarAccion()
 
@@ -113,7 +113,7 @@ do case
 		info_("Imprimiendo Documento ...")
 		if !imprimoMovimiento(documentogen.text_6.value,1,'','','')
 			WAIT CLEAR
-			msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menú")
+			msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menï¿½")
 			return .f.
 		endif
 		WAIT CLEAR
@@ -146,6 +146,3 @@ procedure buscaDocumentos()
 
 busquedaGeneral("n","","Busqueda De Documentos",1)   
 
-if nSocioGlobal != 0
-	cargoDocumentoGen(nSocioGlobal, "MOSTRAR")
-endif

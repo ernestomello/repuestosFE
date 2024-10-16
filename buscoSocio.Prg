@@ -231,6 +231,11 @@ if conveniopagocobrador.text_2.value == 'a'
 else
 	nSocioGlobal := conveniopagocobrador.grid_1.item(conveniopagocobrador.grid_1.value)[1]
 endIf 
-release window conveniopagocobrador
+
+if nSocioGlobal != 0 .and. conveniopagocobrador.text_2.value == 'n'
+	cargoDocumentoGen(nSocioGlobal, "MOSTRAR")
+else
+  release window conveniopagocobrador
+endif
 
 return
