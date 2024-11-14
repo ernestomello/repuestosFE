@@ -120,6 +120,10 @@ do case
 		If len(conveniopagocobrador.text_1.value) < 5
 			return .f.
 		endif
+  case filtro = 4
+    If len(conveniopagocobrador.text_1.value) < 5
+      return .f.
+    endif
 end case
 
 conveniopagocobrador.grid_1.deleteAllItems
@@ -136,26 +140,36 @@ cNombre := iif(len(alltrim(conveniopagocobrador.text_1.value)) = 0, '"%"','"'+Al
           cQuery += " where cta_cte = 1 and nombre LIKE "+cNombre+"  order by "+str(orden)+" limit 100 "
           
         case vpc == 'a'
-			conveniopagocobrador.frame_1.caption := 'Repuestos'
-			cQuery := "select codigo_barra, descripcion,concat('$',precio_venta),'.' from articulo "          
-			cQuery += " where descripcion LIKE "+cNombre+"  order by "+str(orden)+" limit 100"
+			  conveniopagocobrador.frame_1.caption := 'Repuestos'
+          cQuery := "select codigo_barra, descripcion,concat('$',precio_venta),'.' from articulo "          
+			    cQuery += " where descripcion LIKE "+cNombre+"  order by "+str(orden)+" limit 100"
         case vpc == 'l'
           conveniopagocobrador.frame_1.caption := 'Facturas'
-		  cQuery := " select f.id_factura,concat(d.descripcion,' ',f.serieCFE,'-',f.numeroCFE),concat(f.importe),date_format(f.fecha,'%d/%m/%Y') "
-          cQuery += " from cfe_comprobante_cab f,cfe_tipos d"
-          cQuery += " where f.tipoCFE = d.id_cfe "         
-          // cQuery += " and date(f.fecha) = "+cFechaAnular+" "        
-		do case 
-			case filtro = 1
-			cQuery += " and  f.id_factura LIKE "+cNombre+" "
-			cQuery += " order by "+str(orden)+" desc  limit 30"
-			case filtro = 2
-			cQuery += " and  f.numeroCFE LIKE "+cNombre+" "
-			cQuery += " order by "+str(orden)+" desc  limit 30"
-			case filtro = 3
-			cQuery += " and date_format(f.fecha,'%d/%m/%Y')LIKE "+cNombre+" "
-			cQuery += " order by "+str(orden)+" desc  limit 200"
-		end case
+          cQuery := " select f.id_factura,concat(d.descripcion,' ',f.serieCFE,'-',f.numeroCFE),concat(f.importe),date_format(f.fecha,'%d/%m/%Y') "
+              cQuery += " from cfe_comprobante_cab f,cfe_tipos d "
+                      
+              // cQuery += " and date(f.fecha) = "+cFechaAnular+" "        
+          do case 
+            case filtro = 1
+              cQuery += " where f.tipoCFE = d.id_cfe  "
+              cQuery += " and  f.id_factura LIKE "+cNombre+" "
+              cQuery += " order by "+str(orden)+" desc  limit 30"
+            case filtro = 2
+              cQuery += " where f.tipoCFE = d.id_cfe  "
+              cQuery += " and  f.numeroCFE LIKE "+cNombre+" "
+              cQuery += " order by "+str(orden)+" desc  limit 30"
+            case filtro = 3
+              cQuery += " where f.tipoCFE = d.id_cfe  "
+              cQuery += " and date_format(f.fecha,'%d/%m/%Y') LIKE "+cNombre+" "
+              cQuery += " order by "+str(orden)+" desc  limit 200"
+            case filtro = 4
+              cQuery += " , cliente c "
+              cQuery += " where f.tipoCFE = d.id_cfe  "             
+              cQuery += " and c.id_cliente = f.id_cliente "
+              cNombre := hb_StrReplace(cNombre,'%')
+              cQuery += " and c.rut = "+cNombre+" "
+              cQuery += " order by 1 desc  limit 100"
+          end case
           		  
 		  case vpc == 'fe'
           conveniopagocobrador.frame_1.caption := 'Documentos sin FE'
@@ -167,8 +181,8 @@ cNombre := iif(len(alltrim(conveniopagocobrador.text_1.value)) = 0, '"%"','"'+Al
 		  case vpc == 'n'
           conveniopagocobrador.frame_1.caption := 'Facturas'
 		  cQuery := " select f.id_factura,concat(d.descripcion,' ',f.serieCFE,'-',f.numeroCFE),concat(f.importe),date_format(f.fecha,'%d/%m/%Y') "
-          cQuery += " from cfe_comprobante_cab f,cfe_tipos d"
-          cQuery += " where f.tipoCFE = d.id_cfe "         
+          cQuery += " from cfe_comprobante_cab f,cfe_tipos d, cliente c "
+          cQuery += " where f.tipoCFE = d.id_cfe and c.id_cliente = f.id_cliente "         
              
 			do case 
 				case filtro = 1
@@ -178,8 +192,12 @@ cNombre := iif(len(alltrim(conveniopagocobrador.text_1.value)) = 0, '"%"','"'+Al
 				cQuery += " and  f.numeroCFE LIKE "+cNombre+" "
 				cQuery += " order by "+str(orden)+" desc  limit 30"
 				case filtro = 3
-				cQuery += " and date_format(f.fecha,'%d/%m/%Y')LIKE "+cNombre+" "
+				cQuery += " and date_format(f.fecha,'%d/%m/%Y') LIKE "+cNombre+" "
 				cQuery += " order by "+str(orden)+" desc  limit 200"
+        case filtro = 4
+          cNombre := hb_StrReplace(cNombre,'%')
+          cQuery += " and c.rut = "+cNombre+" "
+          cQuery += " order by 1 desc  limit 100"
 			end case
 		
         case vpc == 'm'

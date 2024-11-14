@@ -157,9 +157,9 @@ DEFINE WINDOW TEMPLATE AT 146 , 363 WIDTH 706 HEIGHT 462 VIRTUAL WIDTH Nil VIRTU
     DEFINE RADIOGROUP RadioGroup_1
         ROW    70
         COL    80
-        WIDTH  375
+        WIDTH  500
         HEIGHT 28
-        OPTIONS { 'Nro. Referencia.','Nro Documento', 'Fecha Emision'}
+        OPTIONS { 'Nro. Referencia.','Nro Documento', 'Fecha Emision','RUT / CI'}
         VALUE 1
         FONTNAME "Arial"
         FONTSIZE 9
