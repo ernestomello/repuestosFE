@@ -161,7 +161,15 @@ local nImporteNotaCredito := reciboCliente.text_5.value
 local nImporte, nNumeroR := 0 , nNumeroN := 0
 local cAdenda := ""
 local nTipoDocumento:=111
-local nGlobal 
+local nGlobal, aAdenda, cDescripcion := ""
+
+
+//aAdenda := inputWindow('Descripcion del Pago',{'Descripcion'},{''}, {})
+aAdenda := inputBox("Descripcion del Pago","Descripcion",,,,.t.,255)
+if len(aAdenda) = 0
+	msgInfo("Debe Ingresar Una descripcion del pago")
+	return .f.
+endif
 
 if !msgYesNo("Graba el Recibo y la Bonificacion?","ATENCION",.T.)
 	return .f.
@@ -181,12 +189,12 @@ endIf
 		if !agregoNumeroDesde('CLIENTE')
 			noTran()
 			WAIT CLEAR
-			msginfo("No se pudo actualizar el N�mero del Recibo")
+			msginfo("No se pudo actualizar el Numero del Recibo")
 			return .f.
 		endIf
-		// cAdenda := "Ref: "+str(nNumeroR)
+		cDescripcion :=  Upper(RTrim(aAdenda))
 		// if !guardoCabezalreciboCliente(nNumeroR,cajaId(),reciboCliente.text_1.value,98,reciboCliente.text_6.value,reciboCliente.datePicker_1.value,"",0,1)
-		if !graboFactClienteCabezal(nNumeroR,cajaId(),reciboCliente.text_1.value,98,reciboCliente.text_6.value,reciboCliente.datePicker_1.value,"",0,1,cAdenda)
+		if !graboFactClienteCabezal(nNumeroR,cajaId(),reciboCliente.text_1.value,98,reciboCliente.text_6.value,reciboCliente.datePicker_1.value,cDescripcion,0,1,cAdenda)
 				// (nNumero,nCaja,nCliente, nTipoDocumento,nImporte,dFechaFactura,cDescripcion,nVendedor,nFormaPago,cAdenda)
 			noTran()
 			WAIT CLEAR
@@ -230,7 +238,7 @@ endIf
 			msginfo("No se pudo actualizar el N�mero de la Nota de Cr�dito")
 			return .f.
 		endIf
-		// cAdenda := "Ref: "+str(nNumeroN)
+		cAdenda := ""
 		nTipoDocumento := iif(tipoDocumento(reciboCliente.grid_1.cell(1,1))= 101 , 102 , 112)//que pasa si el tipoDocumento de las lineas es distinto????
 		if !graboFactClienteCabezal(nNumeroN,cajaId(),reciboCliente.text_1.value,nTipoDocumento,reciboCliente.text_5.value,reciboCliente.datePicker_1.value,"",0,2,cAdenda)
 		// if !guardoCabezalNotaCredito(nNumeroN, cajaId(),reciboCliente.text_1.value,'N',reciboCliente.datePicker_1.value,reciboCliente.text_5.value)
@@ -301,7 +309,7 @@ return .t.
 
 function verificaPorcentaje()
 
-if reciboCliente.text_4.value > 20 .and. reciboCliente.text_4.value != 99.99
+if reciboCliente.text_4.value > cPorcentajeNC .and. reciboCliente.text_4.value != 99.99
 	for i = 1 to reciboCliente.grid_1.itemcount      
 		//msgInfo(reciboCliente.grid_1.cell(i,2))
 		if ctod(reciboCliente.grid_1.cell(i,2)) >= ctod("01/11/2018") .and. reciboCliente.grid_1.cell(i,8) = 'SI'

@@ -4489,3 +4489,108 @@ Called from TMYSQLSERVER:QUERY(0) in ../../../tmysql.prg
 Called from CAJAID(580) in C:/sistemas/daniel/caja.prg
 Called from MAIN(106) in C:/sistemas/daniel/menu.prg
 ------------------------------------------------------------------------
+Application Internal Error - C:\Users\ernesto\desarrollo\repuestosFE\GRepuestos.exe
+Terminated at: 2025-03-07 21:49:17
+Error irrecuperable 9003: Demasiadas llamadas recursivas al controlador de errores
+Called from TYPE(0)
+Called from _ISCONTROLDEFINED(1143) in source\h_controlmisc.prg
+Called from _HMG_PRINTER_PREVIEW_ONPAINT(5678) in source\h_controlmisc.prg
+Called from (b)_HMG_PRINTER_SHOWPREVIEW(5000) in source\h_controlmisc.prg
+Called from _DOWINDOWEVENTPROCEDURE(6091) in source\h_windows.prg
+Called from EVENTS(1493) in source\h_windows.prg
+Called from C_MSGSTOP(0)
+Called from SHOWERROR(181) in source\ErrorSys.prg
+Called from DEFERROR(129) in source\ErrorSys.prg
+Called from (b)ERRORSYS(66) in source\ErrorSys.prg
+Called from _HMG_PRINTER_PREVIEW_ONPAINT(5737) in source\h_controlmisc.prg
+Called from (b)_HMG_PRINTER_SHOWPREVIEW(5000) in source\h_controlmisc.prg
+Called from _DOWINDOWEVENTPROCEDURE(6091) in source\h_windows.prg
+Called from EVENTS(1493) in source\h_windows.prg
+Called from C_MSGSTOP(0)
+Called from SHOWERROR(181) in source\ErrorSys.prg
+Called from DEFERROR(129) in source\ErrorSys.prg
+Called from (b)ERRORSYS(66) in source\ErrorSys.prg
+Called from _HMG_PRINTER_PREVIEW_ONPAINT(5737) in source\h_controlmisc.prg
+Called from (b)_HMG_PRINTER_SHOWPREVIEW(5000) in source\h_controlmisc.prg
+Called from _DOWINDOWEVENTPROCEDURE(6091) in source\h_windows.prg
+Called from EVENTS(1493) in source\h_windows.prg
+Called from C_MSGSTOP(0)
+Called from SHOWERROR(181) in source\ErrorSys.prg
+Called from DEFERROR(129) in source\ErrorSys.prg
+Called from (b)ERRORSYS(66) in source\ErrorSys.prg
+Called from _HMG_PRINTER_PREVIEW_ONPAINT(5737) in source\h_controlmisc.prg
+Called from (b)_HMG_PRINTER_SHOWPREVIEW(5000) in source\h_controlmisc.prg
+Called from _DOWINDOWEVENTPROCEDURE(6091) in source\h_windows.prg
+Called from EVENTS(1493) in source\h_windows.prg
+Called from C_MSGSTOP(0)
+Called from SHOWERROR(181) in source\ErrorSys.prg
+Called from DEFERROR(129) in source\ErrorSys.prg
+Called from (b)ERRORSYS(66) in source\ErrorSys.prg
+Called from _HMG_PRINTER_PREVIEW_ONPAINT(5737) in source\h_controlmisc.prg
+Called from (b)_HMG_PRINTER_SHOWPREVIEW(5000) in source\h_controlmisc.prg
+Called from _DOWINDOWEVENTPROCEDURE(6091) in source\h_windows.prg
+Called from EVENTS(1493) in source\h_windows.prg
+Called from C_MSGSTOP(0)
+Called from SHOWERROR(181) in source\ErrorSys.prg
+Called from DEFERROR(129) in source\ErrorSys.prg
+Called from (b)ERRORSYS(66) in source\ErrorSys.prg
+Called from _HMG_PRINTER_PREVIEW_ONPAINT(5737) in source\h_controlmisc.prg
+Called from (b)_HMG_PRINTER_SHOWPREVIEW(5000) in source\h_controlmisc.prg
+Called from _DOWINDOWEVENTPROCEDURE(6091) in source\h_windows.prg
+Called from EVENTS(1493) in source\h_windows.prg
+Called from C_MSGSTOP(0)
+Called from SHOWERROR(181) in source\ErrorSys.prg
+Called from DEFERROR(129) in source\ErrorSys.prg
+Called from (b)ERRORSYS(66) in source\ErrorSys.prg
+Called from _HMG_PRINTER_PREVIEW_ONPAINT(5737) in source\h_controlmisc.prg
+Called from (b)_HMG_PRINTER_SHOWPREVIEW(5000) in source\h_controlmisc.prg
+Called from _DOWINDOWEVENTPROCEDURE(6091) in source\h_windows.prg
+Called from EVENTS(1493) in source\h_windows.prg
+Called from C_MSGSTOP(0)
+Called from SHOWERROR(181) in source\ErrorSys.prg
+Called from DEFERROR(129) in source\ErrorSys.prg
+Called from (b)ERRORSYS(66) in source\ErrorSys.prg
+Called from _HMG_PRINTER_PREVIEW_ONPAINT(5737) in source\h_controlmisc.prg
+Called from (b)_HMG_PRINTER_SHOWPREVIEW(5000) in source\h_controlmisc.prg
+Called from _DOWINDOWEVENTPROCEDURE(6091) in source\h_windows.prg
+Called from EVENTS(1493) in source\h_windows.prg
+Called from C_MSGSTOP(0)
+Called from SHOWERROR(181) in source\ErrorSys.prg
+Called from DEFERROR(129) in source\ErrorSys.prg
+Called from (b)ERRORSYS(66) in source\ErrorSys.prg
+Called from _HMG_PRINTER_PREVIEW_ONPAINT(5737) in source\h_controlmisc.prg
+Called from (b)_HMG_PRINTER_SHOWPREVIEW(5000) in source\h_controlmisc.prg
+Called from _DOWINDOWEVENTPROCEDURE(6091) in source\h_windows.prg
+Called from EVENTS(1493) in source\h_windows.prg
+Called from UPDATEWINDOW(0)
+Called from EVENTS(932) in source\h_windows.prg
+Called from SHOWWINDOW(0)
+Called from _SHOWWINDOW(4001) in source\h_windows.prg
+Called from DOMETHOD(9036) in source\h_controlmisc.prg
+Called from SHOWWAITWINDOW(6652) in source\h_windows.prg
+Called from WAITWINDOW(6702) in source\h_windows.prg
+Called from RELLENOGRIDCLIENTE(85) in C:\Users\ernesto\desarrollo\repuestosFE\estadocuenta.prg
+Called from VERFACTURAESTADO(26) in C:\Users\ernesto\desarrollo\repuestosFE\estadocuenta.prg
+Called from (b)ESTADOCUENTACLIENTES(6) in C:\Users\ernesto\desarrollo\repuestosFE\estadocuenta.prg
+Called from _DOCONTROLEVENTPROCEDURE(6056) in source\h_windows.prg
+Called from EVENTS(1756) in source\h_windows.prg
+Called from DOMESSAGELOOP(0)
+Called from _ACTIVATEWINDOW(5717) in source\h_windows.prg
+Called from _HMG_PRINTER_SHOWPREVIEW(5283) in source\h_controlmisc.prg
+Called from IMPRIMOENLASER(689) in C:\Users\ernesto\desarrollo\repuestosFE\documentos.prg
+Called from IMPRIMOMOVIMIENTO(282) in C:\Users\ernesto\desarrollo\repuestosFE\documentos.prg
+Called from VERFACTURAESTADO(22) in C:\Users\ernesto\desarrollo\repuestosFE\estadocuenta.prg
+Called from (b)ESTADOCUENTACLIENTES(6) in C:\Users\ernesto\desarrollo\repuestosFE\estadocuenta.prg
+Called from _DOCONTROLEVENTPROCEDURE(6056) in source\h_windows.prg
+Called from EVENTS(1756) in source\h_windows.prg
+Called from DOMESSAGELOOP(0)
+Called from _ACTIVATEWINDOW(5717) in source\h_windows.prg
+Called from DOMETHOD(9003) in source\h_controlmisc.prg
+Called from ESTADOCUENTACLIENTES(13) in C:\Users\ernesto\desarrollo\repuestosFE\estadocuenta.prg
+Called from (b)MAIN(144) in C:\Users\ernesto\desarrollo\repuestosFE\menu.prg
+Called from _DOCONTROLEVENTPROCEDURE(6056) in source\h_windows.prg
+Called from EVENTS(1756) in source\h_windows.prg
+Called from DOMESSAGELOOP(0)
+Called from _ACTIVATEWINDOW(5717) in source\h_windows.prg
+Called from MAIN(213) in C:\Users\ernesto\desarrollo\repuestosFE\menu.prg
+------------------------------------------------------------------------

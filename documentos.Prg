@@ -643,7 +643,7 @@ nTotalSIva := 0
 	@ 260-nLineaA5,140 print rectangle to 270-nLineaA5,197 PENWIDTH 0.5
 	@ 275-nLineaA5,15 print rectangle to 290-nLineaA5,197 PENWIDTH 0.1	
 	@ 278-nLineaA5,20 print data "NOTAS"
-	@ 281-nLineaA5,20 print data cDescripcion to 285-nLineaA5,195//nota
+	@ 281-nLineaA5,20 print data cDescripcion to 289-nLineaA5,195//nota
 	
 	
 	

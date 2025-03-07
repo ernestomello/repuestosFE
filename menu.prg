@@ -33,6 +33,7 @@ Function main()
 	Public  cSOAPClave := PARAMETROini("FESOAPCLAVE","C")
 	Public  cSOAPtenant := PARAMETROini("FESOAPTENANT","C")
 	public cPuntoVenta := PARAMETROini("PUNTOVENTA","C")
+	public cPorcentajeNC := PARAMETROini("PORCENTAJENOTACREDITO","N")
 	
 	
 	SeteoAmbiente() 
