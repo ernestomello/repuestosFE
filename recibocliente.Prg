@@ -192,7 +192,8 @@ endIf
 			msginfo("No se pudo actualizar el Numero del Recibo")
 			return .f.
 		endIf
-		cDescripcion :=  Upper(RTrim(aAdenda))
+		cAdenda :=  Upper(RTrim(aAdenda))
+		cDescripcion := cAdenda
 		// if !guardoCabezalreciboCliente(nNumeroR,cajaId(),reciboCliente.text_1.value,98,reciboCliente.text_6.value,reciboCliente.datePicker_1.value,"",0,1)
 		if !graboFactClienteCabezal(nNumeroR,cajaId(),reciboCliente.text_1.value,98,reciboCliente.text_6.value,reciboCliente.datePicker_1.value,cDescripcion,0,1,cAdenda)
 				// (nNumero,nCaja,nCliente, nTipoDocumento,nImporte,dFechaFactura,cDescripcion,nVendedor,nFormaPago,cAdenda)

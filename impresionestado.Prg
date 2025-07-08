@@ -43,7 +43,7 @@ endif
 	
 return .t.
 
-procedure imprimoEstadoCuenta(nCliente,oDocumentos,nSaldoAnterior,dFechaDesde,nSaldoActual,dFechaHasta, nPrevio)
+procedure imprimoEstadoCuenta(nCliente,oDocumentos,nSaldoAnterior,dFechaDesde,nSaldoActual,dFechaHasta, nPrevio,cTituloPrincipal)
 local cCliente := nombreCliente(nCliente)
 local c
 local aGrid:= {}
@@ -98,20 +98,22 @@ start printdoc
 START PRINTPAGE
 
 @ xpos + 2, ypos + 2   PRINT data "Fecha: "+dtoc(Date())+" " size fuente
-@ xpos + 2, ypos + 80  PRINT data " Morales Repuestos " SIZE fuente bold
-@ xpos + 2, ypos + 190 PRINT data "Página" right size fuente
+@ xpos + 2, ypos + 80  PRINT data cTituloPrincipal SIZE fuente bold
+@ xpos + 2, ypos + 190 PRINT data "Pagina" right size fuente
 @ xpos + 5, ypos + 2   PRINT data "Hora:  "+Time() size fuente
 @ xpos + 5, ypos + 190 PRINT data str(nPag) right size fuente
 @ xPos + 10, yPos      PRINT LINE TO xPos + 10 , (yPos + 190) PENWIDTH 0.5                               
 
 @ xPos + 15 , yPos + 50 PRINT RECTANGLE TO (xPos + 24) , (yPos + 140) PENWIDTH 0.7 
-@ xpos + 16 , ypos + 60 PRINT data "  ESTADO DE CUENTA " SIZE 18 bold 
+@ xpos + 16 , ypos + 60 PRINT data cTituloPrincipal SIZE 18 bold 
 @ xpos + 28 , ypos + 60 PRINT data " Cliente: "+alltrim(str(ncliente))+' - '+alltrim(nombreCliente(nCliente)) SIZE fuente
 @ xpos + 33 , ypos + 60 PRINT data " Direcc.: "+alltrim(dirParticularCliente(nCliente))+" Tel :"+alltrim(telefonoCliente(nCliente)) SIZE fuente
 @ xpos + 38 , ypos + 60 PRINT data " R.U.T  : "+alltrim(rutCliente(nCliente)) SIZE fuente
 
+if cTituloPrincipal = "ESTADO CUENTA"
 @ xpos + 48 , ypos + 2   PRINT data "Saldo al  : "+dtoc(dFechaHasta);
 	+" $ "+str(nSaldoActual) size fuente BOLD
+endif
 nInicioLinea := 58
 @ xpos + nInicioLinea , ypos + 2   PRINT data "Nro.Doc" size fuente
 @ xpos + nInicioLinea , ypos + 20  PRINT data "Fecha" size fuente
@@ -129,7 +131,7 @@ for i= nLargoArray to 1 step -1
 		nPag ++
 		@ xpos + 2, ypos + 2   PRINT data "Fecha: "+dtoc(Date())+" " size fuente
 		@ xpos + 2, ypos + 80  PRINT data " Morales Repuestos " SIZE fuente bold
-		@ xpos + 2, ypos + 190 PRINT data "Página" right size fuente
+		@ xpos + 2, ypos + 190 PRINT data "Pagina" right size fuente
 		@ xpos + 5, ypos + 2   PRINT data "Hora:  "+Time() size fuente
 		@ xpos + 5, ypos + 190 PRINT data str(nPag) right size fuente
 		@ xPos + 10, yPos      PRINT LINE TO xPos + 10 , (yPos + 190) PENWIDTH 0.5       
@@ -145,15 +147,20 @@ for i= nLargoArray to 1 step -1
 	@ xpos + nInicioLinea + l , ypos + 2   PRINT data aGrid[i,1] size fuente
 	@ xpos + nInicioLinea + l , ypos + 20  PRINT data aGrid[i,2] size fuente
 	@ xpos + nInicioLinea + l , ypos + 47  PRINT data aGrid[i,3] size fuente
-	@ xpos + nInicioLinea + l , ypos + 150 PRINT data iif( aGrid[i,4] != 0, aGrid[i,4],'') right size fuente
-	@ xpos + nInicioLinea + l , ypos + 170 PRINT data iif( aGrid[i,5] != 0, aGrid[i,5],'') right size fuente
-	@ xpos + nInicioLinea + l , ypos + 190 PRINT data  aGrid[i,6]  right size fuente
+	if cTituloPrincipal = "ESTADO CUENTA"
+		@ xpos + nInicioLinea + l , ypos + 150 PRINT data iif( aGrid[i,4] != 0, aGrid[i,4],'') right size fuente
+		@ xpos + nInicioLinea + l , ypos + 170 PRINT data iif( aGrid[i,5] != 0, aGrid[i,5],'') right size fuente
+		@ xpos + nInicioLinea + l , ypos + 190 PRINT data  aGrid[i,6]  right size fuente
+	endif
 	l+= esp
 	
 next
 nInicioLinea := nInicioLinea + 5
+if cTituloPrincipal = "ESTADO CUENTA"
 @ xpos + nInicioLinea + l , ypos + 2   PRINT data "Saldo al : "+dtoc(dFechaDesde)+" $ "+;
 	 str(nSaldoAnteriorFijo) size fuente BOLD
+endif
+
 END PRINTPAGE
 END PRINTDOC
 
@@ -184,7 +191,7 @@ START PRINTPAGE
 
 @ xpos + 2, ypos + 2   PRINT data "Fecha: "+dtoc(Date())+" "
 @ xpos + 2, ypos + 80  PRINT data " Morales Repuestos " SIZE fuente bold
-@ xpos + 2, ypos + 190 PRINT data "Página" right size fuente
+@ xpos + 2, ypos + 190 PRINT data "Pï¿½gina" right size fuente
 @ xpos + 5, ypos + 2   PRINT data "Hora:  "+Time()
 @ xpos + 5, ypos + 190 PRINT data str(nPag) right size fuente
 @ xPos + 10, yPos      PRINT LINE TO xPos + 10 , (yPos + 190) PENWIDTH 0.5        
@@ -213,7 +220,7 @@ if 	ultimoMes != 0
 		nPag ++
 		@ xpos + 2, ypos + 2   PRINT data "Fecha: "+dtoc(Date())+" "
 		@ xpos + 2, ypos + 80  PRINT data " Morales Repuestos " SIZE fuente bold
-		@ xpos + 2, ypos + 190 PRINT data "Página" right size fuente
+		@ xpos + 2, ypos + 190 PRINT data "Pï¿½gina" right size fuente
 		@ xpos + 5, ypos + 2   PRINT data "Hora:  "+Time()
 		@ xpos + 5, ypos + 190 PRINT data str(nPag) right size fuente
 		@ xPos + 10, yPos      PRINT LINE TO xPos + 10 , (yPos + 190) PENWIDTH 0.5        

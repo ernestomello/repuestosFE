@@ -859,7 +859,6 @@ cQuery += " where id_cliente = "+str(nCliente)+" "
 cQuery += " and d.id_cfe = c.tipoCFE"
 cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
 cQuery += " and c.forma_pago = 2"
-//cQuery += " and c.id_factura not in (select id_factura_ref from cfe_referencias_det) "
 
 cQuery += " union all "
 cQuery += " select c.id_factura, c.fecha,d.descripcion,c.importe, c.tipoCFE, c.saldo,c.serieCFE, c.numeroCFE "
@@ -871,32 +870,6 @@ cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"
 cQuery += " and c.forma_pago = 1"
 cQuery += " and c.id_factura not in (select id_factura_ref from cfe_referencias_det) "
 
-
-/* cQuery += " select id_recibo, fecha,d.descripcion,0,importe, 0 "
-cQuery += " select id_recibo, fecha,d.descripcion,0,importe, 0 "
-cQuery += " from recibo_cliente_cab c, documento d"
-
-cQuery += " where id_cliente = "+str(nCliente)+" "
-cQuery += " and d.id_documento = c.tipo_documento"
-cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
-cQuery += " and tipo_documento = 'R' "
-cQuery += " and anulado = 'N'  "
-cQuery += " union all "
-cQuery += " select id_recibo, fecha,d.descripcion,0,importe, 0 "
-cQuery += " from recibo_cliente_cab c, documento d "
-cQuery += " where id_cliente = "+str(nCliente)+" "
-cQuery += " and d.id_documento = c.tipo_documento"
-cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
-cQuery += " and tipo_documento = 'N' "
-cQuery += " and anulado = 'N'  "
-cQuery += " union all "
-cQuery += " select numero_factura, fecha,d.descripcion,0,importe, 0 "
-cQuery += " from factura_cliente_cab c, documento d "
-cQuery += " where id_cliente = "+str(nCliente)+" "
-cQuery += " and d.id_documento = c.tipo_documento"
-cQuery += " and fecha between '"+dtos(dFechaDesde)+"' and '"+dtos(dFechaHasta)+"' "
-cQuery += " and tipo_documento = 'D' "
-cQuery += " and anulado = 'N'  "*/
 cQuery += " order by 2,1  "
 
 oQuery:= oServer:Query(cQuery)
@@ -905,7 +878,26 @@ If oQuery:NetErr()
 endif
 return oQuery
 
+function documentosClienteSaldo(nCliente,dFechaDesde,dFechaHasta)
+local cQuery, oQuery
 
+cQuery := " select c.id_factura, c.fecha,d.descripcion,c.importe, c.tipoCFE, c.saldo ,c.serieCFE, c.numeroCFE "
+cQuery += " from cfe_comprobante_cab c, cfe_tipos d "
+cQuery += " where id_cliente = "+str(nCliente)+" "
+cQuery += " and d.id_cfe = c.tipoCFE"
+cQuery += " and fecha < '"+dtos(dFechaDesde)+"' "
+cQuery += " and c.forma_pago = 2"
+cQuery += " and c.saldo >  0 "
+cQuery += " and c.tipoCFE in (101,111) "
+
+
+cQuery += " order by 2,1  "
+
+oQuery:= oServer:Query(cQuery)
+If oQuery:NetErr() 
+  MsGInfo("Error executing Query "+cQuery+": "+oQuery:Error() )
+endif
+return oQuery
 
 
 function fechaUltimoMovimientoCliente(nCliente)

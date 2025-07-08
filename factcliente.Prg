@@ -11,15 +11,15 @@ if !IsWindowActive(factCliente)
 	
 	do case
 		case len(aNumero) = 1
-		rellenoFacturaCliente(aNumero[1])
+			rellenoFacturaCliente(aNumero[1],cTipoDocumento)
 		case len(aNumero) > 1
-		for i = 1 to len(aNumero)
-			cFacturas += str(aNumero[i])
-			if i != len(aNumero)
-				cFacturas += ","
-			endIf
-		next
-		rellenoFacturasVarias(cFacturas)
+			for i = 1 to len(aNumero)
+				cFacturas += str(aNumero[i])
+				if i != len(aNumero)
+					cFacturas += ","
+				endIf
+			next
+			rellenoFacturasVarias(cFacturas)
 	end case 
 	factCliente.label_14.fontcolor := {0,128,0}
 	factCliente.label_1.fontcolor := {0,128,0}
@@ -494,10 +494,10 @@ else
 endif
 return
 
-procedure rellenoFacturaCliente(nFactura)
+procedure rellenoFacturaCliente(nFactura,cTipoDocumento)
 	local oCabezal := facturaClienteCabezal(nFactura)
 	local oDetalle := facturaClienteDetalle(nFactura)
-	local nTotalFactura := 0
+	local nTotalFactura := 0, nDto :=0 ,nTotLinea := 0
 
 	factCliente.text_1.value := oCabezal:getrow(1):fieldget(3)
 	factCliente.datePicker_1.value := date() //oCabezal:getrow(1):fieldget(2)
@@ -505,21 +505,26 @@ procedure rellenoFacturaCliente(nFactura)
 	factCliente.text_13.value := descripcionFacturaCliente(nFactura)
 
 	for i= 1 to oDetalle:lastRec()
+		nDto := oDetalle:getrow(i):fieldGet(9)
+		if cTipoDocumento = 111
+			nDto := cPorcentajeNC
+			nTotLinea := oDetalle:getrow(i):fieldGet(10) - (oDetalle:getrow(i):fieldGet(10) * nDto /100)
+		endIf
 		factCliente.grid_1.addItem({oDetalle:getrow(i):fieldGet(3), ;
 							oDetalle:getrow(i):fieldGet(12), ; 
 							oDetalle:getrow(i):fieldGet(5), ; 
 							oDetalle:getrow(i):fieldGet(6), ; 
 							oDetalle:getrow(i):fieldGet(7), ;
 							oDetalle:getrow(i):fieldGet(8), ; 
-							oDetalle:getrow(i):fieldGet(9), ; 
-							oDetalle:getrow(i):fieldGet(10),;
+							nDto, ; 
+							nTotLinea,;
 							oDetalle:getrow(i):fieldget(11)})
 		
 		//nTotalFactura += oDetalle:getrow(i):fieldGet(10)														
-		nTotalFactura += round(oDetalle:getrow(i):fieldGet(10) * (1 + oDetalle:getrow(i):fieldGet(8)/100),0)
+		nTotalFactura += round(nTotLinea * (1 + oDetalle:getrow(i):fieldGet(8)/100),0)
 	next
 	factCliente.text_5.value := nTotalFactura
-	factCliente.frame_5.caption := "Total de "+alltrim(str(i))+" lineas"
+	factCliente.frame_5.caption := "Total de "+alltrim(str(i - 1))+" lineas"
 return
 
 function rellenoFacturasVarias(aFacturas)
@@ -547,7 +552,7 @@ for i= 1 to oDetalle:lastRec()
 	//nTotalFactura += oDetalle:getrow(i):fieldGet(10)														
 	nTotalFactura += round(oDetalle:getrow(i):fieldGet(10) * (1 + oDetalle:getrow(i):fieldGet(8)/100),0)
 next
-factCliente.frame_5.caption := "Total de "+alltrim(str(i))+" lineas"
+factCliente.frame_5.caption := "Total de "+alltrim(str(i - 1))+" lineas"
 factCliente.text_5.value := nTotalFactura
 
 function facturaClienteConDetalle()
