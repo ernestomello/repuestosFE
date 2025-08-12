@@ -45,7 +45,7 @@ return .t.
 
 procedure imprimoEstadoCuenta(nCliente,oDocumentos,nSaldoAnterior,dFechaDesde,nSaldoActual,dFechaHasta, nPrevio,cTituloPrincipal)
 local cCliente := nombreCliente(nCliente)
-local c
+local c,nTotDocumentoSaldo := 0
 local aGrid:= {}
 local nSaldoAnteriorFijo := nSaldoAnterior
 local i := 0
@@ -79,6 +79,7 @@ for i = 1 to oDocumentos:lastrec()
 								nSaldoAnterior })
 								// oDocumentos:getrow(i):fieldget(4), ;
 								// oDocumentos:getrow(i):fieldget(5), ;
+	nTotDocumentoSaldo += oDocumentos:getrow(i):fieldget(6)
 next
 
 nLargoArray := len(aGrid)
@@ -118,9 +119,11 @@ nInicioLinea := 58
 @ xpos + nInicioLinea , ypos + 2   PRINT data "Nro.Doc" size fuente
 @ xpos + nInicioLinea , ypos + 20  PRINT data "Fecha" size fuente
 @ xpos + nInicioLinea , ypos + 47  PRINT data "Tipo Documento " size fuente
-@ xpos + nInicioLinea , ypos + 150 PRINT data "Debe "  right size fuente
-@ xpos + nInicioLinea , ypos + 170 PRINT data "Haber " right size fuente
-@ xpos + nInicioLinea , ypos + 190 PRINT data "Saldo " right size fuente
+if cTituloPrincipal = "ESTADO CUENTA"
+	@ xpos + nInicioLinea , ypos + 150 PRINT data "Debe "  right size fuente
+	@ xpos + nInicioLinea , ypos + 170 PRINT data "Haber " right size fuente
+	@ xpos + nInicioLinea , ypos + 190 PRINT data "Saldo " right size fuente
+endif
 
 nInicioLinea := 65
 for i= nLargoArray to 1 step -1
@@ -139,9 +142,11 @@ for i= nLargoArray to 1 step -1
 		@ xpos + nInicioLinea , ypos + 2   PRINT data "Nro.Doc" size fuente
 		@ xpos + nInicioLinea , ypos + 20  PRINT data "Fecha" size fuente
 		@ xpos + nInicioLinea , ypos + 47  PRINT data "Tipo Documento " size fuente
-		@ xpos + nInicioLinea , ypos + 150 PRINT data "Debe "  right size fuente
-		@ xpos + nInicioLinea , ypos + 170 PRINT data "Haber " right size fuente
-		@ xpos + nInicioLinea , ypos + 190 PRINT data "Saldo " right size fuente     
+		if cTituloPrincipal = "ESTADO CUENTA"
+			@ xpos + nInicioLinea , ypos + 150 PRINT data "Debe "  right size fuente
+			@ xpos + nInicioLinea , ypos + 170 PRINT data "Haber " right size fuente
+			@ xpos + nInicioLinea , ypos + 190 PRINT data "Saldo " right size fuente     
+		endif
 		l := 7
 	endIf
 	@ xpos + nInicioLinea + l , ypos + 2   PRINT data aGrid[i,1] size fuente
@@ -157,8 +162,10 @@ for i= nLargoArray to 1 step -1
 next
 nInicioLinea := nInicioLinea + 5
 if cTituloPrincipal = "ESTADO CUENTA"
-@ xpos + nInicioLinea + l , ypos + 2   PRINT data "Saldo al : "+dtoc(dFechaDesde)+" $ "+;
+	@ xpos + nInicioLinea + l , ypos + 2   PRINT data "Saldo al : "+dtoc(dFechaDesde)+" $ "+;
 	 str(nSaldoAnteriorFijo) size fuente BOLD
+else
+	@ xpos + nInicioLinea + l , ypos + 2   PRINT data "Total Documentos con Saldo :$ "+str(nTotDocumentoSaldo)  size fuente BOLD
 endif
 
 END PRINTPAGE

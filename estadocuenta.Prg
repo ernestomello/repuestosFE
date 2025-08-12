@@ -18,17 +18,24 @@ return
 procedure facturodocumentoCtaCte(cTipo)
 	local aImporte := {}
 	local aFactura := {}
+	local cConCabezal := 0
+	local id_factura := estadoCuenta.grid_1.cell(estadocuenta.grid_1.value,1)
 
 	if estadoCuenta.grid_1.cell(estadocuenta.grid_1.value,4) = 0
 		msgInfo("Solo documentos de Contado o Crédito")
 		return 
 	endIf	
-	aadd(aFactura,estadoCuenta.grid_1.cell(estadocuenta.grid_1.value,1))
-	aadd(aImporte,estadoCuenta.grid_1.cell(estadocuenta.grid_1.value,4))
-	
+
+	if facturaSinTocar(id_factura) = 0
+		aadd(aFactura,id_factura)
+		aadd(aImporte,estadoCuenta.grid_1.cell(estadocuenta.grid_1.value,4))
+	else
+		msgInfo("Documento tiene otros asociados")
+		return
+	endIf
 
 	//if msgYesNo("","ATENCION",.t.)
-		factCliente(111 ,aFactura, cTipo)
+		factCliente(101 ,aFactura, cTipo,cConCabezal)
 		// if msgYesNo("Marca como Cancelado el Presupuesto","ATENCION",.T.)
 		// 	for i = 1 to len(aFactura)
 		// 		modificoSaldoFacturaCliente(aFactura[i],aImporte[i])

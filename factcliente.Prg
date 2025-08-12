@@ -1,17 +1,19 @@
 #include <hmg.ch>
 
-procedure factCliente(cTipoDocumento,aNumero,nFormaPago)
+procedure factCliente(cTipoDocumento,aNumero,nFormaPago,cConCabezal)
 local cFacturas :=""
+
+
 if !cajaAbierta()
 	msgInfo("Caja Cerrada !!!")
 	return
 endIf
 if !IsWindowActive(factCliente)
 	Load Window factCliente
-	
+	factCliente.text_21.value :=nFormaPago
 	do case
 		case len(aNumero) = 1
-			rellenoFacturaCliente(aNumero[1],cTipoDocumento)
+			rellenoFacturaCliente(aNumero[1],cTipoDocumento,cConCabezal)
 		case len(aNumero) > 1
 			for i = 1 to len(aNumero)
 				cFacturas += str(aNumero[i])
@@ -29,7 +31,7 @@ if !IsWindowActive(factCliente)
 	factCliente.label_14.value := alltrim(descripcionDocumento(cTipoDocumento))
 	factCliente.label_1.value := iif (nFormaPago = 1, "Contado","Credito")
 	factCliente.text_15.value := cajaId()
-	factCliente.text_21.value :=nFormaPago
+	
 	factCliente.text_11.value := iif(factCliente.text_21.value = 1 ,nDtoContado, 0)
 	iif(nFormaPago = 1,factCliente.text_17.visible := .f.,)
 	iif(nFormaPago = 1,factCliente.frame_2.visible := .f.,)	
@@ -494,19 +496,21 @@ else
 endif
 return
 
-procedure rellenoFacturaCliente(nFactura,cTipoDocumento)
+procedure rellenoFacturaCliente(nFactura,cTipoDocumento,cConCabezal)
 	local oCabezal := facturaClienteCabezal(nFactura)
 	local oDetalle := facturaClienteDetalle(nFactura)
 	local nTotalFactura := 0, nDto :=0 ,nTotLinea := 0
 
-	factCliente.text_1.value := oCabezal:getrow(1):fieldget(3)
 	factCliente.datePicker_1.value := date() //oCabezal:getrow(1):fieldget(2)
-	rellenoDatosfactCliente(factCliente.text_1.value)
-	factCliente.text_13.value := descripcionFacturaCliente(nFactura)
+	if cConCabezal = 1
+		factCliente.text_1.value := oCabezal:getrow(1):fieldget(3)	
+		rellenoDatosfactCliente(factCliente.text_1.value)
+		factCliente.text_13.value := descripcionFacturaCliente(nFactura)
+	endIf
 
 	for i= 1 to oDetalle:lastRec()
 		nDto := oDetalle:getrow(i):fieldGet(9)
-		if cTipoDocumento = 111
+		if factCliente.text_21.value = 1
 			nDto := cPorcentajeNC
 			nTotLinea := oDetalle:getrow(i):fieldGet(10) - (oDetalle:getrow(i):fieldGet(10) * nDto /100)
 		endIf
@@ -812,6 +816,18 @@ else
   return oQuery:getRow(1):fieldGet(1)
 endIf
 
+function facturaSinTocar(nFactura)
+local cQuery, oQuery
+
+cQuery := " select (importe - saldo) from cfe_comprobante_cab "
+cQuery += "where id_factura = "+str(nFactura)+"  "
+
+oQuery := oServer:Query(cQuery)
+If oQuery:NetErr()												
+  MsgInfo("SQL SELECT error: " + oQuery:Error())
+else
+  return oQuery:getRow(1):fieldGet(1)
+endIf
 
 function fechaUltimaFacturaCliente(nCliente)
 local cQuery, oQuery

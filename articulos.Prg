@@ -122,21 +122,24 @@ articulo.combo_3.value := 0
 
 procedure buscarArticulo()
 	local nArticulo := articulo.text_1.value
-	if articulo.nuevo.value != 'S'
+	if articulo.nuevo.value = 'S'
 		return .f.
 	endIf	
 	if existeCodigoBarras(nArticulo)
 	    rellenoDatosArticulo(nArticulo,"codigo_barra")
 	    cArticuloGlobal := ""
 		articulo.nuevo.value := 'N'
-	elseif existeArticulo(nArticulo)
-		rellenoDatosArticulo(nArticulo,"id_articulo")
-		articulo.nuevo.value := 'N'
+	// elseif existeArticulo(nArticulo)
+	// 	rellenoDatosArticulo(nArticulo,"id_articulo")
+	// 	articulo.nuevo.value := 'N'
 	else 
 		if msgYesNo("El articulo no Existe, Continua Ingresando? ")
-			borraArticulo()
+				if !msgYesNo("Deja el detalle del articulo anterior?")
+					borraArticulo()
+				endIf
 			articulo.nuevo.value := 'S'
 			articulo.text_1.value := nArticulo
+			articulo.text_13.value := ""
 			articulo.text_2.setfocus
 			return .t.
 		else
@@ -203,7 +206,7 @@ if len(alltrim(articulo.text_13.value)) != 0
 			if modificoArticuloCompra(articulo.text_13.value,articulo.text_11.value, articulo.text_12.value)
 				msgInfo("Articulo Modificado")
 				borraArticulo()	
-				articulo.nuevo.value := 'S'
+				articulo.nuevo.value := 'N'
 			else
 				msgInfo("No se pudieron guardar los cambios.CONSULTE")
 			endif
@@ -238,7 +241,7 @@ else
 			if altaArticuloCompra(articulo.text_1.value,articulo.text_11.value, articulo.text_12.value)
 				msgInfo("Articulo Dado de Alta")
 				borraArticulo()	
-				articulo.nuevo.value := 'S'
+				articulo.nuevo.value := 'N'
 			else
 				msgInfo("No se pudieron guardar los cambios.CONSULTE")
 			endif

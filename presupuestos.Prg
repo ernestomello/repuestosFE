@@ -151,6 +151,7 @@ return
 procedure facturodocumento(xFactura,cTipo)
 	local aImporte := {}
 	local aFactura := {}
+	local cConCabezal := 1
 
 	for i = 1 to len(xFactura)
 		aadd(aFactura,presupuestos.grid_1.cell(xFactura[i],1))
@@ -158,7 +159,7 @@ procedure facturodocumento(xFactura,cTipo)
 	next
 
 	if msgYesNo("Quiere Facturar el Presupuesto","ATENCION",.t.)
-		factCliente(101 ,aFactura, ctipo)
+		factCliente(101 ,aFactura, ctipo,cConCabezal)
 		if msgYesNo("Marca como Cancelado el Presupuesto","ATENCION",.T.)
 			for i = 1 to len(aFactura)
 				modificoSaldoFacturaCliente(aFactura[i],aImporte[i])
