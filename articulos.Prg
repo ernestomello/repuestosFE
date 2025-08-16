@@ -125,6 +125,7 @@ procedure buscarArticulo()
 	if articulo.nuevo.value = 'S'
 		return .f.
 	endIf	
+	
 	if existeCodigoBarras(nArticulo)
 	    rellenoDatosArticulo(nArticulo,"codigo_barra")
 	    cArticuloGlobal := ""
@@ -133,7 +134,7 @@ procedure buscarArticulo()
 	// 	rellenoDatosArticulo(nArticulo,"id_articulo")
 	// 	articulo.nuevo.value := 'N'
 	else 
-		if msgYesNo("El articulo no Existe, Continua Ingresando? ")
+		if len(alltrim(nArticulo)) != 0 .and. msgYesNo("El articulo no Existe, Continua Ingresando? ")
 				if !msgYesNo("Deja el detalle del articulo anterior?")
 					borraArticulo()
 				endIf

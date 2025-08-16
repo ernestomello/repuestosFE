@@ -34,14 +34,11 @@ procedure facturodocumentoCtaCte(cTipo)
 		return
 	endIf
 
-	//if msgYesNo("","ATENCION",.t.)
-		factCliente(101 ,aFactura, cTipo,cConCabezal)
-		// if msgYesNo("Marca como Cancelado el Presupuesto","ATENCION",.T.)
-		// 	for i = 1 to len(aFactura)
-		// 		modificoSaldoFacturaCliente(aFactura[i],aImporte[i])
-		// 	next
-		// endIf
-	//endIf
+	factCliente(101 ,aFactura, cTipo,cConCabezal)
+	// Ver como hacer la NC una vez que se haya hecho el documento contado
+	// if msgYesNo("Genera NC del documento","ATENCION",.T.)
+
+	// endIf
 return 
 
 function verFacturaEstado()
