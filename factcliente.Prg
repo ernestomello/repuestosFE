@@ -1,6 +1,6 @@
 #include <hmg.ch>
 
-procedure factCliente(cTipoDocumento,aNumero,nFormaPago,cConCabezal)
+procedure factCliente(cTipoDocumento,aNumero,nFormaPago,cConCabezal,cFormaPagoOrigen)
 local cFacturas :=""
 
 
@@ -13,7 +13,7 @@ if !IsWindowActive(factCliente)
 	factCliente.text_21.value :=nFormaPago
 	do case
 		case len(aNumero) = 1
-			rellenoFacturaCliente(aNumero[1],cTipoDocumento,cConCabezal)
+			rellenoFacturaCliente(aNumero[1],cTipoDocumento,cConCabezal,cFormaPagoOrigen)
 		case len(aNumero) > 1
 			for i = 1 to len(aNumero)
 				cFacturas += str(aNumero[i])
@@ -496,7 +496,7 @@ else
 endif
 return
 
-procedure rellenoFacturaCliente(nFactura,cTipoDocumento,cConCabezal)
+procedure rellenoFacturaCliente(nFactura,cTipoDocumento,cConCabezal,cFormaPagoOrigen)
 	local oCabezal := facturaClienteCabezal(nFactura)
 	local oDetalle := facturaClienteDetalle(nFactura)
 	local nTotalFactura := 0, nDto :=0 ,nTotLinea := 0
@@ -509,11 +509,13 @@ procedure rellenoFacturaCliente(nFactura,cTipoDocumento,cConCabezal)
 	endIf
 
 	for i= 1 to oDetalle:lastRec()
-		nDto := oDetalle:getrow(i):fieldGet(9)
-		if factCliente.text_21.value = 1
+		nDto := 0 //oDetalle:getrow(i):fieldGet(9)
+
+		if factCliente.text_21.value = 1 
 			nDto := cPorcentajeNC
-			nTotLinea := oDetalle:getrow(i):fieldGet(10) - (oDetalle:getrow(i):fieldGet(10) * nDto /100)
 		endIf
+		nTotLinea := oDetalle:getrow(i):fieldGet(10) - (oDetalle:getrow(i):fieldGet(10) * nDto /100)
+		
 		factCliente.grid_1.addItem({oDetalle:getrow(i):fieldGet(3), ;
 							oDetalle:getrow(i):fieldGet(12), ; 
 							oDetalle:getrow(i):fieldGet(5), ; 

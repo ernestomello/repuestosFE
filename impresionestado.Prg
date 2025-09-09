@@ -44,7 +44,7 @@ endif
 return .t.
 
 procedure imprimoEstadoCuenta(nCliente,oDocumentos,nSaldoAnterior,dFechaDesde,nSaldoActual,dFechaHasta, nPrevio,cTituloPrincipal)
-local cCliente := nombreCliente(nCliente)
+local aCliente := datoCliente(nCliente)
 local c,nTotDocumentoSaldo := 0
 local aGrid:= {}
 local nSaldoAnteriorFijo := nSaldoAnterior
@@ -107,9 +107,14 @@ START PRINTPAGE
 
 @ xPos + 15 , yPos + 50 PRINT RECTANGLE TO (xPos + 24) , (yPos + 140) PENWIDTH 0.7 
 @ xpos + 16 , ypos + 60 PRINT data cTituloPrincipal SIZE 18 bold 
-@ xpos + 28 , ypos + 60 PRINT data " Cliente: "+alltrim(str(ncliente))+' - '+alltrim(nombreCliente(nCliente)) SIZE fuente
-@ xpos + 33 , ypos + 60 PRINT data " Direcc.: "+alltrim(dirParticularCliente(nCliente))+" Tel :"+alltrim(telefonoCliente(nCliente)) SIZE fuente
-@ xpos + 38 , ypos + 60 PRINT data " R.U.T  : "+alltrim(rutCliente(nCliente)) SIZE fuente
+@ xpos + 28 , ypos + 30 PRINT data " Cliente: "+alltrim(str(ncliente))+' - '+alltrim(nombreCliente(nCliente)) SIZE fuente
+@ xpos + 33 , ypos + 30 PRINT data " Direcc.: "+alltrim(dirParticularCliente(nCliente))+" Tel :"+alltrim(telefonoCliente(nCliente)) SIZE fuente
+
+if hb_atokens(aCliente,"|")[1] == "2"
+	@ xpos + 38 , ypos + 30 PRINT data " R.U.T  : "+alltrim(rutCliente(nCliente))+" ("+alltrim(razonSocialCliente(nCliente))+")" SIZE fuente
+else
+	@ xpos + 38 , ypos + 30 PRINT data " C.I    : "+alltrim(rutCliente(nCliente)) SIZE fuente
+endif
 
 if cTituloPrincipal = "ESTADO CUENTA"
 @ xpos + 48 , ypos + 2   PRINT data "Saldo al  : "+dtoc(dFechaHasta);

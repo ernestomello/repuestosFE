@@ -16,18 +16,19 @@ procedure presupuestos(cFormaPago)
 return
 
 function menuContextual(cFormaPago)
+	
+	DEFINE CONTROL CONTEXTMENU grid_1 of presupuestos
+		MENUITEM "Cancelar" ONCLICK cancelarPresupuesto(presupuestos.grid_1.cell(presupuestos.grid_1.value[1],1),presupuestos.grid_1.cell(presupuestos.grid_1.value[1],4))
+		MENUITEM "Ver Documento" ONCLICK muestroDocumentoCliente(presupuestos.grid_1.cell(presupuestos.grid_1.value[1],1))
+		MENUITEM "Contado" ONCLICK facturoDocumento(presupuestos.grid_1.value, 1,cFormaPago)
+		MENUITEM "Credito" ONCLICK facturoDocumento(presupuestos.grid_1.value, 2,cFormaPago)
+	END MENU
 	if cFormaPago == "Contado"
-		DEFINE CONTROL CONTEXTMENU grid_1 of presupuestos
-			MENUITEM "Anular" ONCLICK cancelarPresupuesto(presupuestos.grid_1.cell(presupuestos.grid_1.value[1],1),presupuestos.grid_1.cell(presupuestos.grid_1.value[1],4))
-			MENUITEM "Ver Documento" ONCLICK muestroDocumentoCliente(presupuestos.grid_1.cell(presupuestos.grid_1.value[1],1))
-			// MENUITEM "Cr�dito" ONCLICK facturoDocumento(presupuestos.grid_1.cell(presupuestos.grid_1.value,1),presupuestos.grid_1.cell(presupuestos.grid_1.value,4), 111)
-			MENUITEM "Contado" ONCLICK facturoDocumento(presupuestos.grid_1.value, 1)
-			MENUITEM "Credito" ONCLICK facturoDocumento(presupuestos.grid_1.value, 2)
-		END MENU
+
 		formularioContado()
 
-	else
-		DEFINE CONTROL CONTEXTMENU grid_1 of presupuestos
+	endIf
+	/* 	DEFINE CONTROL CONTEXTMENU grid_1 of presupuestos
 			MENUITEM "Cancelar" ONCLICK cancelarPresupuesto(presupuestos.grid_1.cell(presupuestos.grid_1.value[1],1),presupuestos.grid_1.cell(presupuestos.grid_1.value[1],4))
 			MENUITEM "Ver Documento" ONCLICK muestroDocumentoCliente(presupuestos.grid_1.cell(presupuestos.grid_1.value[1],1))
 			// MENUITEM "Cr�dito" ONCLICK facturoDocumento(presupuestos.grid_1.cell(presupuestos.grid_1.value,1),presupuestos.grid_1.cell(presupuestos.grid_1.value,4), 111)
@@ -35,7 +36,7 @@ function menuContextual(cFormaPago)
 			// MENUITEM "Contado" ONCLICK facturoDocumento(presupuestos.grid_1.cell(presupuestos.grid_1.value,1),presupuestos.grid_1.cell(presupuestos.grid_1.value,4), 101)
 			MENUITEM "Contado" ONCLICK facturoDocumento(presupuestos.grid_1.value, 1)
 		END MENU
-	endIf
+	endIf */
 return
 
 function formularioContado()
@@ -148,7 +149,7 @@ function rellenoGridContado()
 	next
 return 
 
-procedure facturodocumento(xFactura,cTipo)
+procedure facturodocumento(xFactura,nFormaPago,cFormaPagoOrigen)
 	local aImporte := {}
 	local aFactura := {}
 	local cConCabezal := 1
@@ -159,7 +160,7 @@ procedure facturodocumento(xFactura,cTipo)
 	next
 
 	if msgYesNo("Quiere Facturar el Presupuesto","ATENCION",.t.)
-		factCliente(101 ,aFactura, ctipo,cConCabezal)
+		factCliente(101 ,aFactura, nFormaPago,cConCabezal,cFormaPagoOrigen)
 		if msgYesNo("Marca como Cancelado el Presupuesto","ATENCION",.T.)
 			for i = 1 to len(aFactura)
 				modificoSaldoFacturaCliente(aFactura[i],aImporte[i])

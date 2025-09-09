@@ -15,7 +15,7 @@ function estadoCuentaClientes()
 return 
 
 
-procedure facturodocumentoCtaCte(cTipo)
+procedure facturodocumentoCtaCte(nformaPago)
 	local aImporte := {}
 	local aFactura := {}
 	local cConCabezal := 0
@@ -34,7 +34,7 @@ procedure facturodocumentoCtaCte(cTipo)
 		return
 	endIf
 
-	factCliente(101 ,aFactura, cTipo,cConCabezal)
+	factCliente(101 ,aFactura, nformaPago,cConCabezal)
 	// Ver como hacer la NC una vez que se haya hecho el documento contado
 	// if msgYesNo("Genera NC del documento","ATENCION",.T.)
 
@@ -144,7 +144,7 @@ function rellenoGridCliente()
 	for i= nLargoArray to 1 step -1
 		estadoCuenta.grid_1.additem(agrid[i])
 	next
-	//estadoCuenta.grid_1.value := estadoCuenta.nro_linea.value 
+	estadoCuenta.grid_1.value := estadoCuenta.nro_linea.value 
 	WAIT CLEAR
 return 
 
