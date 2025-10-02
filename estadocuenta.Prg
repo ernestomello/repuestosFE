@@ -158,12 +158,12 @@ procedure imprimeEstadoCuentaCliente(nCliente,dFechaDesde,dFechaHasta,nPrevio, n
 	endif
 	if nSaldoActual >= nSaldoMenor
 		oDocumentos := documentosCliente(nCliente,dFechaDesde,dFechaHasta )
-		oDocumentoSaldo := documentosClienteSaldo(nCliente,dFechaDesde,dFechaHasta )
+		//oDocumentoSaldo := documentosClienteSaldo(nCliente,dFechaDesde,dFechaHasta )
 		nSaldoAnterior := saldoEntreFechasCliente(nCliente,ctod("01/01/1980"),dFechaSaldoAnt)
 		imprimoEstadoCuenta(nCliente,oDocumentos,nSaldoAnterior,dFechaSaldoAnt,nSaldoActual,dFechaHasta,nPrevio,"ESTADO CUENTA")
-		if len(oDocumentoSaldo) != 0
-			imprimoEstadoCuenta(nCliente,oDocumentoSaldo,nSaldoAnterior,dFechaSaldoAnt,nSaldoActual,dFechaHasta,nPrevio,"DOCUMENTOS IMPAGOS")
-		endIf
+		// if len(oDocumentoSaldo) != 0
+		// 	imprimoEstadoCuenta(nCliente,oDocumentoSaldo,nSaldoAnterior,dFechaSaldoAnt,nSaldoActual,dFechaHasta,nPrevio,"DOCUMENTOS IMPAGOS")
+		// endIf
 	endif
 return 
 

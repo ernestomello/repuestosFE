@@ -46,133 +46,175 @@ return .t.
 procedure imprimoEstadoCuenta(nCliente,oDocumentos,nSaldoAnterior,dFechaDesde,nSaldoActual,dFechaHasta, nPrevio,cTituloPrincipal)
 local aCliente := datoCliente(nCliente)
 local c,nTotDocumentoSaldo := 0
-local aGrid:= {}
+local aGrid:= {}, bGrid :={}
 local nSaldoAnteriorFijo := nSaldoAnterior
 local i := 0
 local l := 3
 local nInicioLinea := 0
+local oDocumentoSaldo := documentosClienteSaldo(nCliente,dFechaDesde,dFechaHasta )
 
-Ypos      := PARAMETROini("RYpos","N")
-Xpos      := PARAMETROini("RXpos","N")
-fuente    := PARAMETROini("FuenteInforme","N")
-esp       := PARAMETROini("Espacio","N")
+	Ypos      := PARAMETROini("RYpos","N")
+	Xpos      := PARAMETROini("RXpos","N")
+	fuente    := PARAMETROini("FuenteInforme","N")
+	esp       := PARAMETROini("Espacio","N")
 
-for i = 1 to oDocumentos:lastrec()
-	nDebe :=  iif(oDocumentos:getrow(i):fieldget(5) = 101 .or. oDocumentos:getrow(i):fieldget(5) = 111 ,oDocumentos:getrow(i):fieldget(4),0 )
-	nHaber := iif(oDocumentos:getrow(i):fieldget(5) = 102 .or. oDocumentos:getrow(i):fieldget(5) = 112 .or. oDocumentos:getrow(i):fieldget(5) = 98,oDocumentos:getrow(i):fieldget(4),0 )
-	nSaldoAnterior := nSaldoAnterior + nDebe - nHaber
+	for i = 1 to oDocumentos:lastrec()
+		nDebe :=  iif(oDocumentos:getrow(i):fieldget(5) = 101 .or. oDocumentos:getrow(i):fieldget(5) = 111 ,oDocumentos:getrow(i):fieldget(4),0 )
+		nHaber := iif(oDocumentos:getrow(i):fieldget(5) = 102 .or. oDocumentos:getrow(i):fieldget(5) = 112 .or. oDocumentos:getrow(i):fieldget(5) = 98,oDocumentos:getrow(i):fieldget(4),0 )
+		nSaldoAnterior := nSaldoAnterior + nDebe - nHaber
+		
+		// nSaldoAnterior := nSaldoAnterior + oDocumentos:getrow(i):fieldget(4) -oDocumentos:getrow(i):fieldget(5)
+		cDescripcion := alltrim(oDocumentos:getrow(i):fieldget(3))+" "+alltrim(oDocumentos:getrow(i):fieldget(7))+"-"+str(oDocumentos:getrow(i):fieldget(8))
+		
+		if oDocumentos:getrow(i):fieldget(6) != 0
+			cDescripcion :=cDescripcion +" - $ " + alltrim(str(oDocumentos:getrow(i):fieldget(6)))
+		// else
+			// cDescripcion := alltrim(oDocumentos:getrow(i):fieldget(3))
+		endIf
+		
+		aadd(aGrid,{	oDocumentos:getrow(i):fieldget(1), ;
+									dtoc(oDocumentos:getrow(i):fieldget(2)), ; 
+									cDescripcion, ;
+									nDebe, ;
+									nHaber, ;								
+									nSaldoAnterior })
+									// oDocumentos:getrow(i):fieldget(4), ;
+									// oDocumentos:getrow(i):fieldget(5), ;
+		// nTotDocumentoSaldo += oDocumentos:getrow(i):fieldget(6)
+	next
+
+	nLargoArray := len(aGrid)
+	nPag := 1
+
+	do case
+	case nPrevio = 1
+		SELECT PRINTER  DEFAULT  PAPERSIZE PRINTER_PAPER_A4 ORIENTATION PRINTER_ORIENT_PORTRAIT 
+	case nPrevio = 2
+		SELECT PRINTER  dialog  preview  
+	// case nPrevio = 3
+		// SELECT PRINTER  DEFAULT SAVEAS 'C:\estadoCuenta.PDF'
+	endcase
+
+
+	start printdoc
+	START PRINTPAGE
+
+	@ xpos + 2, ypos + 2   PRINT data "Fecha: "+dtoc(Date())+" " size fuente
+	@ xpos + 2, ypos + 80  PRINT data cTituloPrincipal SIZE fuente bold
+	@ xpos + 2, ypos + 190 PRINT data "Pagina" right size fuente
+	@ xpos + 5, ypos + 2   PRINT data "Hora:  "+Time() size fuente
+	@ xpos + 5, ypos + 190 PRINT data str(nPag) right size fuente
+	@ xPos + 10, yPos      PRINT LINE TO xPos + 10 , (yPos + 190) PENWIDTH 0.5                               
+
+	@ xPos + 15 , yPos + 50 PRINT RECTANGLE TO (xPos + 24) , (yPos + 140) PENWIDTH 0.7 
+	@ xpos + 16 , ypos + 60 PRINT data cTituloPrincipal SIZE 18 bold 
+	@ xpos + 28 , ypos + 30 PRINT data " Cliente: "+alltrim(str(ncliente))+' - '+alltrim(nombreCliente(nCliente)) SIZE fuente
+	@ xpos + 33 , ypos + 30 PRINT data " Direcc.: "+alltrim(dirParticularCliente(nCliente))+" Tel :"+alltrim(telefonoCliente(nCliente)) SIZE fuente
+
+	if hb_atokens(aCliente,"|")[1] == "2"
+		@ xpos + 38 , ypos + 30 PRINT data " R.U.T  : "+alltrim(rutCliente(nCliente))+" ("+alltrim(razonSocialCliente(nCliente))+")" SIZE fuente
+	else
+		@ xpos + 38 , ypos + 30 PRINT data " C.I    : "+alltrim(rutCliente(nCliente)) SIZE fuente
+	endif
+
+	@ xpos + 48 , ypos + 2   PRINT data "Saldo al  : "+dtoc(dFechaHasta);
+		+" $ "+str(nSaldoActual) size fuente BOLD
 	
-	// nSaldoAnterior := nSaldoAnterior + oDocumentos:getrow(i):fieldget(4) -oDocumentos:getrow(i):fieldget(5)
-	cDescripcion := alltrim(oDocumentos:getrow(i):fieldget(3))+" "+alltrim(oDocumentos:getrow(i):fieldget(7))+"-"+str(oDocumentos:getrow(i):fieldget(8))
-	
-	if oDocumentos:getrow(i):fieldget(6) != 0
-		cDescripcion :=cDescripcion +" - $ " + alltrim(str(oDocumentos:getrow(i):fieldget(6)))
-	// else
-		// cDescripcion := alltrim(oDocumentos:getrow(i):fieldget(3))
-	endIf
-	
-	aadd(aGrid,{	oDocumentos:getrow(i):fieldget(1), ;
-								dtoc(oDocumentos:getrow(i):fieldget(2)), ; 
-								cDescripcion, ;
-								nDebe, ;
-								nHaber, ;								
-								nSaldoAnterior })
-								// oDocumentos:getrow(i):fieldget(4), ;
-								// oDocumentos:getrow(i):fieldget(5), ;
-	nTotDocumentoSaldo += oDocumentos:getrow(i):fieldget(6)
-next
-
-nLargoArray := len(aGrid)
-nPag := 1
-
-do case
-case nPrevio = 1
-	SELECT PRINTER  DEFAULT  PAPERSIZE PRINTER_PAPER_A4 ORIENTATION PRINTER_ORIENT_PORTRAIT 
-case nPrevio = 2
-	SELECT PRINTER  dialog  preview  
-// case nPrevio = 3
-	// SELECT PRINTER  DEFAULT SAVEAS 'C:\estadoCuenta.PDF'
-endcase
-
-
-start printdoc
-START PRINTPAGE
-
-@ xpos + 2, ypos + 2   PRINT data "Fecha: "+dtoc(Date())+" " size fuente
-@ xpos + 2, ypos + 80  PRINT data cTituloPrincipal SIZE fuente bold
-@ xpos + 2, ypos + 190 PRINT data "Pagina" right size fuente
-@ xpos + 5, ypos + 2   PRINT data "Hora:  "+Time() size fuente
-@ xpos + 5, ypos + 190 PRINT data str(nPag) right size fuente
-@ xPos + 10, yPos      PRINT LINE TO xPos + 10 , (yPos + 190) PENWIDTH 0.5                               
-
-@ xPos + 15 , yPos + 50 PRINT RECTANGLE TO (xPos + 24) , (yPos + 140) PENWIDTH 0.7 
-@ xpos + 16 , ypos + 60 PRINT data cTituloPrincipal SIZE 18 bold 
-@ xpos + 28 , ypos + 30 PRINT data " Cliente: "+alltrim(str(ncliente))+' - '+alltrim(nombreCliente(nCliente)) SIZE fuente
-@ xpos + 33 , ypos + 30 PRINT data " Direcc.: "+alltrim(dirParticularCliente(nCliente))+" Tel :"+alltrim(telefonoCliente(nCliente)) SIZE fuente
-
-if hb_atokens(aCliente,"|")[1] == "2"
-	@ xpos + 38 , ypos + 30 PRINT data " R.U.T  : "+alltrim(rutCliente(nCliente))+" ("+alltrim(razonSocialCliente(nCliente))+")" SIZE fuente
-else
-	@ xpos + 38 , ypos + 30 PRINT data " C.I    : "+alltrim(rutCliente(nCliente)) SIZE fuente
-endif
-
-if cTituloPrincipal = "ESTADO CUENTA"
-@ xpos + 48 , ypos + 2   PRINT data "Saldo al  : "+dtoc(dFechaHasta);
-	+" $ "+str(nSaldoActual) size fuente BOLD
-endif
-nInicioLinea := 58
-@ xpos + nInicioLinea , ypos + 2   PRINT data "Nro.Doc" size fuente
-@ xpos + nInicioLinea , ypos + 20  PRINT data "Fecha" size fuente
-@ xpos + nInicioLinea , ypos + 47  PRINT data "Tipo Documento " size fuente
-if cTituloPrincipal = "ESTADO CUENTA"
+	nInicioLinea := 58
+	@ xpos + nInicioLinea , ypos + 2   PRINT data "Nro.Doc" size fuente
+	@ xpos + nInicioLinea , ypos + 20  PRINT data "Fecha" size fuente
+	@ xpos + nInicioLinea , ypos + 47  PRINT data "Tipo Documento " size fuente
 	@ xpos + nInicioLinea , ypos + 150 PRINT data "Debe "  right size fuente
 	@ xpos + nInicioLinea , ypos + 170 PRINT data "Haber " right size fuente
 	@ xpos + nInicioLinea , ypos + 190 PRINT data "Saldo " right size fuente
-endif
-
-nInicioLinea := 65
-for i= nLargoArray to 1 step -1
 	
-	if xpos + nInicioLinea + l > 250
-		END PRINTPAGE
-		start PRINTPAGE
-		nPag ++
-		@ xpos + 2, ypos + 2   PRINT data "Fecha: "+dtoc(Date())+" " size fuente
-		@ xpos + 2, ypos + 80  PRINT data " Morales Repuestos " SIZE fuente bold
-		@ xpos + 2, ypos + 190 PRINT data "Pagina" right size fuente
-		@ xpos + 5, ypos + 2   PRINT data "Hora:  "+Time() size fuente
-		@ xpos + 5, ypos + 190 PRINT data str(nPag) right size fuente
-		@ xPos + 10, yPos      PRINT LINE TO xPos + 10 , (yPos + 190) PENWIDTH 0.5       
-		nInicioLinea := 15
-		@ xpos + nInicioLinea , ypos + 2   PRINT data "Nro.Doc" size fuente
-		@ xpos + nInicioLinea , ypos + 20  PRINT data "Fecha" size fuente
-		@ xpos + nInicioLinea , ypos + 47  PRINT data "Tipo Documento " size fuente
-		if cTituloPrincipal = "ESTADO CUENTA"
+
+	nInicioLinea := 65
+
+	
+	for i= nLargoArray to 1 step -1
+		
+		if xpos + nInicioLinea + l > 250
+			END PRINTPAGE
+			start PRINTPAGE
+			nPag ++
+			@ xpos + 2, ypos + 2   PRINT data "Fecha: "+dtoc(Date())+" " size fuente
+			@ xpos + 2, ypos + 80  PRINT data " Morales Repuestos " SIZE fuente bold
+			@ xpos + 2, ypos + 190 PRINT data "Pagina" right size fuente
+			@ xpos + 5, ypos + 2   PRINT data "Hora:  "+Time() size fuente
+			@ xpos + 5, ypos + 190 PRINT data str(nPag) right size fuente
+			@ xPos + 10, yPos      PRINT LINE TO xPos + 10 , (yPos + 190) PENWIDTH 0.5       
+			nInicioLinea := 15
+			@ xpos + nInicioLinea , ypos + 2   PRINT data "Nro.Doc" size fuente
+			@ xpos + nInicioLinea , ypos + 20  PRINT data "Fecha" size fuente
+			@ xpos + nInicioLinea , ypos + 47  PRINT data "Tipo Documento " size fuente
 			@ xpos + nInicioLinea , ypos + 150 PRINT data "Debe "  right size fuente
 			@ xpos + nInicioLinea , ypos + 170 PRINT data "Haber " right size fuente
 			@ xpos + nInicioLinea , ypos + 190 PRINT data "Saldo " right size fuente     
-		endif
-		l := 7
-	endIf
-	@ xpos + nInicioLinea + l , ypos + 2   PRINT data aGrid[i,1] size fuente
-	@ xpos + nInicioLinea + l , ypos + 20  PRINT data aGrid[i,2] size fuente
-	@ xpos + nInicioLinea + l , ypos + 47  PRINT data aGrid[i,3] size fuente
-	if cTituloPrincipal = "ESTADO CUENTA"
+			
+			l := 7
+		endIf
+		@ xpos + nInicioLinea + l , ypos + 2   PRINT data aGrid[i,1] size fuente
+		@ xpos + nInicioLinea + l , ypos + 20  PRINT data aGrid[i,2] size fuente
+		@ xpos + nInicioLinea + l , ypos + 47  PRINT data aGrid[i,3] size fuente
 		@ xpos + nInicioLinea + l , ypos + 150 PRINT data iif( aGrid[i,4] != 0, aGrid[i,4],'') right size fuente
 		@ xpos + nInicioLinea + l , ypos + 170 PRINT data iif( aGrid[i,5] != 0, aGrid[i,5],'') right size fuente
 		@ xpos + nInicioLinea + l , ypos + 190 PRINT data  aGrid[i,6]  right size fuente
-	endif
-	l+= esp
 	
-next
-nInicioLinea := nInicioLinea + 5
-if cTituloPrincipal = "ESTADO CUENTA"
+		l+= esp
+		
+	next
+	nInicioLinea := nInicioLinea + 5
+
 	@ xpos + nInicioLinea + l , ypos + 2   PRINT data "Saldo al : "+dtoc(dFechaDesde)+" $ "+;
 	 str(nSaldoAnteriorFijo) size fuente BOLD
-else
-	@ xpos + nInicioLinea + l , ypos + 2   PRINT data "Total Documentos con Saldo :$ "+str(nTotDocumentoSaldo)  size fuente BOLD
-endif
 
+	if len(oDocumentoSaldo) != 0
+		
+
+		for i = 1 to oDocumentoSaldo:lastrec()
+			cDescripcion := alltrim(oDocumentoSaldo:getrow(i):fieldget(3))+" "+alltrim(oDocumentoSaldo:getrow(i):fieldget(7))+"-"+str(oDocumentoSaldo:getrow(i):fieldget(8))
+			
+			if oDocumentoSaldo:getrow(i):fieldget(6) != 0
+				cDescripcion :=cDescripcion +" - $ " + alltrim(str(oDocumentoSaldo:getrow(i):fieldget(6)))
+			endIf
+			aadd(bGrid,{oDocumentoSaldo:getrow(i):fieldget(1), ;
+						dtoc(oDocumentoSaldo:getrow(i):fieldget(2)), ; 
+						cDescripcion })
+			nTotDocumentoSaldo += oDocumentoSaldo:getrow(i):fieldget(6)
+		next
+		nInicioLinea := nInicioLinea + 8
+		@ xpos + nInicioLinea , ypos + 2   PRINT data "Nro.Doc" size fuente
+		@ xpos + nInicioLinea , ypos + 20  PRINT data "Fecha" size fuente
+		@ xpos + nInicioLinea , ypos + 47  PRINT data "Tipo Documento " size fuente
+		nLargoArray := len(bGrid)
+		for i= nLargoArray to 1 step -1	
+			if xpos + nInicioLinea + l > 250
+				END PRINTPAGE
+				start PRINTPAGE
+				nPag ++
+				@ xpos + 2, ypos + 2   PRINT data "Fecha: "+dtoc(Date())+" " size fuente
+				@ xpos + 2, ypos + 80  PRINT data " Morales Repuestos " SIZE fuente bold
+				@ xpos + 2, ypos + 190 PRINT data "Pagina" right size fuente
+				@ xpos + 5, ypos + 2   PRINT data "Hora:  "+Time() size fuente
+				@ xpos + 5, ypos + 190 PRINT data str(nPag) right size fuente
+				@ xPos + 10, yPos      PRINT LINE TO xPos + 10 , (yPos + 190) PENWIDTH 0.5       
+				nInicioLinea := 15
+				@ xpos + nInicioLinea , ypos + 2   PRINT data "Nro.Doc" size fuente
+				@ xpos + nInicioLinea , ypos + 20  PRINT data "Fecha" size fuente
+				@ xpos + nInicioLinea , ypos + 47  PRINT data "Tipo Documento " size fuente
+				l := 7
+			endIf
+			@ xpos + nInicioLinea + l , ypos + 2   PRINT data bGrid[i,1] size fuente
+			@ xpos + nInicioLinea + l , ypos + 20  PRINT data bGrid[i,2] size fuente
+			@ xpos + nInicioLinea + l , ypos + 47  PRINT data bGrid[i,3] size fuente
+			l+= esp
+			
+		next
+		nInicioLinea := nInicioLinea + 5
+		@ xpos + nInicioLinea + l , ypos + 2   PRINT data "Total Documentos con Saldo :$ "+str(nTotDocumentoSaldo)  size fuente BOLD
+		
+	endif
 END PRINTPAGE
 END PRINTDOC
 
