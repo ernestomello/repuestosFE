@@ -786,13 +786,14 @@ else
 	return .t.
 endif
 
-function modificoSaldoNDCliente(nFactura,nImporte)
+function modificoSaldoNDCliente(nFactura,nFacReferencia)
 local cQuery, oQuery
 
 cQuery := " update cfe_comprobante_cab f,cfe_referencias_det r "
 cQuery += " set f.saldo = f.saldo - r.importe_aplicado"
 cQuery += " where r.id_factura_ref = f.id_factura "
 cQuery += " and r.id_factura_ref = "+str(nFactura)+" "
+cQuery += " and r.id_factura = "+str(nFacReferencia)+" "
 // cQuery := " update cfe_comprobante_cab set saldo = saldo - "+str(nImporte)+" "
 // cQuery += " where id_factura = (select id_factura_ref from cfe_referencias_det where id_factura = "+str(nFactura)+" ) "
 

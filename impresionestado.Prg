@@ -187,6 +187,7 @@ local oDocumentoSaldo := documentosClienteSaldo(nCliente,dFechaDesde,dFechaHasta
 		@ xpos + nInicioLinea , ypos + 2   PRINT data "Nro.Doc" size fuente
 		@ xpos + nInicioLinea , ypos + 20  PRINT data "Fecha" size fuente
 		@ xpos + nInicioLinea , ypos + 47  PRINT data "Tipo Documento " size fuente
+		l += esp
 		nLargoArray := len(bGrid)
 		for i= nLargoArray to 1 step -1	
 			if xpos + nInicioLinea + l > 250

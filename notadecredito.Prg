@@ -203,7 +203,7 @@ endIf
 // else
 	do case
 	case  nTipoDoc = 101 .or. nTipoDoc = 111
-		if !modificoSaldoNDCliente(notaCredito.text_6.value)
+		if !modificoSaldoNDCliente(notaCredito.text_6.value,nNumero)
 			noTran()
 			WAIT CLEAR
 			msgInfo("No se pudo Modificar la Factura. Reintente!!!")
@@ -220,7 +220,7 @@ endIf
 			if !graboFactClienteDetalle(nNumero,i,cCodigo,nCantidad,nPrecioUnitario,nIva,nDto,nImporte,cDetDescripcion)
 				noTran()
 				WAIT CLEAR
-				msgInfo("No se pudieron Guardar el detalle de la Nota de Crédito. Reintente!!!")
+				msgInfo("No se pudieron Guardar el detalle de la Nota de Crï¿½dito. Reintente!!!")
 				return .f.
 			endIf
 		next
@@ -251,7 +251,7 @@ finTransaccion()
 info_("Imprimiendo Documento ...")
 if !imprimoMovimiento(nNumero,0,'','','')
 	WAIT CLEAR
-	msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menú")
+	msgInfo("No se pudo imprimir el Documento, Reimprima Desde el Menï¿½")
 	return .f.
 endif
 WAIT CLEAR
