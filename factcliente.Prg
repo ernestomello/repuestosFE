@@ -33,6 +33,7 @@ if !IsWindowActive(factCliente)
 	factCliente.text_15.value := cajaId()
 	
 	factCliente.text_11.value := iif(factCliente.text_21.value = 1 ,nDtoContado, 0)
+	factCliente.text_11.readonly := iif(factCliente.text_21.value = 1 ,.f., .t.)
 	iif(nFormaPago = 1,factCliente.text_17.visible := .f.,)
 	iif(nFormaPago = 1,factCliente.frame_2.visible := .f.,)	
 	factCliente.Center
