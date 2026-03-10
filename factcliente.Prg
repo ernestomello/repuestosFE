@@ -500,7 +500,8 @@ return
 procedure rellenoFacturaCliente(nFactura,cTipoDocumento,cConCabezal,cFormaPagoOrigen)
 	local oCabezal := facturaClienteCabezal(nFactura)
 	local oDetalle := facturaClienteDetalle(nFactura)
-	local nTotalFactura := 0, nDto :=0 ,nTotLinea := 0
+	local nTotalFactura := 0, nDto :=0 ,nTotLinea := 0 , nPrecioUnitario := 0
+	hb_default( @cFormaPagoOrigen, iif(cTipoDocumento = 1, "Contado", "Credito") )
 
 	factCliente.datePicker_1.value := date() //oCabezal:getrow(1):fieldget(2)
 	if cConCabezal = 1
@@ -511,16 +512,31 @@ procedure rellenoFacturaCliente(nFactura,cTipoDocumento,cConCabezal,cFormaPagoOr
 
 	for i= 1 to oDetalle:lastRec()
 		nDto := 0 //oDetalle:getrow(i):fieldGet(9)
-
-		if factCliente.text_21.value = 1 
-			nDto := cPorcentajeNC
-		endIf
-		nTotLinea := oDetalle:getrow(i):fieldGet(10) - (oDetalle:getrow(i):fieldGet(10) * nDto /100)
+		
+		do case
+			case factCliente.text_21.value = 1 .and. cFormaPagoOrigen == "Contado"
+				nDto := 0
+				nTotLinea := oDetalle:getrow(i):fieldGet(10) - (oDetalle:getrow(i):fieldGet(10) * nDto /100)
+				nPrecioUnitario := oDetalle:getrow(i):fieldGet(6) - (oDetalle:getrow(i):fieldGet(6) * nDto /100)
+			case factCliente.text_21.value = 1 .and. cFormaPagoOrigen == "Credito"
+				nDto := cPorcentajeNC
+				nTotLinea := oDetalle:getrow(i):fieldGet(10) - (oDetalle:getrow(i):fieldGet(10) * nDto /100)
+				nPrecioUnitario := oDetalle:getrow(i):fieldGet(6) - (oDetalle:getrow(i):fieldGet(6) * nDto /100)
+			case factCliente.text_21.value = 2 .and. cFormaPagoOrigen == "Contado"
+				nDto := cPorcentajeNC
+				nTotLinea := oDetalle:getrow(i):fieldGet(10) + (oDetalle:getrow(i):fieldGet(10) * nDto /100)
+				nPrecioUnitario := oDetalle:getrow(i):fieldGet(6) + (oDetalle:getrow(i):fieldGet(6) * nDto /100)
+				nDto := 0
+			case factCliente.text_21.value = 2 .and. cFormaPagoOrigen == "Credito"
+				nDto := 0	
+				nTotLinea := oDetalle:getrow(i):fieldGet(10) - (oDetalle:getrow(i):fieldGet(10) * nDto /100)
+				nPrecioUnitario := oDetalle:getrow(i):fieldGet(6) - (oDetalle:getrow(i):fieldGet(6) * nDto /100)
+		endcase
 		
 		factCliente.grid_1.addItem({oDetalle:getrow(i):fieldGet(3), ;
 							oDetalle:getrow(i):fieldGet(12), ; 
 							oDetalle:getrow(i):fieldGet(5), ; 
-							oDetalle:getrow(i):fieldGet(6), ; 
+							nPrecioUnitario, ; 
 							oDetalle:getrow(i):fieldGet(7), ;
 							oDetalle:getrow(i):fieldGet(8), ; 
 							nDto, ; 
