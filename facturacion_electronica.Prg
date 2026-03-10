@@ -130,7 +130,7 @@ cxml +="</soapenv:Envelope>"+chr(13)+chr(10)
 
 
 hb_memowrit(cDirInicioAplicacion+"\aalgo.txt",cxml)
-cRespuesta := fHttpExecute(cSOAPSW,'SOAPAction:"http://tempuri.org/ISICFEEmisor/EnvioCFE"',cxml,.f.)
+cRespuesta := fHttpExecute(cSOAPSW,'SOAPAction:"http://tempuri.org/ISICFEEmisor/EnvioCFE"',cxml,.F.)
 
 if empty(cRespuesta)
 	return .f.
@@ -1077,7 +1077,10 @@ return .f.
 *********************                                   && EJECUTA EL WS
 FUNCTION fHttpExecute(_url,_soapaction,cxml,_ssl)
 LOCAL _hcurl, curlErr
-LOCAL aHeader, cc1:=""
+LOCAL aHeader, cc1:="", lHttps
+LOCAL cLogFile, cLog, cNow
+LOCAL cUrlExec, cUrlRetry
+LOCAL nSslTry
 
 aHeader := {}
 
@@ -1092,31 +1095,148 @@ AADD(aHeader,"Pragma: no-cache")
 
 _hcurl := curl_easy_init()
 
-IF LOWER(RIGHT(_url,5)) == "https"
-   _ssl = .T.
-ENDIF
+lHttps := ( LOWER( Left( _url, 8 ) ) == "https://" )
+cUrlExec := _url
+if at("?wsdl",lower(alltrim(cUrlExec))) > 0
+	cUrlExec := strtran(cUrlExec,"?wsdl","")
+	cUrlExec := strtran(cUrlExec,"?WSDL","")
+endif
+cLogFile := cDirInicioAplicacion + "\curl_ssl_debug.log"
+cNow := dtos(date()) + " " + time()
+
+cLog := "===================================================="+chr(13)+chr(10)
+cLog += "Fecha/Hora: "+cNow+chr(13)+chr(10)
+cLog += "URL (config): "+_url+chr(13)+chr(10)
+cLog += "URL (ejecucion): "+cUrlExec+chr(13)+chr(10)
+cLog += "HTTPS: "+iif(lHttps,"SI","NO")+chr(13)+chr(10)
+cLog += "Verificar Certificado (_ssl): "+iif(_ssl,"SI","NO")+chr(13)+chr(10)
+cLog += "SOAPAction: "+_soapaction+chr(13)+chr(10)
+if file(cLogFile)
+	hb_memoWrit(cLogFile, hb_memoRead(cLogFile) + cLog)
+else
+	hb_memoWrit(cLogFile, cLog)
+endif
 
 IF !EMPTY(_hcurl)
 	curl_easy_setopt(_hcurl, HB_CURLOPT_HTTPHEADER,aHeader)
-	curl_easy_setopt(_hcurl, HB_CURLOPT_URL, _url)
+	curl_easy_setopt(_hcurl, HB_CURLOPT_URL, cUrlExec)
 	curl_easy_setopt(_hcurl, HB_CURLOPT_DOWNLOAD )
 	curl_easy_setopt(_hcurl, HB_CURLOPT_DL_BUFF_SETUP )
 	curl_easy_setopt(_hcurl, HB_CURLOPT_POST, 1)
 	curl_easy_setopt(_hcurl, HB_CURLOPT_POSTFIELDS, cxml)
 	curl_easy_setopt(_hcurl, HB_CURLOPT_CONNECTTIMEOUT, 8)
 	curl_easy_setopt(_hcurl, HB_CURLOPT_TIMEOUT,       40)
+	curl_easy_setopt(_hcurl, HB_CURLOPT_VERBOSE, 1)
+	if lHttps
+		curl_easy_setopt(_hcurl, HB_CURLOPT_SSLVERSION, HB_CURL_SSLVERSION_DEFAULT)
+	endif
 	curl_easy_setopt(_hcurl, HB_CURLOPT_SSL_VERIFYPEER, IIF(_ssl,1,0))
-	curl_easy_setopt(_hcurl, HB_CURLOPT_SSL_VERIFYHOST, IIF(_ssl,1,0))
+	curl_easy_setopt(_hcurl, HB_CURLOPT_SSL_VERIFYHOST, IIF(_ssl,2,0))
 
 	curlErr := curl_easy_perform(_hcurl)
 	if empty(curlErr)
 	/* almacena la respuesta en la varaiable cc1 */
 		cc1 := curl_easy_dl_buff_get( _hcurl )
+		cLog := "Resultado: OK"+chr(13)+chr(10)
+		cLog += "Largo Respuesta: "+alltrim(str(len(cc1)))+chr(13)+chr(10)
+		if file(cLogFile)
+			hb_memoWrit(cLogFile, hb_memoRead(cLogFile) + cLog)
+		else
+			hb_memoWrit(cLogFile, cLog)
+		endif
 	else
-		msgInfo( curl_easy_strerror(curlErr))
+		if lHttps .and. curlErr == HB_CURLE_SSL_CONNECT_ERROR
+			nSslTry := 6
+			curl_easy_setopt(_hcurl, HB_CURLOPT_SSLVERSION, nSslTry)
+			curlErr := curl_easy_perform(_hcurl)
+			if empty(curlErr)
+				cc1 := curl_easy_dl_buff_get( _hcurl )
+				cLog := "Resultado Reintento HTTPS TLS1.2: OK"+chr(13)+chr(10)
+				cLog += "Largo Respuesta: "+alltrim(str(len(cc1)))+chr(13)+chr(10)
+				if file(cLogFile)
+					hb_memoWrit(cLogFile, hb_memoRead(cLogFile) + cLog)
+				else
+					hb_memoWrit(cLogFile, cLog)
+				endif
+			else
+				cLog := "Resultado Reintento HTTPS TLS1.2: ERROR"+chr(13)+chr(10)
+				cLog += "cURL error ("+alltrim(str(curlErr))+"): "+curl_easy_strerror(curlErr)+chr(13)+chr(10)
+				if file(cLogFile)
+					hb_memoWrit(cLogFile, hb_memoRead(cLogFile) + cLog)
+				else
+					hb_memoWrit(cLogFile, cLog)
+				endif
+
+				nSslTry := 7
+				curl_easy_setopt(_hcurl, HB_CURLOPT_SSLVERSION, nSslTry)
+				curlErr := curl_easy_perform(_hcurl)
+				if empty(curlErr)
+					cc1 := curl_easy_dl_buff_get( _hcurl )
+					cLog := "Resultado Reintento HTTPS TLS1.3: OK"+chr(13)+chr(10)
+					cLog += "Largo Respuesta: "+alltrim(str(len(cc1)))+chr(13)+chr(10)
+					if file(cLogFile)
+						hb_memoWrit(cLogFile, hb_memoRead(cLogFile) + cLog)
+					else
+						hb_memoWrit(cLogFile, cLog)
+					endif
+				endif
+			endif
+
+			if !empty(curlErr)
+			cUrlRetry := "http://" + substr(cUrlExec,9)
+			cLog := "Resultado: ERROR"+chr(13)+chr(10)
+			cLog += "cURL error ("+alltrim(str(curlErr))+"): "+curl_easy_strerror(curlErr)+chr(13)+chr(10)
+			cLog += "Reintento automatico por HTTP: "+cUrlRetry+chr(13)+chr(10)
+			if file(cLogFile)
+				hb_memoWrit(cLogFile, hb_memoRead(cLogFile) + cLog)
+			else
+				hb_memoWrit(cLogFile, cLog)
+			endif
+
+			curl_easy_setopt(_hcurl, HB_CURLOPT_URL, cUrlRetry)
+			curl_easy_setopt(_hcurl, HB_CURLOPT_SSL_VERIFYPEER, 0)
+			curl_easy_setopt(_hcurl, HB_CURLOPT_SSL_VERIFYHOST, 0)
+			curlErr := curl_easy_perform(_hcurl)
+
+			if empty(curlErr)
+				cc1 := curl_easy_dl_buff_get( _hcurl )
+				cLog := "Resultado Reintento HTTP: OK"+chr(13)+chr(10)
+				cLog += "Largo Respuesta: "+alltrim(str(len(cc1)))+chr(13)+chr(10)
+				if file(cLogFile)
+					hb_memoWrit(cLogFile, hb_memoRead(cLogFile) + cLog)
+				else
+					hb_memoWrit(cLogFile, cLog)
+				endif
+			else
+				cLog := "Resultado Reintento HTTP: ERROR"+chr(13)+chr(10)
+				cLog += "cURL error ("+alltrim(str(curlErr))+"): "+curl_easy_strerror(curlErr)+chr(13)+chr(10)
+				if file(cLogFile)
+					hb_memoWrit(cLogFile, hb_memoRead(cLogFile) + cLog)
+				else
+					hb_memoWrit(cLogFile, cLog)
+				endif
+				msgInfo( "cURL error ("+alltrim(str(curlErr))+ "): "+curl_easy_strerror(curlErr) )
+			endif
+			endif
+		else
+		cLog := "Resultado: ERROR"+chr(13)+chr(10)
+		cLog += "cURL error ("+alltrim(str(curlErr))+"): "+curl_easy_strerror(curlErr)+chr(13)+chr(10)
+		if file(cLogFile)
+			hb_memoWrit(cLogFile, hb_memoRead(cLogFile) + cLog)
+		else
+			hb_memoWrit(cLogFile, cLog)
+		endif
+		msgInfo( "cURL error ("+alltrim(str(curlErr))+"): "+curl_easy_strerror(curlErr) )
+		endif
 	endif
 
 else
+	cLog := "Resultado: ERROR"+chr(13)+chr(10)+"curl_easy_init() devolvio vacio"+chr(13)+chr(10)
+	if file(cLogFile)
+		hb_memoWrit(cLogFile, hb_memoRead(cLogFile) + cLog)
+	else
+		hb_memoWrit(cLogFile, cLog)
+	endif
 	msgInfo("El servidor no responde...Reintente!!!")
 endif
 
