@@ -261,7 +261,7 @@ cLinea += "<nsAd:TipoCFE>"+str(cTipoCFE)+"</nsAd:TipoCFE>"+chr(13)+chr(10)
 cLinea += "<nsAd:Serie></nsAd:Serie>"+chr(13)+chr(10)
 cLinea += "<nsAd:Nro></nsAd:Nro>"+chr(13)+chr(10)
 cLinea += "<nsAd:FchEmis>"+substr(cFechaEmision,1,4)+"-"+substr(cFechaEmision,5,2)+"-"+substr(cFechaEmision,7,2)+"</nsAd:FchEmis>"+chr(13)+chr(10)
-cLinea += "<nsAd:FchValor>"+substr(cFechaVenc,1,4)+"-"+substr(cFechaVenc,5,2)+"-"+substr(cFechaVenc,7,2)+"</nsAd:FchValor>"+chr(13)+chr(10)
+//cLinea += "<nsAd:FchValor>"+substr(cFechaVenc,1,4)+"-"+substr(cFechaVenc,5,2)+"-"+substr(cFechaVenc,7,2)+"</nsAd:FchValor>"+chr(13)+chr(10)
 cLinea += "<nsAd:MntBruto>1</nsAd:MntBruto>"+chr(13)+chr(10)
 cLinea += "<nsAd:FmaPago>"+str(cFormaPago)+"</nsAd:FmaPago>"+chr(13)+chr(10)
 cLinea += "</nsAd:IdDoc>"+chr(13)+chr(10)
@@ -1079,7 +1079,7 @@ FUNCTION fHttpExecute(_url,_soapaction,cxml,_ssl)
 LOCAL _hcurl, curlErr
 LOCAL aHeader, cc1:="", lHttps
 LOCAL cLogFile, cLog, cNow
-LOCAL cUrlExec, cUrlRetry
+LOCAL cUrlExec
 LOCAL nSslTry
 
 aHeader := {}
@@ -1183,32 +1183,7 @@ IF !EMPTY(_hcurl)
 			endif
 
 			if !empty(curlErr)
-			cUrlRetry := "http://" + substr(cUrlExec,9)
-			cLog := "Resultado: ERROR"+chr(13)+chr(10)
-			cLog += "cURL error ("+alltrim(str(curlErr))+"): "+curl_easy_strerror(curlErr)+chr(13)+chr(10)
-			cLog += "Reintento automatico por HTTP: "+cUrlRetry+chr(13)+chr(10)
-			if file(cLogFile)
-				hb_memoWrit(cLogFile, hb_memoRead(cLogFile) + cLog)
-			else
-				hb_memoWrit(cLogFile, cLog)
-			endif
-
-			curl_easy_setopt(_hcurl, HB_CURLOPT_URL, cUrlRetry)
-			curl_easy_setopt(_hcurl, HB_CURLOPT_SSL_VERIFYPEER, 0)
-			curl_easy_setopt(_hcurl, HB_CURLOPT_SSL_VERIFYHOST, 0)
-			curlErr := curl_easy_perform(_hcurl)
-
-			if empty(curlErr)
-				cc1 := curl_easy_dl_buff_get( _hcurl )
-				cLog := "Resultado Reintento HTTP: OK"+chr(13)+chr(10)
-				cLog += "Largo Respuesta: "+alltrim(str(len(cc1)))+chr(13)+chr(10)
-				if file(cLogFile)
-					hb_memoWrit(cLogFile, hb_memoRead(cLogFile) + cLog)
-				else
-					hb_memoWrit(cLogFile, cLog)
-				endif
-			else
-				cLog := "Resultado Reintento HTTP: ERROR"+chr(13)+chr(10)
+				cLog := "Resultado: ERROR"+chr(13)+chr(10)
 				cLog += "cURL error ("+alltrim(str(curlErr))+"): "+curl_easy_strerror(curlErr)+chr(13)+chr(10)
 				if file(cLogFile)
 					hb_memoWrit(cLogFile, hb_memoRead(cLogFile) + cLog)
@@ -1216,7 +1191,6 @@ IF !EMPTY(_hcurl)
 					hb_memoWrit(cLogFile, cLog)
 				endif
 				msgInfo( "cURL error ("+alltrim(str(curlErr))+ "): "+curl_easy_strerror(curlErr) )
-			endif
 			endif
 		else
 		cLog := "Resultado: ERROR"+chr(13)+chr(10)
