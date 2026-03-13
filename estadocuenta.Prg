@@ -121,6 +121,8 @@ function rellenoGridCliente()
 	estadoCuenta.text_3.value := "Saldo al "+dtoc(estadoCuenta.datePicker_2.value)+" $ "+str(nSaldoActual)
 
 	for i = 1 to oDocumentos:lastrec()
+		wait WINDOW "Cargando Informacion Aguarde..."+str(i)+"/"+str(oDocumentos:lastrec()) NOWAIT
+
 		if (oDocumentos:getrow(i):fieldget(5) != 98 .and. oDocumentos:getrow(i):fieldget(4) != 0) .or. (oDocumentos:getrow(i):fieldget(5) = 98 .and. oDocumentos:getrow(i):fieldget(4) != 0)
 			nDebe :=  iif(oDocumentos:getrow(i):fieldget(5) = 101 .or. oDocumentos:getrow(i):fieldget(5) = 111 .or. oDocumentos:getrow(i):fieldget(5) = 113 .or. oDocumentos:getrow(i):fieldget(5) = 103  ,oDocumentos:getrow(i):fieldget(4),0 )
 			nHaber := iif(oDocumentos:getrow(i):fieldget(5) = 102 .or. oDocumentos:getrow(i):fieldget(5) = 112 .or. oDocumentos:getrow(i):fieldget(5) = 98 ,oDocumentos:getrow(i):fieldget(4),0 )
@@ -139,7 +141,7 @@ function rellenoGridCliente()
 						nSaldoAnterior })
 		endif
 	next
-
+	
 	nLargoArray := len(aGrid)
 	for i= nLargoArray to 1 step -1
 		estadoCuenta.grid_1.additem(agrid[i])

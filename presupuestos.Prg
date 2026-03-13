@@ -50,7 +50,7 @@ function formularioContado()
 
 	rellenoGridContado()
 
-	procedure buscoPresupuestos()
+procedure buscoPresupuestos()
 	local nCliente := presupuestos.text_1.value
 	vacioDatosPresupuestos()
 	if existeCliente(nCliente)
@@ -75,7 +75,7 @@ procedure vacioDatosPresupuestos()
 	presupuestos.text_4.value := ''
 	presupuestos.grid_1.deleteAllItems
 
-	function activoGridPresupuesto()
+function activoGridPresupuesto()
 
 	if presupuestos.text_1.value	 = 0
 		rellenoGridContado()
@@ -115,8 +115,10 @@ procedure rellenoGridPresupuesto()
 
 	nLargoArray := len(aGrid)
 	for i= nLargoArray to 1 step -1
+		wait WINDOW "Buscando Informacion Aguarde..."+str(i)+"/"+str(oDocumentos:lastrec()) NOWAIT
 		presupuestos.grid_1.additem(agrid[i])
 	next
+	wait clear
 return
 
 function rellenoGridContado()
@@ -130,6 +132,7 @@ function rellenoGridContado()
 	vacioDatosPresupuestos()
 
 	for i = 1 to oDocumentos:lastrec()
+		wait WINDOW "Buscando Informacion Aguarde..."+str(i)+"/"+str(oDocumentos:lastrec()) NOWAIT
 		nSaldoAnterior := nSaldoAnterior + oDocumentos:getrow(i):fieldget(6)
 		cDescripcion := oDocumentos:getrow(i):fieldget(3)+" - " + iif( oDocumentos:getrow(i):fieldget(6) != 0,"$ "+str(oDocumentos:getrow(i):fieldget(6)),"Cancelado")
 		if presupuestos.radioGRoup_1.value = 2 .and.  oDocumentos:getrow(i):fieldget(6) = 0
@@ -142,7 +145,7 @@ function rellenoGridContado()
 						nSaldoAnterior })
 		endIf
 	next
-
+	wait clear 
 	nLargoArray := len(aGrid)
 	for i= nLargoArray to 1 step -1
 		presupuestos.grid_1.additem(agrid[i])
@@ -165,6 +168,7 @@ procedure facturodocumento(xFactura,nFormaPago,cFormaPagoOrigen)
 			for i = 1 to len(aFactura)
 				modificoSaldoFacturaCliente(aFactura[i],aImporte[i])
 			next
+			activoGridPresupuesto()
 		endIf
 	endIf
 return 
