@@ -381,8 +381,8 @@ hb_MEMOWRIT(cDirInicioAplicacion+"\factura.pdf",hb_base64decode(cValTag(cRespues
 
 	if val(cValTag(cRespuesta,"a:Codigo")) = 0
 		
-		EXECUTE FILE '"' + exePdf + '"' PARAMETERS  '"'+cDirInicioAplicacion+'"\factura.pdf '
-		
+		//EXECUTE FILE '"' + exePdf + '"' PARAMETERS  '"'+cDirInicioAplicacion+'"\factura.pdf '
+		EXECUTE FILE (cDirInicioAplicacion+'\factura.pdf')
 	else
 		msgInfo(" Devolucion de Errores"+chr(13)+cValTag(cRespuesta,"a:Descripcion"))
 		return .f.
