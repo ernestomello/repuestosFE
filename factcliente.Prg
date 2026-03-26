@@ -555,46 +555,47 @@ function rellenoFacturasVarias(aFacturas,nFormaPago,cFormaPagoOrigen)
 local oDetalle := facturaClienteDetalleVarias(aFacturas)
 local nTotalFactura := 0, nDto :=0 ,nTotLinea := 0 , nPrecioUnitario := 0
 hb_default( @cFormaPagoOrigen, iif(nFormaPago = 1, "Contado", "Credito") )
-
+msgInfo("nFormaPago"+str(nFormaPago)+" - cFormaPagoOrigen "+cFormaPagoOrigen	)
 factCliente.text_1.value := 0// oCabezal:getrow(1):fieldget(3)
 factCliente.datePicker_1.value := date() //oCabezal:getrow(1):fieldget(2)
 // rellenoDatosfactCliente(factCliente.text_1.value)
 // factCliente.text_13.value := descripcionFacturaCliente(nFactura)
-do case
-			case factCliente.text_21.value = 1 .and. cFormaPagoOrigen == "Contado"
-				nDto := 0
-				nTotLinea := oDetalle:getrow(i):fieldGet(10) - (oDetalle:getrow(i):fieldGet(10) * nDto /100)
-				nPrecioUnitario := oDetalle:getrow(i):fieldGet(6) - (oDetalle:getrow(i):fieldGet(6) * nDto /100)
-			case factCliente.text_21.value = 1 .and. cFormaPagoOrigen == "Credito"
-				nDto := cPorcentajeNC
-				nTotLinea := oDetalle:getrow(i):fieldGet(10) - (oDetalle:getrow(i):fieldGet(10) * nDto /100)
-				nPrecioUnitario := oDetalle:getrow(i):fieldGet(6) - (oDetalle:getrow(i):fieldGet(6) * nDto /100)
-			case factCliente.text_21.value = 2 .and. cFormaPagoOrigen == "Contado"
-				nDto := cPorcentajeNC
-				nTotLinea := (oDetalle:getrow(i):fieldGet(10) ) / ((100-nDto)/100)
-				nPrecioUnitario := (oDetalle:getrow(i):fieldGet(6)) / ((100-nDto)/100)
-				nDto := 0
-			case factCliente.text_21.value = 2 .and. cFormaPagoOrigen == "Credito"
-				nDto := 0	
-				nTotLinea := oDetalle:getrow(i):fieldGet(10) - (oDetalle:getrow(i):fieldGet(10) * nDto /100)
-				nPrecioUnitario := oDetalle:getrow(i):fieldGet(6) - (oDetalle:getrow(i):fieldGet(6) * nDto /100)
-		endcase
 
 
 for i= 1 to oDetalle:lastRec()
+	do case
+		case factCliente.text_21.value = 1 .and. cFormaPagoOrigen == "Contado"
+			nDto := 0
+			nTotLinea := oDetalle:getrow(i):fieldGet(10) - (oDetalle:getrow(i):fieldGet(10) * nDto /100)
+			nPrecioUnitario := oDetalle:getrow(i):fieldGet(6) - (oDetalle:getrow(i):fieldGet(6) * nDto /100)
+		case factCliente.text_21.value = 1 .and. cFormaPagoOrigen == "Credito"
+			nDto := cPorcentajeNC
+			nTotLinea := oDetalle:getrow(i):fieldGet(10) - (oDetalle:getrow(i):fieldGet(10) * nDto /100)
+			nPrecioUnitario := oDetalle:getrow(i):fieldGet(6) - (oDetalle:getrow(i):fieldGet(6) * nDto /100)
+		case factCliente.text_21.value = 2 .and. cFormaPagoOrigen == "Contado"
+			nDto := cPorcentajeNC
+			nTotLinea := (oDetalle:getrow(i):fieldGet(10) ) / ((100-nDto)/100)
+			nPrecioUnitario := (oDetalle:getrow(i):fieldGet(6)) / ((100-nDto)/100)
+			nDto := 0
+		case factCliente.text_21.value = 2 .and. cFormaPagoOrigen == "Credito"
+			nDto := 0	
+			nTotLinea := oDetalle:getrow(i):fieldGet(10) - (oDetalle:getrow(i):fieldGet(10) * nDto /100)
+			nPrecioUnitario := oDetalle:getrow(i):fieldGet(6) - (oDetalle:getrow(i):fieldGet(6) * nDto /100)
+	endcase
+
 	factCliente.grid_1.addItem({oDetalle:getrow(i):fieldGet(3), ;
 							oDetalle:getrow(i):fieldGet(12), ; 
 							oDetalle:getrow(i):fieldGet(5), ; 
 							nPrecioUnitario, ; 
 							oDetalle:getrow(i):fieldGet(7), ;
 							oDetalle:getrow(i):fieldGet(8), ; 
-							oDetalle:getrow(i):fieldGet(9), ; 
-							oDetalle:getrow(i):fieldGet(10),;
+							nDto, ; 
+							nTotLinea,;
 							oDetalle:getrow(i):fieldGet(11);
 							})
 
 	//nTotalFactura += oDetalle:getrow(i):fieldGet(10)														
-	nTotalFactura += round(oDetalle:getrow(i):fieldGet(10) * (1 + oDetalle:getrow(i):fieldGet(8)/100),0)
+	nTotalFactura += round(nTotLinea * (1 + oDetalle:getrow(i):fieldGet(8)/100),0)
 next
 factCliente.frame_5.caption := "Total de "+alltrim(str(i - 1))+" lineas"
 factCliente.text_5.value := nTotalFactura
