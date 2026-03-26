@@ -34,7 +34,7 @@ procedure facturodocumentoCtaCte(nformaPago)
 		return
 	endIf
 
-	factCliente(101 ,aFactura, nformaPago,cConCabezal)
+	factCliente(101 ,aFactura, nformaPago,cConCabezal,"Credito")
 	// Ver como hacer la NC una vez que se haya hecho el documento contado
 	// if msgYesNo("Genera NC del documento","ATENCION",.T.)
 

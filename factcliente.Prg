@@ -551,16 +551,12 @@ procedure rellenoFacturaCliente(nFactura,cTipoDocumento,nFormaPago,cConCabezal,c
 return
 
 function rellenoFacturasVarias(aFacturas,nFormaPago,cFormaPagoOrigen)
-// local oCabezal := facturaClienteCabezal(nFactura)
 local oDetalle := facturaClienteDetalleVarias(aFacturas)
 local nTotalFactura := 0, nDto :=0 ,nTotLinea := 0 , nPrecioUnitario := 0
 hb_default( @cFormaPagoOrigen, iif(nFormaPago = 1, "Contado", "Credito") )
-msgInfo("nFormaPago"+str(nFormaPago)+" - cFormaPagoOrigen "+cFormaPagoOrigen	)
+//msgInfo("nFormaPago"+str(nFormaPago)+" - cFormaPagoOrigen "+cFormaPagoOrigen	)
 factCliente.text_1.value := 0// oCabezal:getrow(1):fieldget(3)
 factCliente.datePicker_1.value := date() //oCabezal:getrow(1):fieldget(2)
-// rellenoDatosfactCliente(factCliente.text_1.value)
-// factCliente.text_13.value := descripcionFacturaCliente(nFactura)
-
 
 for i= 1 to oDetalle:lastRec()
 	do case
